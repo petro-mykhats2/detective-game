@@ -30,7 +30,7 @@ export default function ChiefOffice({ lines, voiceStatus, onContinue }: ChiefOff
           <span style={{ width: voiceStatus === "finished" ? "100%" : voiceStatus === "playing" ? "65%" : "8%" }} />
         </div>
         <div className="narration-text narration-text--all">
-          {lines.map((line, index) => <p key={`${index}-${line}`}>{line}</p>)}
+          {lines.map((line, index) => <p key={`${index}-${line}`} style={{ animationDelay: `${0.45 + index * 0.62}s` }}>{line}</p>)}
         </div>
         <div className="narration-bottom">
           <div className="voice-status"><i /> {statusText[voiceStatus]}</div>
