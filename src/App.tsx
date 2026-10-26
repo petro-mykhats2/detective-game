@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react"
 import "./App.css"
 import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
 import { introLines } from "./scenes/ChiefOffice/sceneData"
+import StageOne from "./scenes/StageOne/StageOne"
 
-type Screen = "start" | "intro" | "handoff" | "terminal"
+type Screen = "start" | "intro" | "handoff" | "stage-one" | "terminal"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -229,7 +230,7 @@ export default function App() {
             </p>
             <button
               className="start-button handoff-button"
-              onClick={() => setScreen("terminal")}
+              onClick={() => setScreen("stage-one")}
             >
               <span>Відкрити робочий термінал</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -238,6 +239,14 @@ export default function App() {
             </button>
           </div>
         </section>
+      )}
+
+
+      {screen === "stage-one" && (
+        <StageOne
+          onBack={() => setScreen("handoff")}
+          onComplete={() => setScreen("terminal")}
+        />
       )}
 
       {screen === "terminal" && (

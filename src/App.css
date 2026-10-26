@@ -255,3 +255,28 @@ button { font: inherit; }
 }
 .narration-text--all p { margin: 0 0 13px; opacity: 0; animation: narration-line-in 1.25s ease forwards; }
 .narration-text--all p:last-child { margin-bottom: 0; }
+
+
+/* Перший етап: аналіз матеріалів і перевірка робочих гіпотез */
+.stage-one-screen{position:relative;z-index:1;height:100vh;min-height:100vh;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(22px,5vw,62px) clamp(22px,5vw,62px) 100px;}
+.stage-one-wrap{width:min(900px,100%);margin:36px auto 0;}
+.stage-one-heading{margin:0 0 10px;color:#f0f2f5;font-size:clamp(28px,4vw,42px);line-height:1.18;letter-spacing:-.04em;}
+.stage-one-lead{margin:0 0 26px;color:#aeb7c0;font-size:14px;line-height:1.8;}
+.stage-one-question{margin:0 0 16px;padding:22px;border:1px solid #343b43;border-radius:8px;background:#10151bf0;}
+.stage-one-question legend{padding:0 8px;color:#e9edf0;font-size:16px;font-weight:700;line-height:1.5;}
+.stage-one-options{display:grid;gap:10px;margin-top:12px;}
+.stage-one-option{display:flex;align-items:flex-start;gap:11px;padding:12px 13px;border:1px solid #303842;border-radius:5px;background:#0b0f14;color:#bfc7ce;font-size:13px;line-height:1.65;cursor:pointer;}
+.stage-one-option:has(input:checked){border-color:#a17d4b;background:#201a12;color:#f0dfc5;}
+.stage-one-option input{margin-top:4px;accent-color:#bd9157;flex:none;}
+.stage-one-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:22px;}
+.stage-one-primary,.stage-one-secondary{min-height:44px;padding:0 18px;border:1px solid #987447;border-radius:4px;background:#241d14;color:#f0d8b3;font:600 11px "DM Mono",monospace;letter-spacing:.05em;cursor:pointer;}
+.stage-one-primary:disabled{opacity:.4;cursor:not-allowed;}
+.stage-one-secondary{border-color:#444c55;background:#12171d;color:#c1c9d0;}
+.stage-one-feedback{margin-top:20px;padding:18px;border:1px solid #675033;border-radius:6px;background:#17140f;color:#d6c2a3;font-size:13px;line-height:1.8;}
+.stage-one-feedback strong{color:#f2ddb8;}
+.stage-one-summary{margin-top:24px;padding:clamp(22px,4vw,34px);border:1px solid #6a5537;border-radius:8px;background:#111820f5;box-shadow:0 22px 80px #0004;}
+.stage-one-summary h2{margin:0 0 16px;color:#f0d5a8;font-size:25px;}
+.stage-one-summary h3{margin:22px 0 8px;color:#d4b17b;font-size:13px;letter-spacing:.04em;}
+.stage-one-summary ul{margin:0;padding-left:21px;color:#bfc7ce;font-size:13px;line-height:1.9;}
+.stage-one-summary p{color:#bfc7ce;font-size:13px;line-height:1.8;}
+@media(max-width:600px){.stage-one-screen{padding:22px 16px 100px}.stage-one-wrap{margin-top:25px}.stage-one-question{padding:18px 14px}.stage-one-question legend{font-size:14px}.stage-one-option{font-size:12px}.stage-one-actions>*{width:100%}}
