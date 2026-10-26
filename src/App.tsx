@@ -1,60 +1,331 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { useEffect, useRef, useState } from "react"
+import "./App.css"
+import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
+import { introLines } from "./scenes/ChiefOffice/sceneData"
 
-const documents = [
-  { id: "report", number: "01", title: "Рапорт про виявлення кримінального правопорушення", type: "Первинний документ провадження" },
-  { id: "witness", number: "02", title: "Допит свідка Горбатюка", type: "Протокол допиту" },
-  { id: "scene", number: "03", title: "Первинний огляд місця події", type: "Протокол огляду" },
-];
-const STORAGE_KEY = "detective-game-progress-v0.2";
-type SavedState = { readIds: string[]; notes: Record<string, string> };
-function loadState(): SavedState {
-  try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    if (!value) return { readIds: [], notes: {} };
-    const parsed = JSON.parse(value);
-    return {
-      readIds: Array.isArray(parsed.readIds) ? parsed.readIds.filter((id: string) => documents.some(d => d.id === id)) : [],
-      notes: parsed.notes && typeof parsed.notes === "object" ? parsed.notes : {},
-    };
-  } catch { return { readIds: [], notes: {} }; }
-}
+type Screen = "start" | "intro" | "handoff" | "terminal"
+
+const BACKGROUND_IMAGE = "/background.jpeg"
+const MUSIC_FILE = "/investigation-theme.mp3"
+const INTRO_VOICE_FILE = "/audio/intro-01.mp3.mp3"
+
+// НАЛАШТУВАННЯ ГУЧНОСТІ (значення від 0 до 1):
+// MUSIC_VOLUME_NORMAL — гучність фонової музики до/після озвучки.
+// MUSIC_VOLUME_DURING_VOICE — гучність музики, поки говорить диктор.
+// Щоб музика звучала тихіше під голосом, зменшуй DURING_VOICE (наприклад, 0.08).
+// Щоб вона звучала голосніше під голосом, збільшуй це значення (наприклад, 0.22).
+// const MUSIC_VOLUME_NORMAL = 0.38;
+const MUSIC_VOLUME_NORMAL = 0.98
+const MUSIC_VOLUME_DURING_VOICE = 0.13
+const VOICE_VOLUME = 1
+
+// ПАУЗА ПЕРЕД ОЗВУЧКОЮ (мс): 1800 = 1,8 секунди після появи вступного екрана.
+// Для швидшого початку постав 0–500; для більш кінематографічної паузи — 2500–4000.
+const INTRO_VOICE_DELAY_MS = 1800
+
+// Для всього вступу використовується один аудіофайл. Текст показується повністю,
+// а рядки з'являються поступово; синхронізації по таймкодах немає.
+
+const NOTE_KEY = "detective-case-notes-v1"
+
 export default function App() {
-  const [saved, setSaved] = useState<SavedState>(loadState);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  useEffect(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch { /* storage unavailable */ } }, [saved]);
-  const active = documents.find(d => d.id === activeId);
-  function openDoc(id: string) {
-    setSaved(s => ({ ...s, readIds: s.readIds.includes(id) ? s.readIds : [...s.readIds, id] }));
-    setActiveId(id);
+  const [screen, setScreen] = useState<Screen>("start")
+  const [musicEnabled, setMusicEnabled] = useState(true)
+  const [audioBlocked, setAudioBlocked] = useState(false)
+  const [voiceStatus, setVoiceStatus] = useState<
+    "loading" | "playing" | "finished" | "unavailable"
+  >("loading")
+  const [note, setNote] = useState(() => {
+    try {
+      return localStorage.getItem(NOTE_KEY) ?? ""
+    } catch {
+      return ""
+    }
+  })
+  const musicRef = useRef<HTMLAudioElement>(null)
+  const voiceRef = useRef<HTMLAudioElement>(null)
+  const voiceDelayRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const image = new Image()
+    image.src = BACKGROUND_IMAGE
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(NOTE_KEY, note)
+    } catch {
+      /* Збереження може бути недоступним у приватному режимі. */
+    }
+  }, [note])
+
+  useEffect(() => {
+    const music = musicRef.current
+    if (!music) return
+    music.volume = MUSIC_VOLUME_NORMAL
+
+    // Пробуємо запустити музику одразу при відкритті стартової сторінки.
+    // Деякі браузери блокують autoplay зі звуком; кнопка звуку або «Почати розслідування»
+    // повторить спробу після дії користувача.
+    if (musicEnabled) {
+      void music
+        .play()
+        .then(() => setAudioBlocked(false))
+        .catch(() => setAudioBlocked(true))
+    } else {
+      music.pause()
+    }
+  }, [musicEnabled])
+
+  useEffect(
+    () => () => {
+      if (voiceDelayRef.current !== null)
+        window.clearTimeout(voiceDelayRef.current)
+    },
+    [],
+  )
+
+  function beginInvestigation() {
+    setVoiceStatus("loading")
+    setScreen("intro")
+
+    // Повторна спроба запуску музики в обробнику кліку обходить типове обмеження autoplay.
+    if (musicEnabled && musicRef.current) {
+      void musicRef.current
+        .play()
+        .then(() => setAudioBlocked(false))
+        .catch(() => setAudioBlocked(true))
+    }
+
+    const voice = voiceRef.current
+    if (!voice) {
+      setVoiceStatus("unavailable")
+      return
+    }
+    if (voiceDelayRef.current !== null)
+      window.clearTimeout(voiceDelayRef.current)
+    voice.pause()
+    voice.currentTime = 0
+    voice.volume = VOICE_VOLUME
+
+    // Поки голос ще не почався, фонова музика звучить на звичайній гучності.
+    voiceDelayRef.current = window.setTimeout(() => {
+      if (musicRef.current && musicEnabled)
+        musicRef.current.volume = MUSIC_VOLUME_DURING_VOICE
+      void voice
+        .play()
+        .then(() => {
+          setVoiceStatus("playing")
+        })
+        .catch(() => {
+          if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+          // Якщо файл відсутній або браузер блокує звук, вступ лишається доступним як текст.
+          setVoiceStatus("unavailable")
+        })
+    }, INTRO_VOICE_DELAY_MS)
   }
-  return <main className="app-shell">
-    <header className="topbar">
-      <div className="brand"><div className="brand-mark">Д</div><div><div className="brand-title">ДЕТЕКТИВНА СПРАВА</div><div className="brand-subtitle">ІНТЕРАКТИВНИЙ РОБОЧИЙ ПРОСТІР СЛІДЧОГО</div></div></div>
-      <div className="system-status"><span className="status-dot" /> ЛОКАЛЬНИЙ РЕЖИМ</div>
-    </header>
-    <section className="case-header">
-      <div className="eyebrow">КРИМІНАЛЬНЕ ПРОВАДЖЕННЯ</div>
-      <div className="case-title-row"><div><h1>Матеріали справи</h1><p className="case-number">№ 12026170010000456</p></div><div className="case-state"><span className="state-label">СТАТУС</span><span className="state-value">Первинне ознайомлення</span></div></div>
-      <div className="rule-line" />
-      <div className="progress-row"><div><div className="progress-label">ПЕРЕГЛЯНУТО ДОКУМЕНТІВ</div><div className="progress-count"><strong>{String(saved.readIds.length).padStart(2, "0")}</strong><span> / 03</span></div></div><div className="progress-track"><div className="progress-fill" style={{ width: `${saved.readIds.length / 3 * 100}%` }} /></div><div className="progress-note">Прогрес зберігається<br />у цьому браузері</div></div>
-    </section>
-    <section className="documents-section">
-      <div className="section-heading"><div><div className="eyebrow">ЕТАП 01</div><h2>Початкові матеріали</h2></div><span className="document-count">03 ДОКУМЕНТИ</span></div>
-      <p className="section-intro">Ознайомтеся з наявними матеріалами. Фіксуйте власні спостереження окремо від установлених фактів.</p>
-      <div className="document-list">{documents.map(doc => {
-        const read = saved.readIds.includes(doc.id), hasNote = Boolean(saved.notes[doc.id]?.trim());
-        return <button className="document-card" key={doc.id} onClick={() => openDoc(doc.id)}><div className="document-number">{doc.number}</div><div className="document-main"><div className="document-type">{doc.type}</div><h3>{doc.title}</h3><div className="document-meta"><span className={read ? "read-status read" : "read-status"}><span className="mini-dot" />{read ? "Відкривався" : "Ще не відкривався"}</span>{hasNote && <span className="note-status">✎ Є нотатка</span>}</div></div><div className="document-arrow">↗</div></button>;
-      })}</div>
-    </section>
-    <footer className="app-footer"><span className="footer-mark">Д / С</span><p>Робочі нотатки — це ваші спостереження, а не автоматично встановлені факти.</p><span>ВЕРСІЯ 0.2</span></footer>
-    {active && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setActiveId(null); }}><section className="document-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className="modal-topline"><span>ДОКУМЕНТ {active.number} / 03</span><button className="close-button" onClick={() => setActiveId(null)} aria-label="Закрити">×</button></div>
-      <div className="modal-document-heading"><div className="eyebrow">МАТЕРІАЛИ ПРОВАДЖЕННЯ</div><h2 id="modal-title">{active.title}</h2></div>
-      <div className="source-placeholder"><div className="placeholder-symbol">▤</div><div><strong>Оригінальний текст документа ще не підключено</strong><p>Текст не відтворюється автоматично, щоб не вигадувати зміст і не підміняти оригінальні матеріали справи.</p></div></div>
-      <label className="notes-label" htmlFor="document-notes">МОЇ НОТАТКИ ДО ДОКУМЕНТА</label>
-      <textarea id="document-notes" value={saved.notes[active.id] ?? ""} onChange={e => setSaved(s => ({ ...s, notes: { ...s.notes, [active.id]: e.target.value } }))} placeholder="Запишіть спостереження, запитання або можливі версії. Нотатки не вважаються встановленими фактами." rows={5} />
-      <div className="modal-bottom"><span className="autosave"><span className="status-dot" /> Автозбереження увімкнено</span><button className="done-button" onClick={() => setActiveId(null)}>Повернутися до матеріалів <span>→</span></button></div>
-    </section></div>}
-  </main>;
+
+  function handleVoiceEnded() {
+    setVoiceStatus("finished")
+    if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+  }
+
+  function continueToMaterials() {
+    if (voiceDelayRef.current !== null)
+      window.clearTimeout(voiceDelayRef.current)
+    if (voiceRef.current) voiceRef.current.pause()
+    if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+    setScreen("handoff")
+  }
+
+  async function toggleMusic() {
+    const next = !musicEnabled
+    setMusicEnabled(next)
+    const music = musicRef.current
+    if (!music) return
+    if (next) {
+      music.volume =
+        voiceStatus === "playing"
+          ? MUSIC_VOLUME_DURING_VOICE
+          : MUSIC_VOLUME_NORMAL
+      try {
+        await music.play()
+        setAudioBlocked(false)
+      } catch {
+        setAudioBlocked(true)
+      }
+    } else {
+      music.pause()
+    }
+  }
+
+  return (
+    <main className={`experience is-ready experience--${screen}`}>
+      <div
+        className="experience__background"
+        style={{ backgroundImage: `url("${BACKGROUND_IMAGE}")` }}
+        aria-hidden="true"
+      />
+      <div className="experience__shade" aria-hidden="true" />
+      <div className="film-grain" aria-hidden="true" />
+
+      {screen === "start" && (
+        <section className="intro" aria-label="Початок гри">
+          <div className="intro__classification">
+            КРИМІНАЛЬНЕ РОЗСЛІДУВАННЯ <span>///</span> ДОСЬЄ № 001
+          </div>
+          <div className="intro__center">
+            <div className="intro__overline">
+              <span /> КОЖНА ДЕТАЛЬ МАЄ ЗНАЧЕННЯ
+            </div>
+            <h1 className="intro__title">
+              Детектив<span>.</span>
+            </h1>
+            <p className="intro__subtitle">Істина прихована в деталях.</p>
+            <button className="start-button" onClick={beginInvestigation}>
+              <span>Почати розслідування</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+          <div className="intro__footer">
+            <span>СИСТЕМА ГОТОВА ДО РОБОТИ</span>
+            <span className="intro__footer-mark">
+              <i /> CASE FILE / 001
+            </span>
+          </div>
+        </section>
+      )}
+
+      {screen === "intro" && (
+        <ChiefOffice
+          lines={introLines}
+          voiceStatus={voiceStatus}
+          onContinue={continueToMaterials}
+        />
+      )}
+
+      {screen === "handoff" && (
+        <section className="handoff-screen" aria-label="Інструкція напарника">
+          <div className="scene-topline">
+            <span>
+              <i /> ПОВІДОМЛЕННЯ ВІД НАПАРНИКА
+            </span>
+            <span>ЕТАП 01 · ПЕРВИННІ МАТЕРІАЛИ</span>
+          </div>
+          <div className="handoff-card">
+            <div className="assistant-mark">М</div>
+            <div className="narration-kicker">КАПІТАНЕ МАРЧЕНКО, ДО УВАГИ</div>
+            <h1>Почніть із матеріалів справи</h1>
+            <p>
+              Візьміть <strong>Конверт № 1</strong> із матеріалами справи та
+              ознайомтеся з первинними документами: рапортом, протоколом допиту
+              свідка Горбатюка та протоколом огляду місця події.
+            </p>
+            <p>
+              Після вивчення зафіксуйте ключові факти у робочому терміналі. Не
+              плутайте встановлені обставини з припущеннями.
+            </p>
+            <button
+              className="start-button handoff-button"
+              onClick={() => setScreen("terminal")}
+            >
+              <span>Відкрити робочий термінал</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </section>
+      )}
+
+      {screen === "terminal" && (
+        <section className="terminal-screen" aria-label="Робочий термінал">
+          <div className="scene-topline">
+            <span>
+              <i /> РОБОЧИЙ ТЕРМІНАЛ
+            </span>
+            <span>СПРАВА № 12026170010000456</span>
+          </div>
+          <div className="terminal-card">
+            <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>
+            <h1>Зафіксуйте ключові факти</h1>
+            <p className="terminal-instruction">
+              Вивчіть документи з фізичного конверта № 1. Запишіть тут факти,
+              які прямо підтверджені матеріалами, а питання та припущення
+              позначайте окремо.
+            </p>
+            <label className="notes-label" htmlFor="case-notes">
+              РОБОЧІ НОТАТКИ
+            </label>
+            <textarea
+              id="case-notes"
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+              placeholder="Наприклад: що встановлено; хто повідомив про подію; які обставини потребують перевірки…"
+              rows={7}
+            />
+            <div className="terminal-footer">
+              <span>
+                <i /> Нотатки автоматично зберігаються в цьому браузері
+              </span>
+              <button
+                className="text-button"
+                onClick={() => setScreen("handoff")}
+              >
+                До інструкції
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <button
+        className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
+        onClick={toggleMusic}
+        aria-label={
+          musicEnabled ? "Вимкнути фонову музику" : "Увімкнути фонову музику"
+        }
+        title={
+          audioBlocked && musicEnabled
+            ? "Браузер заблокував автоматичний запуск звуку"
+            : musicEnabled
+              ? "Вимкнути фонову музику"
+              : "Увімкнути фонову музику"
+        }
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+          {musicEnabled ? (
+            <>
+              <path d="M16 9a4 4 0 0 1 0 6" />
+              <path d="M18.5 6.5a8 8 0 0 1 0 11" />
+            </>
+          ) : (
+            <path d="m16 9 5 6m0-6-5 6" />
+          )}
+        </svg>
+        <span>
+          {audioBlocked && musicEnabled
+            ? "НАТИСНІТЬ ДЛЯ ЗВУКУ"
+            : musicEnabled
+              ? "ФОНОВА МУЗИКА УВІМКНЕНА"
+              : "ФОНОВА МУЗИКА ВИМКНЕНА"}
+        </span>
+      </button>
+
+      <audio ref={musicRef} src={MUSIC_FILE} loop preload="auto" />
+      <audio
+        ref={voiceRef}
+        src={INTRO_VOICE_FILE}
+        onEnded={handleVoiceEnded}
+        onError={() => {
+          setVoiceStatus("unavailable")
+          if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+        }}
+        preload="auto"
+      />
+    </main>
+  )
 }
