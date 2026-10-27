@@ -17,7 +17,6 @@ const ANSWER_REVEAL_DELAY_MS = 850
 const CATEGORY_STAGGER_MS = 75
 const AUDIO_CATEGORY = "/audio/ui-category-click.mp3"
 const AUDIO_ANSWER = "/audio/ui-answer-click.mp3"
-const AUDIO_HELPER = "/audio/stage-one-helper.mp3"
 
 const questions: Question[] = [
   { id: "vehicle", category: "Автомобіль і коробка передач", description: "Що може розповісти стан автомобіля?",
@@ -90,17 +89,14 @@ export default function StageOne({ onBack, onComplete }: Props) {
   const [choice, setChoice] = useState<string | null>(null)
   const [revealing, setRevealing] = useState(false)
   const [resultVisible, setResultVisible] = useState(false)
-  const [voicePlaying, setVoicePlaying] = useState(false)
   const [requestedExaminations, setRequestedExaminations] = useState<string[]>([])
   const timer = useRef<number | null>(null)
-  const voiceRef = useRef<HTMLAudioElement>(null)
   const active = questions.find((q) => q.id === activeId) ?? null
   const answeredCount = questions.filter((q) => answers[q.id] === q.correct).length
   const allCategoriesCompleted = answeredCount === questions.length
 
   useEffect(() => () => {
     if (timer.current !== null) window.clearTimeout(timer.current)
-    voiceRef.current?.pause()
   }, [])
 
   function openQuestion(q: Question) {
@@ -133,17 +129,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
     setActiveId(null)
   }
   function openHelper() {
-    voiceRef.current?.pause()
-    setVoicePlaying(false)
     setView("helper")
-  }
-  function playHelper() {
-    const audio = voiceRef.current
-    if (!audio) return
-    audio.currentTime = 0
-    audio.volume = 0.85
-    setVoicePlaying(true)
-    void audio.play().catch(() => setVoicePlaying(false))
   }
   function closeHelper() {
     voiceRef.current?.pause()
@@ -204,7 +190,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
           {view === "helper" && active && <div className="stage-one-modal__content stage-one-helper-view">
             <div className="stage-one-helper-large" aria-hidden="true">?</div><h2 id="stage-one-modal-title">Твій напарник</h2><p className="stage-one-helper-intro">Напарник ділиться спостереженнями, але не робить остаточних висновків замість експертів.</p>
             <div className="stage-one-helper-note"><span className="stage-one-helper-note__label">НАПАРНИК</span><p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p></div>
-            <p className="stage-one-helper-audio-note">{voicePlaying ? "Напарник говорить…" : "Прочитай репліку напарника та повернись до матеріалів."}</p>
+            <p className="stage-one-helper-audio-note">Прочитай репліку напарника та повернись до матеріалів.</p>
             <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button></div>
           </div>}
 
@@ -223,7 +209,6 @@ export default function StageOne({ onBack, onComplete }: Props) {
           </div>}
         </section>
       </div>}
-      <audio ref={voiceRef} src={AUDIO_HELPER} preload="none" onEnded={() => setVoicePlaying(false)} onError={() => setVoicePlaying(false)} />
     </section>
   )
 }
