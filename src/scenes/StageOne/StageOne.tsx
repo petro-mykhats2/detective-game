@@ -17,6 +17,7 @@ const ANSWER_REVEAL_DELAY_MS = 850
 const CATEGORY_STAGGER_MS = 75
 const AUDIO_CATEGORY = "/audio/ui-category-click.mp3"
 const AUDIO_ANSWER = "/audio/ui-answer-click.mp3"
+const AUDIO_HELPER = "/audio/assistant-stage-one.mp3" // Додайте озвучку пізніше.
 
 const questions: Question[] = [
   { id: "vehicle", category: "Автомобіль і коробка передач", description: "Що може розповісти стан автомобіля?",
@@ -73,6 +74,12 @@ const helperDialogues: Record<string, string> = {
   injuries: "Капітане, зверніть увагу на травму голови. У загиблого відкрита черепно-мозкова травма в ділянці тім'яної кістки, тобто у верхній частині голови. При цьому він був пристебнутий паском безпеки.\n\nДивна обставина, погодьтеся. Але ми поки не знаємо, чи це наслідок деформації даху під час падіння, чи травма має інше походження. Думаю, тут без судово-медичної експертизи не обійтися.",
   time: "Капітане, тут є одна серйозна нестиковка. Свідок стверджує, що автомобіль упав близько 22:52. Водночас попередня оцінка на місці вказує, що смерть могла настати за три-чотири години до початку огляду, який розпочався о 23:15.\n\nЯкщо ця оцінка правильна, виходить, водій міг померти ще до падіння автомобіля. Але це поки лише попередні дані. Треба призначити судово-медичну експертизу, щоб точніше встановити час смерті.",
   driver: "Капітане, ми поки що не знаємо, у якому стані був водій перед аварією. У матеріалах немає достовірних даних ні про алкогольне сп'яніння, ні про можливе погіршення здоров'я. Так само невідомо, чи був автомобіль технічно справним і з якою швидкістю він рухався.\n\nТому я б не поспішав списувати все на нещасний випадок або, навпаки, вважати, що хтось навмисно спричинив аварію. Спочатку потрібно перевірити стан водія та автомобіля. Без цього ми просто гадатимемо.",
+}
+
+function playDialogue(path: string) {
+  const audio = new Audio(path)
+  audio.volume = 1
+  void audio.play().catch(() => undefined)
 }
 
 function playClick(path: string) {
@@ -187,23 +194,19 @@ export default function StageOne({ onBack, onComplete }: Props) {
 
           {view === "helper" && active && <div className="stage-one-modal__content stage-one-helper-view">
             <div className="stage-one-helper-large" aria-hidden="true">?</div><h2 id="stage-one-modal-title">Твій напарник</h2><p className="stage-one-helper-intro">Напарник ділиться спостереженнями, але не робить остаточних висновків замість експертів.</p>
-            <div className="stage-one-helper-note"><span className="stage-one-helper-note__label">НАПАРНИК</span><p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p></div>
+            <div className="stage-one-helper-note"><span className="stage-one-helper-note__label">НАПАРНИК</span><p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p><button type="button" className="stage-one-secondary" onClick={() => playDialogue(AUDIO_HELPER)}>▶ Прослухати репліку</button></div>
             <p className="stage-one-helper-audio-note">Прочитай репліку напарника та повернись до матеріалів.</p>
             <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button></div>
           </div>}
 
           {view === "summary" && allCategoriesCompleted && <div className="stage-one-modal__content stage-one-summary-view">
-            <h2 id="stage-one-modal-title">Що ми маємо на цей момент?</h2><p className="stage-one-summary-intro">Перші матеріали вже окреслюють картину події. Та між зафіксованими обставинами й відповіддю на головне запитання ще залишається відстань.</p>
+            <h2 id="stage-one-modal-title">Що ми маємо на цей момент?</h2>
+            <p className="stage-one-summary-intro">Перші матеріали вже окреслюють картину події. Та між зафіксованими обставинами й відповіддю на головне запитання ще залишається відстань.</p>
             <h3>Встановлено та зафіксовано</h3><ul><li>Свідок повідомив про аварію приблизно о 22:52; виклик поліції здійснено о 22:54.</li><li>Запалювання було ввімкнене, двигун не працював; важіль коробки передач перебував у нейтральному положенні.</li><li>Водій перебував за кермом і був пристебнутий ременем безпеки.</li></ul>
             <h3>Поки що залишається загадкою</h3><ul><li>Відсутність слідів гальмування та характер подряпин на задньому бампері.</li><li>Походження й механізм утворення ушкоджень водія.</li><li>Механізм ДТП, стан водія та швидкість руху.</li></ul>
-            <h3>Розслідування триває</h3><p>Попереду — судово-медичне, автотехнічне та трасологічне дослідження. Їхні результати можуть змінити уявлення про подію. Поки що остаточних висновків немає.</p>
-            <h3>Наступні слідчі дії</h3>
-            <p>Обери, які дослідження потрібно призначити. Запит на експертизу та отримання її висновку — окремі події. Результатів експертиз на цьому етапі ще немає.</p>
-            <div className="stage-one-examination-options">
-              <label><input type="checkbox" checked={requestedExaminations.includes("medical")} onChange={(e) => setRequestedExaminations((old) => e.target.checked ? [...old, "medical"] : old.filter((x) => x !== "medical"))} /> Судово-медична експертиза — характер ушкоджень і точніший час смерті</label>
-              <label><input type="checkbox" checked={requestedExaminations.includes("automotive")} onChange={(e) => setRequestedExaminations((old) => e.target.checked ? [...old, "automotive"] : old.filter((x) => x !== "automotive"))} /> Автотехнічна / трасологічна експертиза — механізм ДТП і походження слідів</label>
-            </div>
-            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={backToCategories}>← До матеріалів</button><button type="button" className="stage-one-primary" disabled={requestedExaminations.length === 0} onClick={() => { if (requestedExaminations.length > 0) onComplete() }}>Підтвердити дії →</button></div>
+            <div className="stage-one-helper-note stage-one-summary-dialogue"><span className="stage-one-helper-note__label">НАПАРНИК</span><p className="stage-one-helper-dialogue">Капітане, після всього, що ми з’ясували, я вважаю, що нам обов’язково потрібно призначити судово-медичну експертизу тіла та автотехнічну й трасологічну експертизи автомобіля. Результатів доведеться зачекати кілька днів, але без них ми не зможемо скласти повної картини того, що сталося.<br/><br/>А поки пропоную не гаяти часу. Варто подати запити на отримання інформації з банківського рахунку загиблого та даних мобільного білінгу. Можливо, фінансові операції або телефонні дзвінки допоможуть нам знайти зачіпку, якої зараз бракує.<br/><br/>І ще одне, капітане. Нам обов’язково потрібно допитати дружину загиблого. Вона могла помітити щось незвичне останніми днями або знати про обставини, про які ми поки навіть не здогадуємося.<br/><br/>Пропоную оформити всі необхідні запити й розпочати наступний етап. Хто знає… можливо, відповіді на ці запитання приведуть нас туди, куди ми зовсім не очікували.</p><button type="button" className="stage-one-secondary" onClick={() => playDialogue("/audio/assistant-stage-one-ending.mp3")}>▶ Прослухати репліку</button></div>
+            <p className="stage-one-summary-intro">Після підтвердження відкриється конверт № 2. Результати експертиз надійдуть пізніше.</p>
+            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={backToCategories}>← До матеріалів</button><button type="button" className="stage-one-primary" onClick={onComplete}>Підтвердити подальші слідчі дії →</button></div>
           </div>}
         </section>
       </div>}
