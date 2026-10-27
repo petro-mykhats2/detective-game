@@ -67,6 +67,15 @@ const questions: Question[] = [
     hint: "Наслідки події не дозволяють самостійно визначити швидкість або стан водія. Перевірте, чи є в первинних матеріалах прямі докази саме цих обставин." },
 ]
 
+
+const helperDialogues: Record<string, string> = {
+  vehicle: "Капітане, дивіться… важіль коробки передач у нейтральному положенні. Цікаво. Якщо автомобіль просто котився, як він зміг пробити відбійник? Щось тут не сходиться.\n\nПоки не робитимемо поспішних висновків. Дочекаймося автотехнічної експертизи — можливо, вона допоможе нам зрозуміти, що насправді сталося.",
+  traces: "Капітане, на дорозі немає слідів екстреного гальмування, а на задньому бампері є подряпини та сторонні нашарування. Можливо, автомобіль із чимось зіткнувся ще до падіння. Але ці сліди могли з'явитися й під час самого падіння.\n\nЯ б поки не відкидав жодної версії. Треба з'ясувати походження цих пошкоджень і перевірити, чому водій не гальмував.",
+  injuries: "Капітане, зверніть увагу на травму голови. У загиблого відкрита черепно-мозкова травма в ділянці тім'яної кістки, тобто у верхній частині голови. При цьому він був пристебнутий паском безпеки.\n\nДивна обставина, погодьтеся. Але ми поки не знаємо, чи це наслідок деформації даху під час падіння, чи травма має інше походження. Думаю, тут без судово-медичної експертизи не обійтися.",
+  time: "Капітане, тут є одна серйозна нестиковка. Свідок стверджує, що автомобіль упав близько 22:52. Водночас попередня оцінка на місці вказує, що смерть могла настати за три-чотири години до початку огляду, який розпочався о 23:15.\n\nЯкщо ця оцінка правильна, виходить, водій міг померти ще до падіння автомобіля. Але це поки лише попередні дані. Треба призначити судово-медичну експертизу, щоб точніше встановити час смерті.",
+  driver: "Капітане, ми поки що не знаємо, у якому стані був водій перед аварією. У матеріалах немає достовірних даних ні про алкогольне сп'яніння, ні про можливе погіршення здоров'я. Так само невідомо, чи був автомобіль технічно справним і з якою швидкістю він рухався.\n\nТому я б не поспішав списувати все на нещасний випадок або, навпаки, вважати, що хтось навмисно спричинив аварію. Спочатку потрібно перевірити стан водія та автомобіля. Без цього ми просто гадатимемо.",
+}
+
 function playClick(path: string) {
   // Звук відтворюється після натискання; відсутній файл ігнорується без помилки для гравця.
   const audio = new Audio(path)
@@ -82,10 +91,12 @@ export default function StageOne({ onBack, onComplete }: Props) {
   const [revealing, setRevealing] = useState(false)
   const [resultVisible, setResultVisible] = useState(false)
   const [voicePlaying, setVoicePlaying] = useState(false)
+  const [requestedExaminations, setRequestedExaminations] = useState<string[]>([])
   const timer = useRef<number | null>(null)
   const voiceRef = useRef<HTMLAudioElement>(null)
   const active = questions.find((q) => q.id === activeId) ?? null
-  const answeredCount = questions.filter((q) => Boolean(answers[q.id])).length
+  const answeredCount = questions.filter((q) => answers[q.id] === q.correct).length
+  const allCategoriesCompleted = answeredCount === questions.length
 
   useEffect(() => () => {
     if (timer.current !== null) window.clearTimeout(timer.current)
@@ -108,7 +119,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
     setRevealing(true)
     if (timer.current !== null) window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => {
-      setAnswers((old) => ({ ...old, [active.id]: id }))
+      if (id === active.correct) setAnswers((old) => ({ ...old, [active.id]: id }))
       setRevealing(false)
       setResultVisible(true)
       timer.current = null
@@ -153,19 +164,19 @@ export default function StageOne({ onBack, onComplete }: Props) {
         <div className="stage-one-progress" aria-live="polite"><span className="stage-one-progress__dot" /><span>ОПРАЦЬОВАНО КАТЕГОРІЙ</span><strong>{answeredCount} / {questions.length}</strong></div>
         <div className="stage-one-categories">
           {questions.map((q, i) => (
-            <button type="button" key={q.id} className={`stage-one-category ${answers[q.id] ? "is-answered" : ""}`} style={{ animationDelay: `${i * CATEGORY_STAGGER_MS}ms` }} onClick={() => openQuestion(q)}>
+            <button type="button" key={q.id} className={`stage-one-category ${answers[q.id] === q.correct ? "is-answered" : ""}`} style={{ animationDelay: `${i * CATEGORY_STAGGER_MS}ms` }} onClick={() => openQuestion(q)}>
               <span className="stage-one-category__number">{String(i + 1).padStart(2, "0")}</span>
               <span className="stage-one-category__body"><span className="stage-one-category__title">{q.category}</span><span className="stage-one-category__description">{q.description}</span></span>
-              <span className="stage-one-category__status">{answers[q.id] ? "✓" : "↗"}</span>
+              <span className="stage-one-category__status">{answers[q.id] === q.correct ? "✓" : "↗"}</span>
             </button>
           ))}
-          <button type="button" className="stage-one-category stage-one-category--summary" style={{ animationDelay: `${questions.length * CATEGORY_STAGGER_MS}ms` }} onClick={() => { playClick(AUDIO_CATEGORY); setView("summary") }}>
-            <span className="stage-one-category__number">§</span><span className="stage-one-category__body"><span className="stage-one-category__title">Що ми з’ясували?</span><span className="stage-one-category__description">Збери докупи факти. Відкриті запитання поки залишаються.</span></span><span className="stage-one-category__status">↗</span>
+          <button type="button" disabled={!allCategoriesCompleted} className="stage-one-category stage-one-category--summary" style={{ animationDelay: `${questions.length * CATEGORY_STAGGER_MS}ms` }} onClick={() => { if (allCategoriesCompleted) { playClick(AUDIO_CATEGORY); setView("summary") } }}>
+            <span className="stage-one-category__number">§</span><span className="stage-one-category__body"><span className="stage-one-category__title">Що ми з’ясували?</span><span className="stage-one-category__description">{allCategoriesCompleted ? "Підсумуй факти та обери необхідні експертизи." : `Спочатку опрацюй усі п’ять категорій (${answeredCount}/5).`}</span></span><span className="stage-one-category__status">↗</span>
           </button>
         </div>
         <footer className="stage-one-home-footer">
           <button type="button" className="stage-one-secondary" onClick={onBack}>← Назад до вступу</button>
-          <button type="button" className="stage-one-primary" onClick={onComplete}>До наступних матеріалів →</button>
+          <button type="button" className="stage-one-primary" disabled={!allCategoriesCompleted} onClick={() => { if (allCategoriesCompleted) { playClick(AUDIO_CATEGORY); setView("summary") } }}>До підсумку →</button>
         </footer>
       </div>
 
@@ -186,23 +197,29 @@ export default function StageOne({ onBack, onComplete }: Props) {
               </button>
             })}</div>
             {revealing && <div className="stage-one-thinking" role="status"><span className="stage-one-thinking__pulse" /> ЗІСТАВЛЯЄМО ОБСТАВИНИ…</div>}
-            {resultVisible && choice && <div className={`stage-one-answer-result ${choice === active.correct ? "is-correct" : "is-incorrect"}`} role="status"><div className="stage-one-answer-result__title">{choice === active.correct ? "САМЕ ТАК. АЛЕ КРАПКУ СТАВИТИ ЗАРАНО." : "НЕ ПОСПІШАЙ ІЗ ВИСНОВКОМ."}</div><p>{active.explanation}</p></div>}
+            {resultVisible && choice && <div className={`stage-one-answer-result ${choice === active.correct ? "is-correct" : "is-incorrect"}`} role="status"><div className="stage-one-answer-result__title">{choice === active.correct ? "САМЕ ТАК. АЛЕ КРАПКУ СТАВИТИ ЗАРАНО." : "ЦЯ ВІДПОВІДЬ ПОКИ НЕ ПІДТВЕРДЖУЄТЬСЯ."}</div><p>{active.explanation}</p>{choice !== active.correct && <p>Категорію ще не зараховано. Спробуй ще раз, спираючись на матеріали справи.</p>}</div>}
             <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={backToCategories}>← До матеріалів</button>{resultVisible && <button type="button" className="stage-one-primary" onClick={backToCategories}>Далі →</button>}</div>
           </div>}
 
           {view === "helper" && active && <div className="stage-one-modal__content stage-one-helper-view">
-            <div className="stage-one-helper-large" aria-hidden="true">?</div><h2 id="stage-one-modal-title">Твій напарник</h2><p className="stage-one-helper-intro">Давай подивимось, яка деталь тут справді важлива.</p>
-            <div className="stage-one-helper-note"><span className="stage-one-helper-note__label">ЗАЧІПКА</span><p>{active.hint}</p></div>
-            <p className="stage-one-helper-audio-note">{voicePlaying ? "Напарник говорить…" : "Поки що підказка доступна в тексті."}</p>
-            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button><button type="button" className="stage-one-primary" onClick={playHelper}>▶ Прослухати підказку</button></div>
+            <div className="stage-one-helper-large" aria-hidden="true">?</div><h2 id="stage-one-modal-title">Твій напарник</h2><p className="stage-one-helper-intro">Напарник ділиться спостереженнями, але не робить остаточних висновків замість експертів.</p>
+            <div className="stage-one-helper-note"><span className="stage-one-helper-note__label">НАПАРНИК</span><p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p></div>
+            <p className="stage-one-helper-audio-note">{voicePlaying ? "Напарник говорить…" : "Прочитай репліку напарника та повернись до матеріалів."}</p>
+            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button></div>
           </div>}
 
-          {view === "summary" && <div className="stage-one-modal__content stage-one-summary-view">
+          {view === "summary" && allCategoriesCompleted && <div className="stage-one-modal__content stage-one-summary-view">
             <h2 id="stage-one-modal-title">Що ми маємо на цей момент?</h2><p className="stage-one-summary-intro">Перші матеріали вже окреслюють картину події. Та між зафіксованими обставинами й відповіддю на головне запитання ще залишається відстань.</p>
             <h3>Встановлено та зафіксовано</h3><ul><li>Свідок повідомив про аварію приблизно о 22:52; виклик поліції здійснено о 22:54.</li><li>Запалювання було ввімкнене, двигун не працював; важіль коробки передач перебував у нейтральному положенні.</li><li>Водій перебував за кермом і був пристебнутий ременем безпеки.</li></ul>
             <h3>Поки що залишається загадкою</h3><ul><li>Відсутність слідів гальмування та характер подряпин на задньому бампері.</li><li>Походження й механізм утворення ушкоджень водія.</li><li>Механізм ДТП, стан водія та швидкість руху.</li></ul>
             <h3>Розслідування триває</h3><p>Попереду — судово-медичне, автотехнічне та трасологічне дослідження. Їхні результати можуть змінити уявлення про подію. Поки що остаточних висновків немає.</p>
-            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={backToCategories}>← До матеріалів</button><button type="button" className="stage-one-primary" onClick={onComplete}>До наступних матеріалів →</button></div>
+            <h3>Наступні слідчі дії</h3>
+            <p>Обери, які дослідження потрібно призначити. Запит на експертизу та отримання її висновку — окремі події. Результатів експертиз на цьому етапі ще немає.</p>
+            <div className="stage-one-examination-options">
+              <label><input type="checkbox" checked={requestedExaminations.includes("medical")} onChange={(e) => setRequestedExaminations((old) => e.target.checked ? [...old, "medical"] : old.filter((x) => x !== "medical"))} /> Судово-медична експертиза — характер ушкоджень і точніший час смерті</label>
+              <label><input type="checkbox" checked={requestedExaminations.includes("automotive")} onChange={(e) => setRequestedExaminations((old) => e.target.checked ? [...old, "automotive"] : old.filter((x) => x !== "automotive"))} /> Автотехнічна / трасологічна експертиза — механізм ДТП і походження слідів</label>
+            </div>
+            <div className="stage-one-modal__footer"><button type="button" className="stage-one-secondary" onClick={backToCategories}>← До матеріалів</button><button type="button" className="stage-one-primary" disabled={requestedExaminations.length === 0} onClick={() => { if (requestedExaminations.length > 0) onComplete() }}>Підтвердити дії →</button></div>
           </div>}
         </section>
       </div>}
