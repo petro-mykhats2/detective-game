@@ -96,7 +96,6 @@ export default function StageOne({ onBack, onComplete }: Props) {
   const [choice, setChoice] = useState<string | null>(null)
   const [revealing, setRevealing] = useState(false)
   const [resultVisible, setResultVisible] = useState(false)
-  const [requestedExaminations, setRequestedExaminations] = useState<string[]>([])
   const timer = useRef<number | null>(null)
   const active = questions.find((q) => q.id === activeId) ?? null
   const answeredCount = questions.filter((q) => answers[q.id] === q.correct).length
