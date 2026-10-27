@@ -132,8 +132,6 @@ export default function StageOne({ onBack, onComplete }: Props) {
     setView("helper")
   }
   function closeHelper() {
-    voiceRef.current?.pause()
-    setVoicePlaying(false)
     setView("question")
   }
 
