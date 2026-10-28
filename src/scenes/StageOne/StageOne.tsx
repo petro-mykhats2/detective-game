@@ -184,17 +184,65 @@ const helperDialogues: Record<string, string> = {
     "Капітане, ми поки що не знаємо, у якому стані був водій перед аварією. У матеріалах немає достовірних даних ні про алкогольне сп'яніння, ні про можливе погіршення здоров'я. Так само невідомо, чи був автомобіль технічно справним і з якою швидкістю він рухався.\n\nТому я б не поспішав списувати все на нещасний випадок або, навпаки, вважати, що хтось навмисно спричинив аварію. Спочатку потрібно перевірити стан водія та автомобіля. Без цього ми просто гадатимемо.",
 }
 
-function playDialogue(path: string) {
+// Реєструємо всі звуки етапу, щоб не запускати дублікати й зупиняти їх під час переходу.
+const activeUiAudios = new Set<HTMLAudioElement>()
+let activeDialogueAudio: HTMLAudioElement | null = null
+
+function stopStageOneAudios() {
+  activeUiAudios.forEach((audio) => {
+    audio.pause()
+    audio.currentTime = 0
+  })
+  activeUiAudios.clear()
+  activeDialogueAudio = null
+  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  if (music) music.volume = 0.98
+}
+
+function playDialogue(path: string, onPlayingChange?: (playing: boolean) => void) {
+  // Один голосовий файл за раз: повторний клік не створить паралельне відтворення.
+  if (activeDialogueAudio && !activeDialogueAudio.paused) return
+  stopDialogueOnly()
   const audio = new Audio(path)
   audio.volume = 1
-  void audio.play().catch(() => undefined)
+  activeDialogueAudio = audio
+  activeUiAudios.add(audio)
+  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  const previousVolume = music?.volume ?? 0.98
+  if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_DURING_VOICE
+  const finish = () => {
+    activeUiAudios.delete(audio)
+    if (activeDialogueAudio === audio) activeDialogueAudio = null
+    if (music) music.volume = previousVolume
+    onPlayingChange?.(false)
+  }
+  audio.onended = finish
+  audio.onerror = finish
+  onPlayingChange?.(true)
+  void audio.play().catch(finish)
+}
+
+function stopDialogueOnly() {
+  if (!activeDialogueAudio) return
+  const audio = activeDialogueAudio
+  activeDialogueAudio = null
+  activeUiAudios.delete(audio)
+  audio.onended = null
+  audio.onerror = null
+  audio.pause()
+  audio.currentTime = 0
+  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  if (music) music.volume = 0.98
 }
 
 function playClick(path: string) {
-  // Звук відтворюється після натискання; відсутній файл ігнорується без помилки для гравця.
+  // Короткі звуки кнопок також реєструються, щоб їх можна було зупинити при переході.
   const audio = new Audio(path)
   audio.volume = 0.6
-  void audio.play().catch(() => undefined)
+  activeUiAudios.add(audio)
+  audio.onended = () => activeUiAudios.delete(audio)
+  audio.onerror = () => activeUiAudios.delete(audio)
+  void audio.play().catch(() => activeUiAudios.delete(audio))
 }
 
 export default function StageOne({ onBack, onComplete }: Props) {
@@ -206,6 +254,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
   const [resultVisible, setResultVisible] = useState(false)
   const timer = useRef<number | null>(null)
   const [isEndingAudioPlaying, setIsEndingAudioPlaying] = useState(false)
+  const [isHelperAudioPlaying, setIsHelperAudioPlaying] = useState(false)
   const endingAudioRef = useRef<HTMLAudioElement | null>(null)
   const active = questions.find((q) => q.id === activeId) ?? null
   const answeredCount = questions.filter(
@@ -311,6 +360,8 @@ export default function StageOne({ onBack, onComplete }: Props) {
     }, ANSWER_REVEAL_DELAY_MS)
   }
   function backToCategories() {
+    stopStageOneAudios()
+    setIsHelperAudioPlaying(false)
     if (timer.current !== null) window.clearTimeout(timer.current)
     timer.current = null
     setRevealing(false)
@@ -321,6 +372,8 @@ export default function StageOne({ onBack, onComplete }: Props) {
     setView("helper")
   }
   function closeHelper() {
+    stopStageOneAudios()
+    setIsHelperAudioPlaying(false)
     setView("question")
   }
 
@@ -406,7 +459,10 @@ export default function StageOne({ onBack, onComplete }: Props) {
           <button
             type="button"
             className="stage-one-secondary"
-            onClick={onBack}
+            onClick={() => {
+              stopStageOneAudios()
+              onBack()
+            }}
           >
             ← Назад до вступу
           </button>
@@ -585,7 +641,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
                       <div className="stage-one-companion-dialogue__scroll">
                         <p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p>
                       </div>
-                      <button type="button" className="stage-one-secondary stage-one-companion-audio" onClick={() => playDialogue(AUDIO_HELPER)}>▶ Прослухати репліку</button>
+                      <button type="button" className="stage-one-secondary stage-one-companion-audio" disabled={isHelperAudioPlaying} onClick={() => playDialogue(AUDIO_HELPER, setIsHelperAudioPlaying)}>{isHelperAudioPlaying ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
                     </div>
                   </div>
                 </div>
@@ -645,7 +701,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
                       }
                       onClick={() => {
                         if (!isEndingAudioPlaying) {
-                          playDialogue("/audio/assistant-stage-one-ending.mp3")
+                          playDialogue(AUDIO_STAGE_ONE_ENDING, setIsEndingAudioPlaying)
                         }
                       }}
                     >
@@ -666,6 +722,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
                     type="button"
                     className="stage-one-primary"
                     onClick={() => {
+                      stopStageOneAudios()
                       if (endingAudioRef.current) {
                         endingAudioRef.current.pause()
                         endingAudioRef.current = null
