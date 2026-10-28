@@ -519,3 +519,10 @@ button { font: inherit; }
   .stage-two-screen.is-transitioning .stage-two-wrap,
   .stage-two-screen.is-transitioning .stage-two-transition { animation:none!important; }
 }
+
+
+/* У stage-two-transition не запускаємо вдруге базову panel-in після завершення
+   класу is-transitioning: інакше новий екран анімується повторно зі стрибком. */
+.stage-two-wrap.stage-two-transition {
+  animation: none;
+}
