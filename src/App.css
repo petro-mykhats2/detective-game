@@ -499,3 +499,23 @@ button { font: inherit; }
 .stage-one-helper-view .stage-one-companion-dialogue__scroll{max-height:min(24vh,170px);flex:0 1 auto}
 .stage-one-helper-view .stage-one-helper-note{flex:0 1 auto}
 }
+
+/* Плавний перехід між підекранами другого етапу; кнопки блокуються на час зміни. */
+.stage-two-screen.is-transitioning .stage-two-wrap {
+  pointer-events: none;
+  animation: stage-two-scene-out .32s ease both;
+}
+.stage-two-screen.is-transitioning .stage-two-transition {
+  animation: stage-two-scene-in .65s cubic-bezier(.2,.75,.2,1) both;
+}
+@keyframes stage-two-scene-out {
+  to { opacity: 0; transform: translateY(-7px); filter: blur(2px); }
+}
+@keyframes stage-two-scene-in {
+  from { opacity: 0; transform: translateY(12px); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .stage-two-screen.is-transitioning .stage-two-wrap,
+  .stage-two-screen.is-transitioning .stage-two-transition { animation:none!important; }
+}
