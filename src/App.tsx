@@ -21,9 +21,11 @@ const MUSIC_VOLUME_NORMAL = 0.98
 const MUSIC_VOLUME_DURING_VOICE = 0.13
 const VOICE_VOLUME = 1
 
-// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ВСТУПНОГО ГОЛОСУ (мс): 2500 = 2,5 секунди.
-// Змінюй це значення, щоб налаштувати атмосферну паузу після натискання «Почати розслідування».
-const INTRO_VOICE_DELAY_MS = 2500
+// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ВСТУПНОГО ГОЛОСУ (мс), окремо для пристроїв.
+// Комп’ютер: 2500 = 2,5 секунди. Мобільний: 200 = 0,2 секунди, щоб зберегти дозвіл autoplay.
+// Довший таймер на мобільних браузерах може блокувати автоматичний запуск звуку.
+const INTRO_VOICE_DELAY_DESKTOP_MS = 2500
+const INTRO_VOICE_DELAY_MOBILE_MS = 200
 
 // Для всього вступу використовується один аудіофайл. Текст показується повністю,
 // а рядки з'являються поступово; синхронізації по таймкодах немає.
@@ -111,6 +113,9 @@ export default function App() {
     voice.volume = VOICE_VOLUME
 
     // Поки голос ще не почався, фонова музика звучить на звичайній гучності.
+    const introDelay = window.matchMedia("(pointer: coarse)").matches
+      ? INTRO_VOICE_DELAY_MOBILE_MS
+      : INTRO_VOICE_DELAY_DESKTOP_MS
     voiceDelayRef.current = window.setTimeout(() => {
       if (musicRef.current && musicEnabled)
         musicRef.current.volume = MUSIC_VOLUME_DURING_VOICE
@@ -124,7 +129,7 @@ export default function App() {
           // Якщо файл відсутній або браузер блокує звук, вступ лишається доступним як текст.
           setVoiceStatus("unavailable")
         })
-    }, INTRO_VOICE_DELAY_MS)
+    }, introDelay)
   }
 
   function handleVoiceEnded() {
