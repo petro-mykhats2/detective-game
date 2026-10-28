@@ -572,51 +572,36 @@ export default function StageOne({ onBack, onComplete }: Props) {
 
             {view === "helper" && active && (
               <div className="stage-one-modal__content stage-one-helper-view">
-                <div className="stage-one-helper-large" aria-hidden="true">
-                  ?
+                <div className="stage-one-companion-dialogue">
+                  <div className="stage-one-helper-large" aria-hidden="true">М</div>
+                  <div className="stage-one-companion-dialogue__main">
+                    <div className="stage-one-companion-dialogue__identity">
+                      <h2 id="stage-one-modal-title">Напарник</h2>
+                      <span>ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</span>
+                    </div>
+                    <p className="stage-one-helper-intro">Ділиться спостереженнями, але не робить остаточних висновків замість експертів.</p>
+                    <div className="stage-one-helper-note">
+                      <span className="stage-one-helper-note__label">ПОВІДОМЛЕННЯ</span>
+                      <div className="stage-one-companion-dialogue__scroll">
+                        <p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p>
+                      </div>
+                      <button type="button" className="stage-one-secondary stage-one-companion-audio" onClick={() => playDialogue(AUDIO_HELPER)}>▶ Прослухати репліку</button>
+                    </div>
+                  </div>
                 </div>
-                <h2 id="stage-one-modal-title">Твій напарник</h2>
-                <p className="stage-one-helper-intro">
-                  Напарник ділиться спостереженнями, але не робить остаточних
-                  висновків замість експертів.
-                </p>
-                <div className="stage-one-helper-note">
-                  <span className="stage-one-helper-note__label">НАПАРНИК</span>
-                  <p className="stage-one-helper-dialogue">
-                    {helperDialogues[active.id] ?? active.hint}
-                  </p>
-                  <button
-                    type="button"
-                    className="stage-one-secondary"
-                    onClick={() => playDialogue(AUDIO_HELPER)}
-                  >
-                    ▶ Прослухати репліку,,,
-                  </button>
-                </div>
-                <p className="stage-one-helper-audio-note">
-                  Прочитай репліку напарника та повернись до матеріалів.
-                </p>
                 <div className="stage-one-modal__footer">
-                  <button
-                    type="button"
-                    className="stage-one-secondary"
-                    onClick={closeHelper}
-                  >
-                    ← Повернутися до запитання
-                  </button>
+                  <button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button>
                 </div>
               </div>
             )}
 
             {view === "summary" && allCategoriesCompleted && (
               <div className="stage-one-modal__content stage-one-summary-view">
-                <div className="stage-two-assistant stage-two-assistant--single">
-                  <div className="assistant-mark">М</div>
-                  <div>
-                    <div className="stage-two-eyebrow">
-                      ПОВІДОМЛЕННЯ НАПАРНИКА
-                    </div>
-                    <div className="narration-text narration-text--all">
+                <div className="stage-two-assistant stage-two-assistant--single stage-one-summary-companion">
+                  <div className="assistant-mark" aria-hidden="true">М</div>
+                  <div className="stage-two-assistant__message">
+                    <div className="stage-two-assistant__identity"><div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div></div>
+                    <div className="stage-one-summary-dialogue narration-text narration-text--all">
                       <p style={{ animationDelay: "0.2s" }}>
                         Капітане, після всього, що ми з’ясували, я вважаю, що
                         нам обов’язково потрібно призначити судово-медичну
@@ -647,7 +632,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
                     </div>
                     <button
                       type="button"
-                      className="stage-one-secondary"
+                      className="stage-one-secondary stage-two-assistant__audio"
                       disabled={isEndingAudioPlaying}
                       style={
                         isEndingAudioPlaying
