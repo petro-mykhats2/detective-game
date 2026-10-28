@@ -5,6 +5,11 @@ type Props = { onBack: () => void; onComplete: () => void }
 const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3"
 const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
 
+// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ (мс): 2500 = 2,5 секунди після появи екрана.
+// Зміни STAGE_TWO_INTRO_DELAY_MS або STAGE_TWO_NEXT_DELAY_MS, щоб налаштувати атмосферну паузу окремо.
+const STAGE_TWO_INTRO_DELAY_MS = 2500
+const STAGE_TWO_NEXT_DELAY_MS = 2500
+
 // НАЛАШТУВАННЯ ГУЧНОСТІ (від 0 до 1):
 // STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
 // STAGE_TWO_MUSIC_VOLUME_DURING_VOICE — гучність фонової музики під час репліки.
@@ -94,7 +99,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
     // Як у вікні підсумку першого етапу: запускаємо озвучку через таймер після появи екрана.
     // Якщо браузер блокує autoplay, кнопка ручного запуску залишається доступною.
-    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), 200)
+    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), STAGE_TWO_INTRO_DELAY_MS)
     return () => {
       window.clearTimeout(timerId)
       stopDialogue()
@@ -106,7 +111,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
     // Автоматична репліка для екрана новин запускається один раз після переходу на нього.
     if (confirmed && !autoNextStartedRef.current) {
       autoNextStartedRef.current = true
-      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), 200)
+      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), STAGE_TWO_NEXT_DELAY_MS)
       return () => window.clearTimeout(timerId)
     }
     if (!confirmed) autoNextStartedRef.current = false
