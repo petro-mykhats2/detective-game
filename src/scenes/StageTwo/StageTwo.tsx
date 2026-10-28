@@ -8,9 +8,10 @@ const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
 // НАЛАШТУВАННЯ ГУЧНОСТІ (від 0 до 1):
 // STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
 // STAGE_TWO_MUSIC_VOLUME_DURING_VOICE — гучність фонової музики під час репліки.
-// Змінюй ці два значення, щоб збалансувати голос і музику.
+// STAGE_TWO_MUSIC_VOLUME_NORMAL — гучність музики після завершення репліки.
 const STAGE_TWO_VOICE_VOLUME = 1
 const STAGE_TWO_MUSIC_VOLUME_DURING_VOICE = 0.10
+const STAGE_TWO_MUSIC_VOLUME_NORMAL = 0.98
 
 function preloadDialogue(path: string) {
   const audio = new Audio()
@@ -25,75 +26,92 @@ export default function StageTwo({ onBack, onComplete }: Props) {
   const [transitioning, setTransitioning] = useState(false)
   const transitionTimer = useRef<number | null>(null)
   const screenRef = useRef<HTMLElement>(null)
-  const dialogueAudioRef = useRef<HTMLAudioElement | null>(null)
+  const introAudioRef = useRef<HTMLAudioElement | null>(null)
+  const nextAudioRef = useRef<HTMLAudioElement | null>(null)
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const musicVolumeBeforeVoiceRef = useRef<number | null>(null)
-  const startedNextVoiceRef = useRef(false)
+  const autoNextStartedRef = useRef(false)
 
-  function stopDialogue() {
-    const audio = dialogueAudioRef.current
-    if (audio) {
-      audio.onended = null
-      audio.onerror = null
-      audio.pause()
-      audio.currentTime = 0
-      dialogueAudioRef.current = null
-    }
-    setPlayingDialogue(false)
-    const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  function getMusicElement() {
+    // App.tsx містить один постійний елемент <audio> для фонової музики.
+    return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  }
+
+  function restoreMusicVolume() {
+    const music = getMusicElement()
     if (music && musicVolumeBeforeVoiceRef.current !== null) {
       music.volume = musicVolumeBeforeVoiceRef.current
       musicVolumeBeforeVoiceRef.current = null
     }
   }
 
+  function stopDialogue() {
+    ;[introAudioRef.current, nextAudioRef.current].forEach((audio) => {
+      if (audio) {
+        audio.onended = null
+        audio.onerror = null
+        audio.pause()
+        audio.currentTime = 0
+      }
+    })
+    introAudioRef.current = null
+    nextAudioRef.current = null
+    setPlayingDialogue(false)
+    restoreMusicVolume()
+  }
+
   function playDialogue(path: string) {
-    // Не запускаємо другий екземпляр того самого або іншого діалогу поверх першого.
-    if (dialogueAudioRef.current && !dialogueAudioRef.current.paused) return
+    // Не запускаємо повторно, якщо репліка вже грає.
+    const current = path === AUDIO_STAGE_TWO_INTRO ? introAudioRef.current : nextAudioRef.current
+    if (current && !current.paused && !current.ended) return
     stopDialogue()
     const audio = new Audio(path)
     audio.preload = "auto"
     audio.volume = STAGE_TWO_VOICE_VOLUME
-    dialogueAudioRef.current = audio
-    const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+    if (path === AUDIO_STAGE_TWO_INTRO) introAudioRef.current = audio
+    else nextAudioRef.current = audio
+
+    const music = getMusicElement()
     if (music) {
       musicVolumeBeforeVoiceRef.current = music.volume
       music.volume = STAGE_TWO_MUSIC_VOLUME_DURING_VOICE
     }
     const finish = () => {
-      if (dialogueAudioRef.current !== audio) return
-      dialogueAudioRef.current = null
+      if (path === AUDIO_STAGE_TWO_INTRO && introAudioRef.current !== audio) return
+      if (path === AUDIO_STAGE_TWO_NEXT && nextAudioRef.current !== audio) return
+      if (path === AUDIO_STAGE_TWO_INTRO) introAudioRef.current = null
+      else nextAudioRef.current = null
       setPlayingDialogue(false)
-      if (music && musicVolumeBeforeVoiceRef.current !== null) {
-        music.volume = musicVolumeBeforeVoiceRef.current
-        musicVolumeBeforeVoiceRef.current = null
-      }
+      restoreMusicVolume()
     }
     audio.onended = finish
     audio.onerror = finish
     setPlayingDialogue(true)
-    void audio.play().catch(() => finish())
+    void audio.play().catch(finish)
   }
 
   useEffect(() => {
-    // Завчасно завантажуємо обидва файли, щоб скоротити затримку запуску.
     preloadDialogue(AUDIO_STAGE_TWO_INTRO)
     preloadDialogue(AUDIO_STAGE_TWO_NEXT)
-    // Автоматичний запуск при вході на етап 2. Браузер може вимагати попередню дію користувача.
-    playDialogue(AUDIO_STAGE_TWO_INTRO)
+
+    // Як у вікні підсумку першого етапу: запускаємо озвучку через таймер після появи екрана.
+    // Якщо браузер блокує autoplay, кнопка ручного запуску залишається доступною.
+    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), 200)
     return () => {
+      window.clearTimeout(timerId)
       stopDialogue()
       if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current)
     }
   }, [])
 
   useEffect(() => {
-    // На екрані «Капітане, є новини» репліка запускається автоматично лише один раз.
-    if (confirmed && !startedNextVoiceRef.current) {
-      startedNextVoiceRef.current = true
-      playDialogue(AUDIO_STAGE_TWO_NEXT)
+    // Автоматична репліка для екрана новин запускається один раз після переходу на нього.
+    if (confirmed && !autoNextStartedRef.current) {
+      autoNextStartedRef.current = true
+      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), 200)
+      return () => window.clearTimeout(timerId)
     }
-    if (!confirmed) startedNextVoiceRef.current = false
+    if (!confirmed) autoNextStartedRef.current = false
   }, [confirmed])
 
   function scrollStageToTop() {
