@@ -8,10 +8,8 @@ const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
 // НАЛАШТУВАННЯ ГУЧНОСТІ (від 0 до 1):
 // STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
 // STAGE_TWO_MUSIC_VOLUME_DURING_VOICE — гучність фонової музики під час репліки.
-// STAGE_TWO_MUSIC_VOLUME_NORMAL — гучність музики після завершення репліки.
 const STAGE_TWO_VOICE_VOLUME = 1
 const STAGE_TWO_MUSIC_VOLUME_DURING_VOICE = 0.10
-const STAGE_TWO_MUSIC_VOLUME_NORMAL = 0.98
 
 function preloadDialogue(path: string) {
   const audio = new Audio()
