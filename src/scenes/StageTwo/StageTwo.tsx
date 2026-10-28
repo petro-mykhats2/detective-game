@@ -30,16 +30,20 @@ export default function StageTwo({ onBack, onComplete }: Props) {
         <div className="stage-two-wrap">
           <div className="narration-kicker"><span>КОНВЕРТ № 2</span><span>НОВІ ОБСТАВИНИ</span></div>
           <h1 className="stage-two-heading">Поглянути ближче</h1>
-          <div className="stage-two-assistant">
-            <div className="assistant-mark">М</div>
-            <div>
-              <div className="stage-two-eyebrow">ПОВІДОМЛЕННЯ НАПАРНИКА</div>
-              <p>Капітане, поки ми очікуємо на результати призначених експертиз, надійшли матеріали, які можуть допомогти нам краще зрозуміти, ким був Ігор Ковальчук і що відбувалося в його житті напередодні загибелі.</p>
-              <p>У конверті два документи: протокол допиту його дружини Олени Ковальчук та досьє на самого Ігоря Ковальчука.</p>
-              <p>Пропоную уважно їх вивчити. Звертайте увагу на деталі — навіть те, що на перший погляд здається неважливим, іноді набуває зовсім іншого значення в ході розслідування.</p>
-              <button type="button" className="stage-one-secondary" onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}>▶ Прослухати репліку</button>
+          <section className="stage-two-assistant" aria-label="Повідомлення напарника">
+            <div className="assistant-mark" aria-hidden="true">М</div>
+            <div className="stage-two-assistant__message">
+              <div className="stage-two-assistant__identity">
+                <div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div>
+              </div>
+              <div className="stage-two-assistant__text">
+                <p>Капітане, поки ми очікуємо на результати призначених експертиз, надійшли матеріали, які можуть допомогти нам краще зрозуміти, ким був Ігор Ковальчук і що відбувалося в його житті напередодні загибелі.</p>
+                <p>У конверті два документи: протокол допиту його дружини Олени Ковальчук та досьє на самого Ігоря Ковальчука.</p>
+                <p>Пропоную уважно їх вивчити. Звертайте увагу на деталі — навіть те, що на перший погляд здається неважливим, іноді набуває зовсім іншого значення в ході розслідування.</p>
+              </div>
+              <button type="button" className="stage-one-secondary stage-two-assistant__audio" onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}>▶ Прослухати репліку</button>
             </div>
-          </div>
+          </section>
           <div className="stage-two-documents">
             {documents.map((document) => {
               const isRead = opened.includes(document.id)
@@ -64,18 +68,20 @@ export default function StageTwo({ onBack, onComplete }: Props) {
       ) : (
         <div className="stage-two-wrap stage-two-transition">
           <div className="narration-kicker"><span>ОНОВЛЕННЯ СПРАВИ</span><span>НАДІЙШЛИ НОВІ МАТЕРІАЛИ</span></div>
-          <div className="assistant-mark">М</div>
           <h1 className="stage-two-heading">Капітане, є новини</h1>
-          <div className="stage-two-assistant stage-two-assistant--single">
-            <div>
-              <div className="stage-two-eyebrow">ПОВІДОМЛЕННЯ НАПАРНИКА</div>
-              <p>Добре, капітане. Тепер у нас є трохи більше інформації про загиблого та його найближче оточення. Але щоб зрозуміти, що насправді сталося тієї ночі, цього недостатньо.</p>
-              <p>Нарешті надійшли результати призначених експертиз. Також отримано банківську виписку Ігоря Ковальчука та дані мобільного білінгу.</p>
-              <p>Гадаю, тепер у нас з’явиться можливість перевірити деякі обставини й, можливо, виявити нові зачіпки.</p>
-              <p>Капітане, відкривайте конверт 3. Думаю, далі буде цікавіше.</p>
-              <button type="button" className="stage-one-secondary" onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}>▶ Прослухати репліку</button>
+          <section className="stage-two-assistant stage-two-assistant--single" aria-label="Повідомлення напарника">
+            <div className="assistant-mark" aria-hidden="true">М</div>
+            <div className="stage-two-assistant__message">
+              <div className="stage-two-assistant__identity"><div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div></div>
+              <div className="stage-two-assistant__text">
+                <p>Добре, капітане. Тепер у нас є трохи більше інформації про загиблого та його найближче оточення. Але щоб зрозуміти, що насправді сталося тієї ночі, цього недостатньо.</p>
+                <p>Нарешті надійшли результати призначених експертиз. Також отримано банківську виписку Ігоря Ковальчука та дані мобільного білінгу.</p>
+                <p>Гадаю, тепер у нас з’явиться можливість перевірити деякі обставини й, можливо, виявити нові зачіпки.</p>
+                <p>Капітане, відкривайте конверт 3. Думаю, далі буде цікавіше.</p>
+              </div>
+              <button type="button" className="stage-one-secondary stage-two-assistant__audio" onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}>▶ Прослухати репліку</button>
             </div>
-          </div>
+          </section>
           <div className="stage-two-footer">
             <button type="button" className="stage-one-secondary" onClick={() => setConfirmed(false)}>← Переглянути документи</button>
             <button type="button" className="stage-one-primary" onClick={onComplete}>Перейти до конверта № 3 →</button>
