@@ -453,3 +453,43 @@ button { font: inherit; }
 .stage-two-assistant--single>div{grid-column:1/-1}
 .stage-two-assistant--single p{font-size:15px}
 @media(max-width:600px){.stage-two-screen{padding:22px 16px 100px}.stage-two-topline{align-items:flex-start;font-size:8px;letter-spacing:.04em}.stage-two-assistant{grid-template-columns:1fr;gap:12px;padding:18px}.stage-two-document{grid-template-columns:34px 1fr;gap:12px;padding:15px}.stage-two-document__number{width:32px;height:32px}.stage-two-footer{flex-direction:column}.stage-two-footer button{width:100%}}
+
+/* Діалогові вікна напарника всередині етапів розслідування */
+.stage-two-assistant{grid-template-columns:58px minmax(0,1fr);align-items:start}
+.stage-two-assistant>.assistant-mark,.stage-one-companion-dialogue>.stage-one-helper-large{width:58px;height:58px;margin:0;border-radius:50%;overflow:hidden;background:#242019;border:1px solid #a9844d;color:#e6c28c;box-shadow:0 0 0 4px rgba(190,149,91,.07)}
+.stage-two-assistant__message{display:flex;min-width:0;min-height:0;flex-direction:column}
+.stage-two-assistant__identity{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;margin-bottom:14px;padding-right:5px}
+.stage-two-assistant__identity .stage-two-eyebrow{margin:0 0 5px}
+.stage-two-assistant__subtitle,.stage-one-companion-dialogue__identity>span{color:#87919b;font:9px/1.6 "DM Mono",monospace;letter-spacing:.08em}
+.stage-two-assistant__text{min-height:0;max-height:min(42vh,360px);overflow-y:auto;overscroll-behavior:contain;padding:0 5px 0 0;scrollbar-color:#675238 #0b0e11}
+.stage-two-assistant__audio{align-self:flex-start;flex:0 0 auto;margin-top:12px}
+.stage-two-transition{min-height:calc(100dvh - 190px);display:flex;flex-direction:column}
+.stage-two-transition>.stage-two-assistant{flex:1 1 auto;min-height:0}
+.stage-two-transition>.stage-two-assistant .stage-two-assistant__text{max-height:min(43vh,390px)}
+.stage-two-transition>.stage-two-footer{flex:0 0 auto;margin-top:auto;padding-top:18px}
+.stage-two-transition>.stage-two-hint{flex:0 0 auto}
+.stage-two-assistant--single>.stage-two-assistant__message{grid-column:auto}
+.stage-one-modal:has(.stage-one-helper-view),.stage-one-modal:has(.stage-one-summary-view){display:flex;flex-direction:column;overflow:hidden}
+.stage-one-modal:has(.stage-one-helper-view) .stage-one-modal__content,.stage-one-modal:has(.stage-one-summary-view) .stage-one-modal__content{display:flex;min-height:0;flex:1 1 auto;flex-direction:column;overflow:hidden}
+.stage-one-companion-dialogue{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:start;gap:18px;min-height:0;flex:1 1 auto}
+.stage-one-companion-dialogue__main{display:flex;min-width:0;min-height:0;flex-direction:column}
+.stage-one-companion-dialogue__identity{margin:0 0 12px;padding-right:5px}
+.stage-one-companion-dialogue__identity h2{margin:0 0 5px;color:#f3f0eb;font-size:24px;line-height:1.2}
+.stage-one-helper-view .stage-one-helper-intro{margin:0 0 12px;text-align:left}
+.stage-one-helper-view .stage-one-helper-note{display:flex;min-height:0;flex:1 1 auto;flex-direction:column;margin:0;padding:14px;text-align:left}
+.stage-one-companion-dialogue__scroll{min-height:0;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:0 5px 0 0;scrollbar-color:#675238 #0b0e11}
+.stage-one-helper-dialogue{margin:8px 0 0;white-space:pre-line;overflow-wrap:anywhere}
+.stage-one-companion-audio{flex:0 0 auto;align-self:flex-start;margin-top:12px}
+.stage-one-helper-view .stage-one-modal__footer,.stage-one-summary-view .stage-one-modal__footer{flex:0 0 auto;margin-top:14px}
+.stage-one-summary-companion{flex:1 1 auto;min-height:0}
+.stage-one-summary-dialogue{min-height:0;max-height:min(45vh,390px);overflow-y:auto;overscroll-behavior:contain;padding:0 5px 0 0;scrollbar-color:#675238 #0b0e11}
+.stage-one-summary-dialogue p{overflow-wrap:anywhere}
+@media(max-width:650px){
+.stage-two-assistant{grid-template-columns:44px minmax(0,1fr);gap:12px;padding:16px}
+.stage-two-assistant>.assistant-mark,.stage-one-companion-dialogue>.stage-one-helper-large{width:44px;height:44px;font-size:20px}
+.stage-two-assistant__text{max-height:min(38vh,300px)}
+.stage-two-transition{min-height:calc(100dvh - 150px)}
+.stage-one-companion-dialogue{grid-template-columns:44px minmax(0,1fr);gap:12px}
+.stage-one-helper-view .stage-one-modal__footer button,.stage-one-summary-view .stage-one-modal__footer button{width:100%}
+.stage-one-summary-dialogue{max-height:min(39vh,320px)}
+}
