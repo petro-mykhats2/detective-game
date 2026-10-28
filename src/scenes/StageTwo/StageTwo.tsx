@@ -5,10 +5,18 @@ type Props = { onBack: () => void; onComplete: () => void }
 const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3"
 const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
 
-// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ (мс): 2500 = 2,5 секунди після появи екрана.
-// Зміни STAGE_TWO_INTRO_DELAY_MS або STAGE_TWO_NEXT_DELAY_MS, щоб налаштувати атмосферну паузу окремо.
-const STAGE_TWO_INTRO_DELAY_MS = 2500
-const STAGE_TWO_NEXT_DELAY_MS = 2500
+// ПАУЗИ ПЕРЕД АВТОВІДТВОРЕННЯМ (мс): окремо для комп’ютерів і мобільних пристроїв.
+// На комп’ютері 2500 = 2,5 секунди для атмосфери.
+// На мобільних 200 = 0,2 секунди: довший таймер може втратити дозвіл autoplay браузера.
+// Можна змінювати ці значення окремо для вступної репліки та репліки з новинами.
+const STAGE_TWO_INTRO_DELAY_DESKTOP_MS = 2500
+const STAGE_TWO_NEXT_DELAY_DESKTOP_MS = 2500
+const STAGE_TWO_INTRO_DELAY_MOBILE_MS = 200
+const STAGE_TWO_NEXT_DELAY_MOBILE_MS = 200
+
+function isTouchDevice() {
+  return window.matchMedia("(pointer: coarse)").matches
+}
 
 // НАЛАШТУВАННЯ ГУЧНОСТІ (від 0 до 1):
 // STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
@@ -99,7 +107,8 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
     // Як у вікні підсумку першого етапу: запускаємо озвучку через таймер після появи екрана.
     // Якщо браузер блокує autoplay, кнопка ручного запуску залишається доступною.
-    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), STAGE_TWO_INTRO_DELAY_MS)
+    const introDelay = isTouchDevice() ? STAGE_TWO_INTRO_DELAY_MOBILE_MS : STAGE_TWO_INTRO_DELAY_DESKTOP_MS
+    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), introDelay)
     return () => {
       window.clearTimeout(timerId)
       stopDialogue()
@@ -111,7 +120,8 @@ export default function StageTwo({ onBack, onComplete }: Props) {
     // Автоматична репліка для екрана новин запускається один раз після переходу на нього.
     if (confirmed && !autoNextStartedRef.current) {
       autoNextStartedRef.current = true
-      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), STAGE_TWO_NEXT_DELAY_MS)
+      const nextDelay = isTouchDevice() ? STAGE_TWO_NEXT_DELAY_MOBILE_MS : STAGE_TWO_NEXT_DELAY_DESKTOP_MS
+      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), nextDelay)
       return () => window.clearTimeout(timerId)
     }
     if (!confirmed) autoNextStartedRef.current = false
