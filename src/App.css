@@ -492,5 +492,10 @@ button { font: inherit; }
 .stage-two-transition{min-height:calc(100dvh - 150px)}
 .stage-one-companion-dialogue{grid-template-columns:44px minmax(0,1fr);gap:12px}
 .stage-one-helper-view .stage-one-modal__footer button,.stage-one-summary-view .stage-one-modal__footer button{width:100%}
-.stage-one-summary-dialogue{max-height:min(39vh,320px)}
+.stage-one-summary-dialogue{max-height:min(26vh,180px)}
+.stage-one-summary-view .stage-two-assistant__identity{margin-bottom:8px}
+.stage-one-summary-view .stage-two-assistant__subtitle{font-size:8px;line-height:1.4;overflow-wrap:anywhere}
+.stage-one-summary-view .stage-two-assistant__audio{margin-top:8px!important}
+.stage-one-helper-view .stage-one-companion-dialogue__scroll{max-height:min(24vh,170px);flex:0 1 auto}
+.stage-one-helper-view .stage-one-helper-note{flex:0 1 auto}
 }
