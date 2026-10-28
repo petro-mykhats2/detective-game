@@ -159,9 +159,9 @@ button { font: inherit; }
   position: absolute;
   z-index: 5;
   right: clamp(16px, 3vw, 32px);
-  bottom: 12px;
+  top: 2px;
   display: flex;
-  min-height: 42px;
+  min-height: 27px;
   align-items: center;
   gap: 10px;
   padding: 0 12px;
@@ -169,7 +169,7 @@ button { font: inherit; }
   border-radius: 2px;
   background: rgba(9, 11, 13, .48);
   color: rgba(239, 236, 229, .78);
-  font: 9px "DM Mono", monospace;
+  font: 7px "DM Mono", monospace;
   letter-spacing: .1em;
   cursor: pointer;
   backdrop-filter: blur(8px);
@@ -181,7 +181,7 @@ button { font: inherit; }
 /* Кнопка завжди у нижній безпечній зоні; контент вступу має запас знизу. */
 .experience--intro .sound-toggle,
 .experience--handoff .sound-toggle,
-.experience--terminal .sound-toggle { bottom: max(12px, env(safe-area-inset-bottom)); }
+.experience--terminal .sound-toggle { top: max(12px, env(safe-area-inset-bottom)); }
 
 @keyframes rise-in { from { opacity: 0; transform: translateY(13px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes center-in { from { opacity: 0; transform: translate(-50%, -38%); filter: blur(5px); } to { opacity: 1; transform: translate(-50%, -43%); filter: blur(0); } }
@@ -199,7 +199,7 @@ button { font: inherit; }
   .intro__footer { padding-top: 13px; }
   .intro__footer > span:first-child { max-width: 45%; }
   .intro__footer { bottom: 72px; }
-  .sound-toggle { right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); min-height: 38px; max-width: calc(100% - 24px); }
+  .sound-toggle { right: 12px; top: max(10px, env(safe-area-inset-bottom)); min-height: 18px; max-width: calc(100% - 24px); }
   .sound-toggle span { font-size: 8px; }
   .investigation__message { left: 24px; bottom: 145px; max-width: calc(100% - 48px); }
 }
@@ -355,6 +355,23 @@ button { font: inherit; }
 @keyframes stage-backdrop-in{from{opacity:0}to{opacity:1}}
 @keyframes stage-modal-in{from{opacity:0;transform:translateY(14px) scale(.99);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @keyframes stage-content-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+/* Стилі та анімація для анімованого тексту напарника (як в narration-text--all) */
+.stage-one-summary-dialogue .narration-text--all {
+  margin-top: 10px;
+  max-height: min(42vh, 380px);
+  font-size: clamp(14px, 1.7vw, 17px);
+  line-height: 1.75;
+  color: #d5d3ce;
+}
+.stage-one-summary-dialogue .narration-text--all p {
+  margin: 0 0 12px;
+  opacity: 0;
+  animation: narration-line-in 1.25s ease forwards;
+}
+.stage-one-summary-dialogue .narration-text--all p:last-child {
+  margin-bottom: 0;
+}
+
 @keyframes stage-pulse{70%{box-shadow:0 0 0 7px rgba(203,165,111,0)}100%{box-shadow:0 0 0 0 rgba(203,165,111,0)}}
 @media(max-width:650px){
  .stage-one-screen{padding:20px 16px max(28px,env(safe-area-inset-bottom))}
