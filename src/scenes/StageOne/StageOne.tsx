@@ -38,7 +38,10 @@ const STAGE_ONE_ENDING_VOICE_DELAY_MS = 2000
 function playTransitionAudio() {
   const audio = new Audio(AUDIO_PERECHID)
   audio.volume = 1
-  void audio.play().catch(() => undefined)
+  activeUiAudios.add(audio)
+  audio.onended = () => activeUiAudios.delete(audio)
+  audio.onerror = () => activeUiAudios.delete(audio)
+  void audio.play().catch(() => activeUiAudios.delete(audio))
 }
 
 // НАЛАШТУВАННЯ ГУЧНОСТІ ФОНОВОЇ МУЗИКИ ПІД ЧАС АВТОМАТИЧНОГО ВІДТВОРЕННЯ ОЗВУЧКИ:
@@ -48,6 +51,7 @@ function playTransitionAudio() {
 // - 0.05 — дуже тихо (фонова музика ледь чутна)
 // - 0.13 — стандартний комфортний рівень (як у вступі розслідування)
 // - 0.30 — гучніше (якщо хочете, щоб музика звучала виразніше під час голосу)
+const STAGE_ONE_MUSIC_VOLUME_NORMAL = 0.98 // Звичайна гучність фонової музики; змінюй це значення для постійного рівня.
 const STAGE_ONE_MUSIC_VOLUME_DURING_VOICE = 0.13
 
 const questions: Question[] = [
@@ -196,7 +200,7 @@ function stopStageOneAudios() {
   activeUiAudios.clear()
   activeDialogueAudio = null
   const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
-  if (music) music.volume = 0.98
+  if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_NORMAL
 }
 
 function playDialogue(path: string, onPlayingChange?: (playing: boolean) => void) {
@@ -232,7 +236,7 @@ function stopDialogueOnly() {
   audio.pause()
   audio.currentTime = 0
   const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
-  if (music) music.volume = 0.98
+  if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_NORMAL
 }
 
 function playClick(path: string) {
