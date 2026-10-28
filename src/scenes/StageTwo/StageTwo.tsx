@@ -2,8 +2,15 @@ import { useEffect, useRef, useState } from "react"
 
 type Props = { onBack: () => void; onComplete: () => void }
 
-const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3" // Додайте озвучку пізніше.
-const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3" // Додайте озвучку пізніше.
+const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3"
+const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
+
+// НАЛАШТУВАННЯ ГУЧНОСТІ (від 0 до 1):
+// STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
+// STAGE_TWO_MUSIC_VOLUME_DURING_VOICE — гучність фонової музики під час репліки.
+// Змінюй ці два значення, щоб збалансувати голос і музику.
+const STAGE_TWO_VOICE_VOLUME = 1
+const STAGE_TWO_MUSIC_VOLUME_DURING_VOICE = 0.10
 
 function preloadDialogue(path: string) {
   const audio = new Audio()
@@ -12,29 +19,82 @@ function preloadDialogue(path: string) {
   audio.load()
 }
 
-function playDialogue(path: string) {
-  const audio = new Audio(path)
-  audio.preload = "auto"
-  audio.volume = 1
-  void audio.play().catch(() => undefined)
-}
-
 export default function StageTwo({ onBack, onComplete }: Props) {
   const [opened, setOpened] = useState<string[]>([])
   const [confirmed, setConfirmed] = useState(false)
   const [transitioning, setTransitioning] = useState(false)
   const transitionTimer = useRef<number | null>(null)
   const screenRef = useRef<HTMLElement>(null)
+  const dialogueAudioRef = useRef<HTMLAudioElement | null>(null)
+  const [playingDialogue, setPlayingDialogue] = useState(false)
+  const musicVolumeBeforeVoiceRef = useRef<number | null>(null)
+  const startedNextVoiceRef = useRef(false)
+
+  function stopDialogue() {
+    const audio = dialogueAudioRef.current
+    if (audio) {
+      audio.onended = null
+      audio.onerror = null
+      audio.pause()
+      audio.currentTime = 0
+      dialogueAudioRef.current = null
+    }
+    setPlayingDialogue(false)
+    const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+    if (music && musicVolumeBeforeVoiceRef.current !== null) {
+      music.volume = musicVolumeBeforeVoiceRef.current
+      musicVolumeBeforeVoiceRef.current = null
+    }
+  }
+
+  function playDialogue(path: string) {
+    // Не запускаємо другий екземпляр того самого або іншого діалогу поверх першого.
+    if (dialogueAudioRef.current && !dialogueAudioRef.current.paused) return
+    stopDialogue()
+    const audio = new Audio(path)
+    audio.preload = "auto"
+    audio.volume = STAGE_TWO_VOICE_VOLUME
+    dialogueAudioRef.current = audio
+    const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+    if (music) {
+      musicVolumeBeforeVoiceRef.current = music.volume
+      music.volume = STAGE_TWO_MUSIC_VOLUME_DURING_VOICE
+    }
+    const finish = () => {
+      if (dialogueAudioRef.current !== audio) return
+      dialogueAudioRef.current = null
+      setPlayingDialogue(false)
+      if (music && musicVolumeBeforeVoiceRef.current !== null) {
+        music.volume = musicVolumeBeforeVoiceRef.current
+        musicVolumeBeforeVoiceRef.current = null
+      }
+    }
+    audio.onended = finish
+    audio.onerror = finish
+    setPlayingDialogue(true)
+    void audio.play().catch(() => finish())
+  }
 
   useEffect(() => {
-    // Підвантажуємо озвучення завчасно. На мобільних autoplay усе одно
-    // залежить від дозволів браузера, але файл матиме шанс бути в кеші до кліку.
+    // Завчасно завантажуємо обидва файли, щоб скоротити затримку запуску.
     preloadDialogue(AUDIO_STAGE_TWO_INTRO)
     preloadDialogue(AUDIO_STAGE_TWO_NEXT)
+    // Автоматичний запуск при вході на етап 2. Браузер може вимагати попередню дію користувача.
+    playDialogue(AUDIO_STAGE_TWO_INTRO)
     return () => {
+      stopDialogue()
       if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current)
     }
   }, [])
+
+  useEffect(() => {
+    // На екрані «Капітане, є новини» репліка запускається автоматично лише один раз.
+    if (confirmed && !startedNextVoiceRef.current) {
+      startedNextVoiceRef.current = true
+      playDialogue(AUDIO_STAGE_TWO_NEXT)
+    }
+    if (!confirmed) startedNextVoiceRef.current = false
+  }, [confirmed])
 
   function scrollStageToTop() {
     window.scrollTo({ top: 0, behavior: "auto" })
@@ -43,6 +103,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
   function confirmDocuments() {
     if (!allRead || transitioning) return
+    stopDialogue()
     setTransitioning(true)
     transitionTimer.current = window.setTimeout(() => {
       setConfirmed(true)
@@ -56,6 +117,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
   function continueToEnvelopeThree() {
     if (transitioning) return
+    stopDialogue()
     setTransitioning(true)
     transitionTimer.current = window.setTimeout(() => {
       onComplete()
@@ -89,7 +151,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
                 <p>У конверті два документи: протокол допиту його дружини Олени Ковальчук та досьє на самого Ігоря Ковальчука.</p>
                 <p>Пропоную уважно їх вивчити. Звертайте увагу на деталі — навіть те, що на перший погляд здається неважливим, іноді набуває зовсім іншого значення в ході розслідування.</p>
               </div>
-              <button type="button" className="stage-one-secondary stage-two-assistant__audio" onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}>▶ Прослухати репліку</button>
+              <button type="button" className="stage-one-secondary stage-two-assistant__audio" disabled={playingDialogue} onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}>{playingDialogue ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
             </div>
           </section>
           <div className="stage-two-documents">
@@ -108,7 +170,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
             })}
           </div>
           <div className="stage-two-footer">
-            <button type="button" className="stage-one-secondary" onClick={onBack}>← Повернутися до етапу 1</button>
+            <button type="button" className="stage-one-secondary" onClick={() => { stopDialogue(); onBack() }}>← Повернутися до етапу 1</button>
             <button type="button" className="stage-one-primary" disabled={!allRead} onClick={confirmDocuments}>Я ознайомився з документами →</button>
           </div>
           {!allRead && <p className="stage-two-hint">Спочатку позначте обидва документи як прочитані.</p>}
@@ -127,11 +189,11 @@ export default function StageTwo({ onBack, onComplete }: Props) {
                 <p>Гадаю, тепер у нас з’явиться можливість перевірити деякі обставини й, можливо, виявити нові зачіпки.</p>
                 <p>Капітане, відкривайте конверт 3. Думаю, далі буде цікавіше.</p>
               </div>
-              <button type="button" className="stage-one-secondary stage-two-assistant__audio" onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}>▶ Прослухати репліку</button>
+              <button type="button" className="stage-one-secondary stage-two-assistant__audio" disabled={playingDialogue} onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}>{playingDialogue ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
             </div>
           </section>
           <div className="stage-two-footer">
-            <button type="button" className="stage-one-secondary" onClick={() => setConfirmed(false)}>← Переглянути документи</button>
+            <button type="button" className="stage-one-secondary" onClick={() => { stopDialogue(); setConfirmed(false) }}>← Переглянути документи</button>
             <button type="button" className="stage-one-primary" onClick={continueToEnvelopeThree}>Перейти до конверта № 3 →</button>
           </div>
           <p className="stage-two-hint">Конверт № 3 міститиме результати експертиз та отримані інформаційні матеріали.</p>
