@@ -1,12 +1,20 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Props = { onBack: () => void; onComplete: () => void }
 
 const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3" // Додайте озвучку пізніше.
 const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3" // Додайте озвучку пізніше.
 
+function preloadDialogue(path: string) {
+  const audio = new Audio()
+  audio.preload = "auto"
+  audio.src = path
+  audio.load()
+}
+
 function playDialogue(path: string) {
   const audio = new Audio(path)
+  audio.preload = "auto"
   audio.volume = 1
   void audio.play().catch(() => undefined)
 }
@@ -14,6 +22,46 @@ function playDialogue(path: string) {
 export default function StageTwo({ onBack, onComplete }: Props) {
   const [opened, setOpened] = useState<string[]>([])
   const [confirmed, setConfirmed] = useState(false)
+  const [transitioning, setTransitioning] = useState(false)
+  const transitionTimer = useRef<number | null>(null)
+  const screenRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    // Підвантажуємо озвучення завчасно. На мобільних autoplay усе одно
+    // залежить від дозволів браузера, але файл матиме шанс бути в кеші до кліку.
+    preloadDialogue(AUDIO_STAGE_TWO_INTRO)
+    preloadDialogue(AUDIO_STAGE_TWO_NEXT)
+    return () => {
+      if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current)
+    }
+  }, [])
+
+  function scrollStageToTop() {
+    window.scrollTo({ top: 0, behavior: "auto" })
+    if (screenRef.current) screenRef.current.scrollTop = 0
+  }
+
+  function confirmDocuments() {
+    if (!allRead || transitioning) return
+    setTransitioning(true)
+    transitionTimer.current = window.setTimeout(() => {
+      setConfirmed(true)
+      requestAnimationFrame(() => {
+        scrollStageToTop()
+        window.setTimeout(() => setTransitioning(false), 650)
+      })
+      transitionTimer.current = null
+    }, 320)
+  }
+
+  function continueToEnvelopeThree() {
+    if (transitioning) return
+    setTransitioning(true)
+    transitionTimer.current = window.setTimeout(() => {
+      onComplete()
+      transitionTimer.current = null
+    }, 320)
+  }
   const documents = [
     { id: "wife", number: "01", title: "Допит Олени Ковальчук", description: "Протокол допиту дружини загиблого. Уважно прочитайте свідчення та зверніть увагу на деталі, які можуть мати значення для розслідування." },
     { id: "dossier", number: "02", title: "Досьє Ігоря Ковальчука", description: "Довідкові відомості про загиблого, які допоможуть краще зрозуміти його життя та обставини, що передували події." },
@@ -21,7 +69,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
   const allRead = documents.every((document) => opened.includes(document.id))
 
   return (
-    <section className="stage-two-screen" aria-label="Етап 2: нові обставини">
+    <section ref={screenRef} className={`stage-two-screen${transitioning ? " is-transitioning" : ""}`} aria-label="Етап 2: нові обставини">
       <header className="scene-topline stage-two-topline">
         <span><i /> МАТЕРІАЛИ СПРАВИ</span>
         <span>ЕТАП 02 · СПРАВА № 12026170010000456</span>
@@ -61,7 +109,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
           </div>
           <div className="stage-two-footer">
             <button type="button" className="stage-one-secondary" onClick={onBack}>← Повернутися до етапу 1</button>
-            <button type="button" className="stage-one-primary" disabled={!allRead} onClick={() => setConfirmed(true)}>Я ознайомився з документами →</button>
+            <button type="button" className="stage-one-primary" disabled={!allRead} onClick={confirmDocuments}>Я ознайомився з документами →</button>
           </div>
           {!allRead && <p className="stage-two-hint">Спочатку позначте обидва документи як прочитані.</p>}
         </div>
@@ -84,7 +132,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
           </section>
           <div className="stage-two-footer">
             <button type="button" className="stage-one-secondary" onClick={() => setConfirmed(false)}>← Переглянути документи</button>
-            <button type="button" className="stage-one-primary" onClick={onComplete}>Перейти до конверта № 3 →</button>
+            <button type="button" className="stage-one-primary" onClick={continueToEnvelopeThree}>Перейти до конверта № 3 →</button>
           </div>
           <p className="stage-two-hint">Конверт № 3 міститиме результати експертиз та отримані інформаційні матеріали.</p>
         </div>
