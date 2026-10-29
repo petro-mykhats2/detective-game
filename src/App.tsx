@@ -3,8 +3,9 @@ import "./App.css"
 import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
 import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
+import StageTwo from "./scenes/StageTwo/StageTwo"
 
-type Screen = "start" | "intro" | "handoff" | "stage-one" | "terminal"
+type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "terminal"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -20,9 +21,11 @@ const MUSIC_VOLUME_NORMAL = 0.98
 const MUSIC_VOLUME_DURING_VOICE = 0.13
 const VOICE_VOLUME = 1
 
-// ПАУЗА ПЕРЕД ОЗВУЧКОЮ (мс): 1800 = 1,8 секунди після появи вступного екрана.
-// Для швидшого початку постав 0–500; для більш кінематографічної паузи — 2500–4000.
-const INTRO_VOICE_DELAY_MS = 1800
+// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ВСТУПНОГО ГОЛОСУ (мс), окремо для пристроїв.
+// Комп’ютер: 2500 = 2,5 секунди. Мобільний: 200 = 0,2 секунди, щоб зберегти дозвіл autoplay.
+// Довший таймер на мобільних браузерах може блокувати автоматичний запуск звуку.
+const INTRO_VOICE_DELAY_DESKTOP_MS = 2500
+const INTRO_VOICE_DELAY_MOBILE_MS = 200
 
 // Для всього вступу використовується один аудіофайл. Текст показується повністю,
 // а рядки з'являються поступово; синхронізації по таймкодах немає.
@@ -110,6 +113,9 @@ export default function App() {
     voice.volume = VOICE_VOLUME
 
     // Поки голос ще не почався, фонова музика звучить на звичайній гучності.
+    const introDelay = window.matchMedia("(pointer: coarse)").matches
+      ? INTRO_VOICE_DELAY_MOBILE_MS
+      : INTRO_VOICE_DELAY_DESKTOP_MS
     voiceDelayRef.current = window.setTimeout(() => {
       if (musicRef.current && musicEnabled)
         musicRef.current.volume = MUSIC_VOLUME_DURING_VOICE
@@ -123,7 +129,7 @@ export default function App() {
           // Якщо файл відсутній або браузер блокує звук, вступ лишається доступним як текст.
           setVoiceStatus("unavailable")
         })
-    }, INTRO_VOICE_DELAY_MS)
+    }, introDelay)
   }
 
   function handleVoiceEnded() {
@@ -245,8 +251,12 @@ export default function App() {
       {screen === "stage-one" && (
         <StageOne
           onBack={() => setScreen("handoff")}
-          onComplete={() => setScreen("terminal")}
+          onComplete={() => setScreen("stage-two")}
         />
+      )}
+
+      {screen === "stage-two" && (
+        <StageTwo onBack={() => setScreen("stage-one")} onComplete={() => setScreen("terminal")} />
       )}
 
       {screen === "terminal" && (
