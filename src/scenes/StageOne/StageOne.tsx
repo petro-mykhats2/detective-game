@@ -28,10 +28,12 @@ const AUDIO_HELPER = "/audio/assistant-stage-one.mp3" // Додайте озву
 const AUDIO_STAGE_ONE_ENDING = "/audio/assistant-stage-one-ending.mp3"
 const AUDIO_PERECHID = "/audio/perechid.mp3" // Звук переходу до підсумку (додайте файл у public/audio/)
 
-// ПАУЗА ПЕРЕД ПОЧАТКОМ АВТОМАТИЧНОГО ВІДТВОРЕННЯ ОЗВУЧКИ ФІНАЛЬНОГО НАПАРНИКА (мс):
-// 2000 = 2 секунди після відкриття підсумкового вікна. Ви можете самостійно змінити це значення
-// (наприклад, 500 для миттєвого старту або 3500 для довшої паузи).
-const STAGE_ONE_ENDING_VOICE_DELAY_MS = 2000
+// ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ФІНАЛЬНОЇ РЕПЛІКИ (мс), окремо для пристроїв.
+// Комп’ютер: 2000 = 2 секунди для атмосферної паузи.
+// Мобільний: 200 = 0,2 секунди, щоб браузер не втратив дозвіл на запуск звуку.
+// Якщо змінюєте затримку, налаштовуйте комп’ютер і мобільні пристрої окремо.
+const STAGE_ONE_ENDING_VOICE_DELAY_DESKTOP_MS = 2000
+const STAGE_ONE_ENDING_VOICE_DELAY_MOBILE_MS = 200
 
 // Спеціальна функція для відтворення звуку perechid.mp3 при натисканні "До підсумку"
 // Якщо файла немає або він недоступний, помилка ігнорується без блокування інтерфейсу.
@@ -279,6 +281,11 @@ export default function StageOne({ onBack, onComplete }: Props) {
     let musicAudio: HTMLAudioElement | null = null
     let originalVolume = 1
 
+    // На мобільних залишаємо коротку паузу — довгий setTimeout може заблокувати autoplay.
+    const endingVoiceDelay = window.matchMedia("(pointer: coarse)").matches
+      ? STAGE_ONE_ENDING_VOICE_DELAY_MOBILE_MS
+      : STAGE_ONE_ENDING_VOICE_DELAY_DESKTOP_MS
+
     const timerId = window.setTimeout(() => {
       if (isCancelled) return
 
@@ -317,7 +324,7 @@ export default function StageOne({ onBack, onComplete }: Props) {
         // Якщо браузер заблокував автоматичне відтворення звуку, повертаємо музику назад
         handleAudioEndOrError()
       })
-    }, STAGE_ONE_ENDING_VOICE_DELAY_MS)
+    }, endingVoiceDelay)
 
     return () => {
       isCancelled = true
