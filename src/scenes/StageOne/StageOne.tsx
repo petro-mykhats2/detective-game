@@ -201,11 +201,16 @@ function stopStageOneAudios() {
   })
   activeUiAudios.clear()
   activeDialogueAudio = null
-  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  const music = document.querySelector(
+    'audio[src="/investigation-theme.mp3"]',
+  ) as HTMLAudioElement | null
   if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_NORMAL
 }
 
-function playDialogue(path: string, onPlayingChange?: (playing: boolean) => void) {
+function playDialogue(
+  path: string,
+  onPlayingChange?: (playing: boolean) => void,
+) {
   // Один голосовий файл за раз: повторний клік не створить паралельне відтворення.
   if (activeDialogueAudio && !activeDialogueAudio.paused) return
   stopDialogueOnly()
@@ -213,7 +218,9 @@ function playDialogue(path: string, onPlayingChange?: (playing: boolean) => void
   audio.volume = 1
   activeDialogueAudio = audio
   activeUiAudios.add(audio)
-  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  const music = document.querySelector(
+    'audio[src="/investigation-theme.mp3"]',
+  ) as HTMLAudioElement | null
   const previousVolume = music?.volume ?? 0.98
   if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_DURING_VOICE
   const finish = () => {
@@ -237,7 +244,9 @@ function stopDialogueOnly() {
   audio.onerror = null
   audio.pause()
   audio.currentTime = 0
-  const music = document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+  const music = document.querySelector(
+    'audio[src="/investigation-theme.mp3"]',
+  ) as HTMLAudioElement | null
   if (music) music.volume = STAGE_ONE_MUSIC_VOLUME_NORMAL
 }
 
@@ -640,24 +649,53 @@ export default function StageOne({ onBack, onComplete }: Props) {
             {view === "helper" && active && (
               <div className="stage-one-modal__content stage-one-helper-view">
                 <div className="stage-one-companion-dialogue">
-                  <div className="stage-one-helper-large" aria-hidden="true">М</div>
+                  {/* <div className="stage-one-helper-large" aria-hidden="true">М</div> */}
+                  <img
+                    className="stage-one-helper-large"
+                    aria-hidden="true"
+                    src="/public/assistant-mark.png"
+                  />
                   <div className="stage-one-companion-dialogue__main">
                     <div className="stage-one-companion-dialogue__identity">
                       <h2 id="stage-one-modal-title">Напарник</h2>
                       <span>ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</span>
                     </div>
-                    <p className="stage-one-helper-intro">Ділиться спостереженнями, але не робить остаточних висновків замість експертів.</p>
+                    <p className="stage-one-helper-intro">
+                      Ділиться спостереженнями, але не робить остаточних
+                      висновків замість експертів.
+                    </p>
                     <div className="stage-one-helper-note">
-                      <span className="stage-one-helper-note__label">ПОВІДОМЛЕННЯ</span>
+                      <span className="stage-one-helper-note__label">
+                        ПОВІДОМЛЕННЯ
+                      </span>
                       <div className="stage-one-companion-dialogue__scroll">
-                        <p className="stage-one-helper-dialogue">{helperDialogues[active.id] ?? active.hint}</p>
+                        <p className="stage-one-helper-dialogue">
+                          {helperDialogues[active.id] ?? active.hint}
+                        </p>
                       </div>
-                      <button type="button" className="stage-one-secondary stage-one-companion-audio" disabled={isHelperAudioPlaying} onClick={() => playDialogue(AUDIO_HELPER, setIsHelperAudioPlaying)}>{isHelperAudioPlaying ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
+                      <button
+                        type="button"
+                        className="stage-one-secondary stage-one-companion-audio"
+                        disabled={isHelperAudioPlaying}
+                        onClick={() =>
+                          playDialogue(AUDIO_HELPER, setIsHelperAudioPlaying)
+                        }
+                      >
+                        {isHelperAudioPlaying
+                          ? "▶ Репліка відтворюється…"
+                          : "▶ Прослухати репліку"}
+                      </button>
                     </div>
                   </div>
                 </div>
                 <div className="stage-one-modal__footer">
-                  <button type="button" className="stage-one-secondary" onClick={closeHelper}>← Повернутися до запитання</button>
+                  <button
+                    type="button"
+                    className="stage-one-secondary"
+                    onClick={closeHelper}
+                  >
+                    ← Повернутися до запитання
+                  </button>
                 </div>
               </div>
             )}
@@ -665,9 +703,21 @@ export default function StageOne({ onBack, onComplete }: Props) {
             {view === "summary" && allCategoriesCompleted && (
               <div className="stage-one-modal__content stage-one-summary-view">
                 <div className="stage-two-assistant stage-two-assistant--single stage-one-summary-companion">
-                  <div className="assistant-mark" aria-hidden="true">М</div>
+                  <img
+                    className="assistant-mark"
+                    aria-hidden="true"
+                    src="/public/assistant-mark.png"
+                  />
+
                   <div className="stage-two-assistant__message">
-                    <div className="stage-two-assistant__identity"><div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div></div>
+                    <div className="stage-two-assistant__identity">
+                      <div>
+                        <div className="stage-two-eyebrow">НАПАРНИК</div>
+                        <div className="stage-two-assistant__subtitle">
+                          ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
+                        </div>
+                      </div>
+                    </div>
                     <div className="stage-one-summary-dialogue narration-text narration-text--all">
                       <p style={{ animationDelay: "0.2s" }}>
                         Капітане, після всього, що ми з’ясували, я вважаю, що
@@ -712,7 +762,10 @@ export default function StageOne({ onBack, onComplete }: Props) {
                       }
                       onClick={() => {
                         if (!isEndingAudioPlaying) {
-                          playDialogue(AUDIO_STAGE_ONE_ENDING, setIsEndingAudioPlaying)
+                          playDialogue(
+                            AUDIO_STAGE_ONE_ENDING,
+                            setIsEndingAudioPlaying,
+                          )
                         }
                       }}
                     >

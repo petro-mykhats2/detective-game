@@ -22,7 +22,7 @@ function isTouchDevice() {
 // STAGE_TWO_VOICE_VOLUME — гучність голосу напарника.
 // STAGE_TWO_MUSIC_VOLUME_DURING_VOICE — гучність фонової музики під час репліки.
 const STAGE_TWO_VOICE_VOLUME = 1
-const STAGE_TWO_MUSIC_VOLUME_DURING_VOICE = 0.10
+const STAGE_TWO_MUSIC_VOLUME_DURING_VOICE = 0.1
 
 function preloadDialogue(path: string) {
   const audio = new Audio()
@@ -45,7 +45,9 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
   function getMusicElement() {
     // App.tsx містить один постійний елемент <audio> для фонової музики.
-    return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+    return document.querySelector(
+      'audio[src="/investigation-theme.mp3"]',
+    ) as HTMLAudioElement | null
   }
 
   function restoreMusicVolume() {
@@ -73,7 +75,10 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
   function playDialogue(path: string) {
     // Не запускаємо повторно, якщо репліка вже грає.
-    const current = path === AUDIO_STAGE_TWO_INTRO ? introAudioRef.current : nextAudioRef.current
+    const current =
+      path === AUDIO_STAGE_TWO_INTRO
+        ? introAudioRef.current
+        : nextAudioRef.current
     if (current && !current.paused && !current.ended) return
     stopDialogue()
     const audio = new Audio(path)
@@ -88,8 +93,10 @@ export default function StageTwo({ onBack, onComplete }: Props) {
       music.volume = STAGE_TWO_MUSIC_VOLUME_DURING_VOICE
     }
     const finish = () => {
-      if (path === AUDIO_STAGE_TWO_INTRO && introAudioRef.current !== audio) return
-      if (path === AUDIO_STAGE_TWO_NEXT && nextAudioRef.current !== audio) return
+      if (path === AUDIO_STAGE_TWO_INTRO && introAudioRef.current !== audio)
+        return
+      if (path === AUDIO_STAGE_TWO_NEXT && nextAudioRef.current !== audio)
+        return
       if (path === AUDIO_STAGE_TWO_INTRO) introAudioRef.current = null
       else nextAudioRef.current = null
       setPlayingDialogue(false)
@@ -107,12 +114,18 @@ export default function StageTwo({ onBack, onComplete }: Props) {
 
     // Як у вікні підсумку першого етапу: запускаємо озвучку через таймер після появи екрана.
     // Якщо браузер блокує autoplay, кнопка ручного запуску залишається доступною.
-    const introDelay = isTouchDevice() ? STAGE_TWO_INTRO_DELAY_MOBILE_MS : STAGE_TWO_INTRO_DELAY_DESKTOP_MS
-    const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_INTRO), introDelay)
+    const introDelay = isTouchDevice()
+      ? STAGE_TWO_INTRO_DELAY_MOBILE_MS
+      : STAGE_TWO_INTRO_DELAY_DESKTOP_MS
+    const timerId = window.setTimeout(
+      () => playDialogue(AUDIO_STAGE_TWO_INTRO),
+      introDelay,
+    )
     return () => {
       window.clearTimeout(timerId)
       stopDialogue()
-      if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current)
+      if (transitionTimer.current !== null)
+        window.clearTimeout(transitionTimer.current)
     }
   }, [])
 
@@ -120,8 +133,13 @@ export default function StageTwo({ onBack, onComplete }: Props) {
     // Автоматична репліка для екрана новин запускається один раз після переходу на нього.
     if (confirmed && !autoNextStartedRef.current) {
       autoNextStartedRef.current = true
-      const nextDelay = isTouchDevice() ? STAGE_TWO_NEXT_DELAY_MOBILE_MS : STAGE_TWO_NEXT_DELAY_DESKTOP_MS
-      const timerId = window.setTimeout(() => playDialogue(AUDIO_STAGE_TWO_NEXT), nextDelay)
+      const nextDelay = isTouchDevice()
+        ? STAGE_TWO_NEXT_DELAY_MOBILE_MS
+        : STAGE_TWO_NEXT_DELAY_DESKTOP_MS
+      const timerId = window.setTimeout(
+        () => playDialogue(AUDIO_STAGE_TWO_NEXT),
+        nextDelay,
+      )
       return () => window.clearTimeout(timerId)
     }
     if (!confirmed) autoNextStartedRef.current = false
@@ -156,78 +174,239 @@ export default function StageTwo({ onBack, onComplete }: Props) {
     }, 320)
   }
   const documents = [
-    { id: "wife", number: "01", title: "Допит Олени Ковальчук", description: "Протокол допиту дружини загиблого. Уважно прочитайте свідчення та зверніть увагу на деталі, які можуть мати значення для розслідування." },
-    { id: "dossier", number: "02", title: "Досьє Ігоря Ковальчука", description: "Довідкові відомості про загиблого, які допоможуть краще зрозуміти його життя та обставини, що передували події." },
+    {
+      id: "wife",
+      number: "01",
+      title: "Допит Олени Ковальчук",
+      description:
+        "Протокол допиту дружини загиблого. Уважно прочитайте свідчення та зверніть увагу на деталі, які можуть мати значення для розслідування.",
+    },
+    {
+      id: "dossier",
+      number: "02",
+      title: "Досьє Ігоря Ковальчука",
+      description:
+        "Довідкові відомості про загиблого, які допоможуть краще зрозуміти його життя та обставини, що передували події.",
+    },
   ]
   const allRead = documents.every((document) => opened.includes(document.id))
 
   return (
-    <section ref={screenRef} className={`stage-two-screen${transitioning ? " is-transitioning" : ""}`} aria-label="Етап 2: нові обставини">
+    <section
+      ref={screenRef}
+      className={`stage-two-screen${transitioning ? " is-transitioning" : ""}`}
+      aria-label="Етап 2: нові обставини"
+    >
       <header className="scene-topline stage-two-topline">
-        <span><i /> МАТЕРІАЛИ СПРАВИ</span>
+        <span>
+          <i /> МАТЕРІАЛИ СПРАВИ
+        </span>
         <span>ЕТАП 02 · СПРАВА № 12026170010000456</span>
       </header>
       {!confirmed ? (
         <div className="stage-two-wrap">
-          <div className="narration-kicker"><span>КОНВЕРТ № 2</span><span>НОВІ ОБСТАВИНИ</span></div>
+          <div className="narration-kicker">
+            <span>КОНВЕРТ № 2</span>
+            <span>НОВІ ОБСТАВИНИ</span>
+          </div>
           <h1 className="stage-two-heading">Поглянути ближче</h1>
-          <section className="stage-two-assistant" aria-label="Повідомлення напарника">
-            <div className="assistant-mark" aria-hidden="true">М</div>
+          <section
+            className="stage-two-assistant"
+            aria-label="Повідомлення напарника"
+          >
+            <img
+              className="assistant-mark"
+              aria-hidden="true"
+              src="/public/assistant-mark.png"
+            />
             <div className="stage-two-assistant__message">
               <div className="stage-two-assistant__identity">
-                <div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div>
+                <div>
+                  <div className="stage-two-eyebrow">НАПАРНИК</div>
+                  <div className="stage-two-assistant__subtitle">
+                    ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
+                  </div>
+                </div>
               </div>
               <div className="stage-two-assistant__text">
-                <p>Капітане, поки ми очікуємо на результати призначених експертиз, надійшли матеріали, які можуть допомогти нам краще зрозуміти, ким був Ігор Ковальчук і що відбувалося в його житті напередодні загибелі.</p>
-                <p>У конверті два документи: протокол допиту його дружини Олени Ковальчук та досьє на самого Ігоря Ковальчука.</p>
-                <p>Пропоную уважно їх вивчити. Звертайте увагу на деталі — навіть те, що на перший погляд здається неважливим, іноді набуває зовсім іншого значення в ході розслідування.</p>
+                <p>
+                  Капітане, поки ми очікуємо на результати призначених
+                  експертиз, надійшли матеріали, які можуть допомогти нам краще
+                  зрозуміти, ким був Ігор Ковальчук і що відбувалося в його
+                  житті напередодні загибелі.
+                </p>
+                <p>
+                  У конверті два документи: протокол допиту його дружини Олени
+                  Ковальчук та досьє на самого Ігоря Ковальчука.
+                </p>
+                <p>
+                  Пропоную уважно їх вивчити. Звертайте увагу на деталі — навіть
+                  те, що на перший погляд здається неважливим, іноді набуває
+                  зовсім іншого значення в ході розслідування.
+                </p>
               </div>
-              <button type="button" className="stage-one-secondary stage-two-assistant__audio" disabled={playingDialogue} onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}>{playingDialogue ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
+              <button
+                type="button"
+                className="stage-one-secondary stage-two-assistant__audio"
+                disabled={playingDialogue}
+                onClick={() => playDialogue(AUDIO_STAGE_TWO_INTRO)}
+              >
+                {playingDialogue
+                  ? "▶ Репліка відтворюється…"
+                  : "▶ Прослухати репліку"}
+              </button>
             </div>
           </section>
           <div className="stage-two-documents">
             {documents.map((document) => {
               const isRead = opened.includes(document.id)
               return (
-                <article className={`stage-two-document ${isRead ? "is-read" : ""}`} key={document.id}>
-                  <div className="stage-two-document__number">{document.number}</div>
+                <article
+                  className={`stage-two-document ${isRead ? "is-read" : ""}`}
+                  key={document.id}
+                >
+                  <div className="stage-two-document__number">
+                    {document.number}
+                  </div>
                   <div className="stage-two-document__body">
                     <h2>{document.title}</h2>
                     <p>{document.description}</p>
-                    <button type="button" className="stage-one-secondary" onClick={() => setOpened((current) => current.includes(document.id) ? current : [...current, document.id])}>{isRead ? "✓ Документ опрацьовано" : "Позначити як прочитаний"}</button>
+                    <button
+                      type="button"
+                      className="stage-one-secondary"
+                      onClick={() =>
+                        setOpened((current) =>
+                          current.includes(document.id)
+                            ? current
+                            : [...current, document.id],
+                        )
+                      }
+                    >
+                      {isRead
+                        ? "✓ Документ опрацьовано"
+                        : "Позначити як прочитаний"}
+                    </button>
                   </div>
                 </article>
               )
             })}
           </div>
           <div className="stage-two-footer">
-            <button type="button" className="stage-one-secondary" onClick={() => { stopDialogue(); onBack() }}>← Повернутися до етапу 1</button>
-            <button type="button" className="stage-one-primary" disabled={!allRead} onClick={confirmDocuments}>Я ознайомився з документами →</button>
+            <button
+              type="button"
+              className="stage-one-secondary"
+              onClick={() => {
+                stopDialogue()
+                onBack()
+              }}
+            >
+              ← Повернутися до етапу 1
+            </button>
+            <button
+              type="button"
+              className="stage-one-primary"
+              disabled={!allRead}
+              onClick={confirmDocuments}
+            >
+              Я ознайомився з документами →
+            </button>
           </div>
-          {!allRead && <p className="stage-two-hint">Спочатку позначте обидва документи як прочитані.</p>}
+          {!allRead && (
+            <p className="stage-two-hint">
+              Спочатку позначте обидва документи як прочитані.
+            </p>
+          )}
         </div>
       ) : (
         <div className="stage-two-wrap stage-two-transition">
-          <div className="narration-kicker"><span>ОНОВЛЕННЯ СПРАВИ</span><span>НАДІЙШЛИ НОВІ МАТЕРІАЛИ</span></div>
+          <div className="narration-kicker">
+            <span>ОНОВЛЕННЯ СПРАВИ</span>
+            <span>НАДІЙШЛИ НОВІ МАТЕРІАЛИ</span>
+          </div>
           <h1 className="stage-two-heading">Капітане, є новини</h1>
-          <section className="stage-two-assistant stage-two-assistant--single" aria-label="Повідомлення напарника">
-            <div className="assistant-mark" aria-hidden="true">М</div>
+          <section
+            className="stage-two-assistant stage-two-assistant--single"
+            aria-label="Повідомлення напарника"
+          >
+            <img
+              className="assistant-mark"
+              aria-hidden="true"
+              src="/public/assistant-mark.png"
+            />
+
             <div className="stage-two-assistant__message">
-              <div className="stage-two-assistant__identity"><div><div className="stage-two-eyebrow">НАПАРНИК</div><div className="stage-two-assistant__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</div></div></div>
-              <div className="stage-two-assistant__text">
-                <p>Добре, капітане. Тепер у нас є трохи більше інформації про загиблого та його найближче оточення. Але щоб зрозуміти, що насправді сталося тієї ночі, цього недостатньо.</p>
-                <p>Нарешті надійшли результати призначених експертиз. Також отримано банківську виписку Ігоря Ковальчука та дані мобільного білінгу.</p>
-                <p>Гадаю, тепер у нас з’явиться можливість перевірити деякі обставини й, можливо, виявити нові зачіпки.</p>
-                <p>Капітане, відкривайте конверт 3. Думаю, далі буде цікавіше.</p>
+              <div className="stage-two-assistant__identity">
+                <div>
+                  <div className="stage-two-eyebrow">НАПАРНИК</div>
+                  <div className="stage-two-assistant__subtitle">
+                    ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
+                  </div>
+                </div>
               </div>
-              <button type="button" className="stage-one-secondary stage-two-assistant__audio" disabled={playingDialogue} onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}>{playingDialogue ? "▶ Репліка відтворюється…" : "▶ Прослухати репліку"}</button>
+              <div className="stage-two-assistant__text">
+                <p>
+                  Добре, капітане. Тепер у нас є трохи більше інформації про
+                  загиблого та його найближче оточення. Але щоб зрозуміти, що
+                  насправді сталося тієї ночі, цього недостатньо.
+                </p>
+                <p>
+                  Нарешті надійшли результати призначених експертиз. Також
+                  отримано банківську виписку Ігоря Ковальчука та дані
+                  мобільного білінгу.
+                </p>
+                <p>
+                  Гадаю, тепер у нас з’явиться можливість перевірити деякі
+                  обставини й, можливо, виявити нові зачіпки.
+                </p>
+                <p>
+                  Капітане,{" "}
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      color: "#f0d3a3",
+                      fontSize: "1.2em",
+                    }}
+                  >
+                    відкривайте конверт № 3.
+                  </span>{" "}
+                  Думаю, далі буде цікавіше.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="stage-one-secondary stage-two-assistant__audio"
+                disabled={playingDialogue}
+                onClick={() => playDialogue(AUDIO_STAGE_TWO_NEXT)}
+              >
+                {playingDialogue
+                  ? "▶ Репліка відтворюється…"
+                  : "▶ Прослухати репліку"}
+              </button>
             </div>
           </section>
           <div className="stage-two-footer">
-            <button type="button" className="stage-one-secondary" onClick={() => { stopDialogue(); setConfirmed(false) }}>← Переглянути документи</button>
-            <button type="button" className="stage-one-primary" onClick={continueToEnvelopeThree}>Перейти до конверта № 3 →</button>
+            <button
+              type="button"
+              className="stage-one-secondary"
+              onClick={() => {
+                stopDialogue()
+                setConfirmed(false)
+              }}
+            >
+              ← Переглянути документи
+            </button>
+            <button
+              type="button"
+              className="stage-one-primary"
+              onClick={continueToEnvelopeThree}
+            >
+              Перейти до конверта № 3 →
+            </button>
           </div>
-          <p className="stage-two-hint">Конверт № 3 міститиме результати експертиз та отримані інформаційні матеріали.</p>
+          <p className="stage-two-hint">
+            Конверт № 3 міститиме результати експертиз та отримані інформаційні
+            матеріали.
+          </p>
         </div>
       )}
     </section>

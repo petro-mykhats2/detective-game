@@ -5,7 +5,13 @@ import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
 
-type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "terminal"
+type Screen =
+  | "start"
+  | "intro"
+  | "handoff"
+  | "stage-one"
+  | "stage-two"
+  | "terminal"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -222,7 +228,7 @@ export default function App() {
             <span>ЕТАП 01 · ПЕРВИННІ МАТЕРІАЛИ</span>
           </div>
           <div className="handoff-card">
-            <div className="assistant-mark">М</div>
+            <img className="assistant-mark" src="/public/assistant-mark.png" />
             <div className="narration-kicker">КАПІТАНЕ МАРЧЕНКО, ДО УВАГИ</div>
             <h1>Почніть із матеріалів справи</h1>
             <p>
@@ -247,7 +253,6 @@ export default function App() {
         </section>
       )}
 
-
       {screen === "stage-one" && (
         <StageOne
           onBack={() => setScreen("handoff")}
@@ -256,7 +261,10 @@ export default function App() {
       )}
 
       {screen === "stage-two" && (
-        <StageTwo onBack={() => setScreen("stage-one")} onComplete={() => setScreen("terminal")} />
+        <StageTwo
+          onBack={() => setScreen("stage-one")}
+          onComplete={() => setScreen("terminal")}
+        />
       )}
 
       {screen === "terminal" && (
