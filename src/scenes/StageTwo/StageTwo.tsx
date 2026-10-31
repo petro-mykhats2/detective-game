@@ -217,12 +217,12 @@ export default function StageTwo({ onBack, onComplete }: Props) {
             <img
               className="assistant-mark"
               aria-hidden="true"
-              src="/public/assistant-mark.png"
+              src="/assistant-mark.png"
             />
             <div className="stage-two-assistant__message">
               <div className="stage-two-assistant__identity">
                 <div>
-                  <div className="stage-two-eyebrow">НАПАРНИК</div>
+                  <div className="stage-two-eyebrow">напарник Андрій</div>
                   <div className="stage-two-assistant__subtitle">
                     ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
                   </div>
@@ -331,13 +331,13 @@ export default function StageTwo({ onBack, onComplete }: Props) {
             <img
               className="assistant-mark"
               aria-hidden="true"
-              src="/public/assistant-mark.png"
+              src="/assistant-mark.png"
             />
 
             <div className="stage-two-assistant__message">
               <div className="stage-two-assistant__identity">
                 <div>
-                  <div className="stage-two-eyebrow">НАПАРНИК</div>
+                  <div className="stage-two-eyebrow">напарник Андрій</div>
                   <div className="stage-two-assistant__subtitle">
                     ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
                   </div>

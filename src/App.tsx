@@ -230,7 +230,7 @@ export default function App() {
             <span>ЕТАП 01 · ПЕРВИННІ МАТЕРІАЛИ</span>
           </div>
           <div className="handoff-card">
-            <img className="assistant-mark" src="/public/assistant-mark.png" />
+            <img className="assistant-mark" src="/assistant-mark.png" />
             <div className="narration-kicker">КАПІТАНЕ МАРЧЕНКО, ДО УВАГИ</div>
             <h1>Почніть із матеріалів справи</h1>
             <p>

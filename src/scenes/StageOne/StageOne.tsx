@@ -653,11 +653,11 @@ export default function StageOne({ onBack, onComplete }: Props) {
                   <img
                     className="stage-one-helper-large"
                     aria-hidden="true"
-                    src="/public/assistant-mark.png"
+                    src="/assistant-mark.png"
                   />
                   <div className="stage-one-companion-dialogue__main">
                     <div className="stage-one-companion-dialogue__identity">
-                      <h2 id="stage-one-modal-title">Напарник</h2>
+                      <h2 id="stage-one-modal-title">напарник Андрій</h2>
                       <span>ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</span>
                     </div>
                     <p className="stage-one-helper-intro">
@@ -706,13 +706,13 @@ export default function StageOne({ onBack, onComplete }: Props) {
                   <img
                     className="assistant-mark"
                     aria-hidden="true"
-                    src="/public/assistant-mark.png"
+                    src="/assistant-mark.png"
                   />
 
                   <div className="stage-two-assistant__message">
                     <div className="stage-two-assistant__identity">
                       <div>
-                        <div className="stage-two-eyebrow">НАПАРНИК</div>
+                        <div className="stage-two-eyebrow">НАПАРНИК АНДРІЙ</div>
                         <div className="stage-two-assistant__subtitle">
                           ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
                         </div>
