@@ -62,3 +62,59 @@
 @keyframes third-light{0%,100%{opacity:.25;transform:translateX(-10%)}50%{opacity:.8;transform:translateX(10%)}}
 @media(max-width:650px){.third-envelope{padding:20px 15px 90px}.third-envelope__topline{font-size:7px;letter-spacing:.04em;align-items:flex-start}.third-envelope__intro-media.is-visible{height:210px}.third-envelope__paper{width:43%;height:68%;padding:10px}.third-envelope__paper--one{left:5%}.third-envelope__paper--two{right:5%}.third-envelope__assistant{grid-template-columns:40px minmax(0,1fr);gap:12px;padding:16px}.third-envelope__avatar{width:40px;height:40px;font-size:18px}.third-envelope__assistant p{font-size:12px}.third-envelope__actions{flex-direction:column}.third-envelope__actions button{width:100%}.third-envelope__choice{grid-template-columns:27px minmax(0,1fr) 10px;padding:12px 10px!important;gap:9px}.third-envelope__choice p{font-size:11px}.third-envelope__footer{flex-wrap:wrap}.third-envelope__decision-footer{flex-direction:column}.third-envelope__decision-footer button{width:100%}}
 @media(prefers-reduced-motion:reduce){.third-envelope *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* Допоміжне пояснення біля рішення про перекваліфікацію */
+.third-envelope__question-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.third-envelope__question-heading h2 {
+  flex: 1;
+  margin: 0;
+}
+
+.third-envelope__info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(190, 170, 125, 0.55);
+  border-radius: 50%;
+  background: transparent;
+  color: #c9b88f;
+  font: 600 15px/1 Georgia, serif;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.third-envelope__info-button:hover,
+.third-envelope__info-button[aria-expanded="true"] {
+  background: rgba(190, 170, 125, 0.12);
+  border-color: #c9b88f;
+}
+
+.third-envelope__info-panel {
+  margin: 12px 0 18px;
+  padding: 16px 18px;
+  border-left: 2px solid #a58d5e;
+  background: rgba(165, 141, 94, 0.09);
+  color: inherit;
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.third-envelope__info-panel strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #d1bd91;
+}
+
+.third-envelope__info-panel p {
+  margin: 8px 0 0;
+}
