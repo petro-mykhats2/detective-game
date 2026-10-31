@@ -150,3 +150,24 @@
 @keyframes notebook-open{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:650px){.third-envelope__topline{flex-wrap:wrap}.third-envelope__notebook-trigger{margin-left:auto}.third-envelope__notebook{padding:30px 18px 20px}.third-envelope__notebook-task{grid-template-columns:22px 22px minmax(0,1fr);gap:8px}.third-envelope__notebook-task-copy strong{font-size:12px}.third-envelope__notebook-status{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.third-envelope__notebook-trigger i{animation:none}}
+
+/* Слідча дія після правильної відповіді за напрямом A */
+.third-envelope__unlocked-action{margin-top:20px;animation:third-content-in .7s ease both}
+.third-envelope__action-card{margin-top:14px;padding:20px 22px;border:1px solid #76613f;background:linear-gradient(135deg,#171a19,#101416);box-shadow:0 14px 38px #0005}
+.third-envelope__action-card-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#c5a16c;font:9px "DM Mono",monospace;letter-spacing:.12em}
+.third-envelope__action-status{color:#aeb9a0}
+.third-envelope__action-card h3{margin:12px 0 8px;color:#eee7d9;font-size:19px;font-weight:500}
+.third-envelope__action-card>p{margin:0;color:#b9c0bf;font-size:12px;line-height:1.8}
+.third-envelope__action-note{display:grid;gap:7px;margin-top:17px;padding:13px 15px;border-left:2px solid #a9844d;background:#ffffff08}
+.third-envelope__action-note strong{color:#d6bd91;font-size:11px}
+.third-envelope__action-note span{color:#aeb6b6;font-size:11px;line-height:1.7}
+/* Розлінування блокнота: єдиний крок лінійки — 48px */
+.third-envelope__notebook-paper{background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#b9c5d0 47px,#b9c5d0 48px)}
+.third-envelope__notebook-task{box-sizing:border-box;min-height:144px;padding:0 4px;grid-template-columns:30px 26px minmax(0,1fr);grid-template-rows:repeat(3,48px);align-items:center;gap:0 12px;border-bottom:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#aebbc7 47px,#aebbc7 48px)}
+.third-envelope__notebook-number,.third-envelope__notebook-check{grid-row:1;align-self:center}
+.third-envelope__notebook-task-copy{grid-column:3;grid-row:1 / span 3;align-self:stretch;justify-content:space-around;gap:0;padding:0 4px}
+.third-envelope__notebook-task-copy strong{line-height:24px}
+.third-envelope__notebook-task-copy>span{line-height:24px}
+.third-envelope__notebook-status{grid-column:3;grid-row:3;align-self:end;padding-bottom:4px}
+.third-envelope__notebook-empty-lines{display:none}
+@media(max-width:650px){.third-envelope__action-card{padding:16px}.third-envelope__notebook-task{grid-template-columns:22px 22px minmax(0,1fr);gap:0 8px}}
