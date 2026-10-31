@@ -4,6 +4,7 @@ import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
 import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
+import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 
 type Screen =
   | "start"
@@ -11,6 +12,7 @@ type Screen =
   | "handoff"
   | "stage-one"
   | "stage-two"
+  | "stage-three"
   | "terminal"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
@@ -263,6 +265,13 @@ export default function App() {
       {screen === "stage-two" && (
         <StageTwo
           onBack={() => setScreen("stage-one")}
+          onComplete={() => setScreen("stage-three")}
+        />
+      )}
+
+      {screen === "stage-three" && (
+        <ThirdEnvelope
+          onBack={() => setScreen("stage-two")}
           onComplete={() => setScreen("terminal")}
         />
       )}
