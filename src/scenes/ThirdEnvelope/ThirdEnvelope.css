@@ -118,3 +118,35 @@
 .third-envelope__info-panel p {
   margin: 8px 0 0;
 }
+
+
+/* Спільний блокнот слідчої групи */
+.third-envelope__topline{position:relative;align-items:center;padding-right:4px}
+.third-envelope__notebook-trigger{position:relative;display:flex;align-items:center;gap:9px;min-height:42px!important;margin-left:auto;padding:8px 13px!important;border:1px solid #a9844d!important;background:linear-gradient(135deg,#332719,#171713)!important;color:#ead7b8!important;font:600 10px Manrope,sans-serif!important;letter-spacing:.06em!important}
+.third-envelope__notebook-trigger svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.third-envelope__notebook-trigger i{position:absolute;top:-4px;right:-4px;width:9px;height:9px;border:2px solid #101416;border-radius:50%;background:#c7a36b;box-shadow:0 0 12px #c7a36b;animation:notebook-pulse 1.8s ease-in-out infinite}
+.third-envelope__notebook-backdrop{position:fixed;z-index:30;inset:0;display:grid;place-items:center;padding:22px;background:#020406c9;backdrop-filter:blur(7px);animation:notebook-fade .2s ease both}
+.third-envelope__notebook{position:relative;width:min(760px,100%);max-height:min(82vh,760px);overflow:auto;padding:34px clamp(20px,5vw,48px) 24px;border:1px solid #8f8a7d;border-radius:8px 8px 13px 13px;background:linear-gradient(90deg,#d5cebd 0,#f1ecdf 5%,#f7f2e6 50%,#e9e2d3 100%);color:#202a32;box-shadow:0 28px 100px #000b,0 3px 0 #6e6b63;animation:notebook-open .28s cubic-bezier(.2,.7,.2,1) both}
+.third-envelope__notebook-binding{position:absolute;top:-1px;left:7%;right:7%;display:flex;justify-content:space-between;pointer-events:none}
+.third-envelope__notebook-binding span{width:13px;height:28px;margin-top:-10px;border:3px solid #77766f;border-bottom:0;border-radius:10px 10px 0 0;box-shadow:inset 2px 0 2px #fff8}
+.third-envelope__notebook-close{position:absolute;top:22px;right:22px;z-index:1;width:36px;min-height:36px!important;padding:0!important;border:0!important;background:transparent!important;color:#263747!important;font:300 30px/1 Manrope,sans-serif!important;text-align:center!important}
+.third-envelope__notebook-heading{display:flex;align-items:center;gap:17px;padding:10px 42px 23px 0;border-bottom:1px solid #b7c0c7}
+.third-envelope__notebook-heading svg{width:43px;height:43px;flex:0 0 43px;fill:none;stroke:#293c50;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.third-envelope__notebook-heading span{color:#687783;font:9px "DM Mono",monospace;letter-spacing:.12em}
+.third-envelope__notebook-heading h2{margin:5px 0 0;color:#1d2c3b;font-size:clamp(21px,4vw,29px);font-weight:700;letter-spacing:-.04em}
+.third-envelope__notebook-paper{margin-top:18px;background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#b9c5d0 48px,#b9c5d0 49px);background-position:0 0}
+.third-envelope__notebook-task{display:grid;grid-template-columns:30px 26px minmax(0,1fr);align-items:start;gap:12px;min-height:96px;padding:13px 4px 12px;border-bottom:1px solid #aebbc7}
+.third-envelope__notebook-number{padding-top:2px;color:#263747;font:600 14px "DM Mono",monospace}
+.third-envelope__notebook-check{width:23px;height:23px;margin-top:1px;border:2px solid #8996a3;border-radius:50%;background:#f7f2e6}
+.third-envelope__notebook-task-copy{display:flex;flex-direction:column;gap:8px;padding:0 4px}
+.third-envelope__notebook-task-copy strong{color:#202a32;font-size:14px;line-height:1.65}
+.third-envelope__notebook-task-copy>span{color:#65727b;font-size:11px;line-height:1.5}
+.third-envelope__notebook-status{grid-column:3;color:#8b6741;font:9px "DM Mono",monospace;letter-spacing:.08em}
+.third-envelope__notebook-empty-lines{display:grid;gap:0}
+.third-envelope__notebook-empty-lines span{height:45px;border-bottom:1px solid #b9c5d0}
+.third-envelope__notebook-footer{margin-top:18px;color:#78828a;font:8px "DM Mono",monospace;letter-spacing:.1em;text-align:right}
+@keyframes notebook-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
+@keyframes notebook-fade{from{opacity:0}to{opacity:1}}
+@keyframes notebook-open{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:650px){.third-envelope__topline{flex-wrap:wrap}.third-envelope__notebook-trigger{margin-left:auto}.third-envelope__notebook{padding:30px 18px 20px}.third-envelope__notebook-task{grid-template-columns:22px 22px minmax(0,1fr);gap:8px}.third-envelope__notebook-task-copy strong{font-size:12px}.third-envelope__notebook-status{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.third-envelope__notebook-trigger i{animation:none}}
