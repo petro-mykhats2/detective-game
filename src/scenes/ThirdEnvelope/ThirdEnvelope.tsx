@@ -311,6 +311,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
   const [answerId, setAnswerId] = useState<string | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
   const [showQualificationInfo, setShowQualificationInfo] = useState(false)
+  const [notebookOpen, setNotebookOpen] = useState(false)
   const [transitioning, setTransitioning] = useState(false)
   const introTimer = useRef<number | null>(null)
   const transitionTimer = useRef<number | null>(null)
@@ -413,6 +414,23 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
           <i /> МАТЕРІАЛИ КРИМІНАЛЬНОГО ПРОВАДЖЕННЯ
         </span>
         <span>ЕТАП 03 · СПРАВА № 12026170010000456</span>
+        {videoFinished && noticed === true && opening && (
+          <button
+            type="button"
+            className="third-envelope__notebook-trigger"
+            aria-label="Відкрити спільний блокнот"
+            aria-haspopup="dialog"
+            aria-expanded={notebookOpen}
+            onClick={() => setNotebookOpen(true)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5" y="3.5" width="15" height="17" rx="1.5" />
+              <path d="M8 7.5h8M8 11.5h8M8 15.5h5M3.5 7v.01M3.5 12v.01M3.5 17v.01" />
+            </svg>
+            <span>Блокнот</span>
+            <i aria-hidden="true" />
+          </button>
+        )}
       </header>
 
       <div
@@ -528,7 +546,15 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
                 />
                 <div>
                   <div className="third-envelope__speaker">напарник Андрій</div>
-                  <p>Тоді які наші наступні дії? Що робимо зі справою?</p>
+                  <p>
+                Добре. Тоді перевірмо, з ким Ковальчук спілкувався перед
+                загибеллю. Можливо, ці контакти допоможуть нам встановити
+                важливі обставини. Як тільки отримаємо розшифровку номерів,
+                обов'язково перевіримо всіх. Поки що додаю це в список
+                процесуальних дій. До речі, ви можете знайти їх у нашому
+                спільному блокноті, який прямо зараз з'явиться у верхній
+                частині екрана.
+              </p>
                 </div>
               </div>
               {!selected ? (
@@ -639,6 +665,66 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
               ) : null}
             </>
           )}
+        </div>
+      )}
+
+      {notebookOpen && (
+        <div
+          className="third-envelope__notebook-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setNotebookOpen(false)
+          }}
+        >
+          <section
+            className="third-envelope__notebook"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="third-envelope-notebook-title"
+          >
+            <div className="third-envelope__notebook-binding" aria-hidden="true">
+              {Array.from({ length: 12 }, (_, index) => (
+                <span key={index} />
+              ))}
+            </div>
+            <button
+              type="button"
+              className="third-envelope__notebook-close"
+              aria-label="Закрити блокнот"
+              onClick={() => setNotebookOpen(false)}
+            >
+              ×
+            </button>
+            <div className="third-envelope__notebook-heading">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3.5h13a1.5 1.5 0 0 1 1.5 1.5v15a.5.5 0 0 1-.8.4L17 18.5l-2.7 1.9a.5.5 0 0 1-.6 0L11 18.5l-2.7 1.9a.5.5 0 0 1-.8-.4v-15A1.5 1.5 0 0 1 9 3.5" />
+                <path d="M3.5 6.5H6M3.5 11H6M3.5 15.5H6M10 8h7M10 12h7" />
+              </svg>
+              <div>
+                <span>СПІЛЬНІ НОТАТКИ СЛІДЧОЇ ГРУПИ</span>
+                <h2 id="third-envelope-notebook-title">Спільний блокнот</h2>
+              </div>
+            </div>
+            <div className="third-envelope__notebook-paper">
+              <div className="third-envelope__notebook-task">
+                <span className="third-envelope__notebook-number">01</span>
+                <span className="third-envelope__notebook-check" aria-hidden="true" />
+                <div className="third-envelope__notebook-task-copy">
+                  <strong>Перевірити, з ким Ковальчук спілкувався перед загибеллю</strong>
+                  <span>Очікує на отримання розшифровки телефонних номерів</span>
+                </div>
+                <span className="third-envelope__notebook-status">НЕ ВИКОНАНО</span>
+              </div>
+              <div className="third-envelope__notebook-empty-lines" aria-hidden="true">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <span key={index} />
+                ))}
+              </div>
+            </div>
+            <div className="third-envelope__notebook-footer">
+              КРИМІНАЛЬНЕ ПРОВАДЖЕННЯ № 12026170010000456
+            </div>
+          </section>
         </div>
       )}
 
