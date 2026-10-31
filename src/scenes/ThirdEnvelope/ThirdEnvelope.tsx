@@ -312,6 +312,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
   const [showFeedback, setShowFeedback] = useState(false)
   const [showQualificationInfo, setShowQualificationInfo] = useState(false)
   const [notebookOpen, setNotebookOpen] = useState(false)
+  const [phoneContactsActionAdded, setPhoneContactsActionAdded] = useState(false)
   const [transitioning, setTransitioning] = useState(false)
   const introTimer = useRef<number | null>(null)
   const transitionTimer = useRef<number | null>(null)
@@ -386,6 +387,9 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
   function submitAnswer() {
     if (!selectedAnswer) return
     setShowFeedback(true)
+    if (selected === "A" && selectedAnswer.correct) {
+      setPhoneContactsActionAdded(true)
+    }
   }
 
   function continueFromDecision() {
@@ -414,7 +418,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
           <i /> МАТЕРІАЛИ КРИМІНАЛЬНОГО ПРОВАДЖЕННЯ
         </span>
         <span>ЕТАП 03 · СПРАВА № 12026170010000456</span>
-        {videoFinished && noticed === true && opening && (
+        {phoneContactsActionAdded && (
           <button
             type="button"
             className="third-envelope__notebook-trigger"
@@ -539,24 +543,6 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
             </div>
           ) : (
             <>
-              <div className="third-envelope__assistant third-envelope__assistant--follow">
-                <img
-                  src="/assistant-mark.png"
-                  className="third-envelope__avatar"
-                />
-                <div>
-                  <div className="third-envelope__speaker">напарник Андрій</div>
-                  <p>
-                Добре. Тоді перевірмо, з ким Ковальчук спілкувався перед
-                загибеллю. Можливо, ці контакти допоможуть нам встановити
-                важливі обставини. Як тільки отримаємо розшифровку номерів,
-                обов'язково перевіримо всіх. Поки що додаю це в список
-                процесуальних дій. До речі, ви можете знайти їх у нашому
-                спільному блокноті, який прямо зараз з'явиться у верхній
-                частині екрана.
-              </p>
-                </div>
-              </div>
               {!selected ? (
                 <div className="third-envelope__choices">
                   {choices.map((item) => (
@@ -642,6 +628,37 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
                         <p>{selectedAnswer.feedback}</p>
                       </div>
                     )}
+                    {showFeedback && selectedAnswer?.correct && selected === "A" && (
+                      <div className="third-envelope__unlocked-action">
+                        <div className="third-envelope__assistant third-envelope__assistant--follow">
+                          <img src="/assistant-mark.png" className="third-envelope__avatar" />
+                          <div>
+                            <div className="third-envelope__speaker">НАПАРНИК АНДРІЙ</div>
+                            <p>
+                              Добре. Тоді перевірмо, з ким Ковальчук спілкувався перед загибеллю.
+                              Можливо, ці контакти допоможуть нам встановити важливі обставини.
+                              Як тільки отримаємо розшифровку номерів, обов'язково перевіримо всіх.
+                              Поки що додаю це в список процесуальних дій. До речі, ви можете знайти
+                              їх у нашому спільному блокноті, який прямо зараз з'явиться у верхній
+                              частині екрана.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="third-envelope__action-card">
+                          <div className="third-envelope__action-card-top">
+                            <span>НОВА СЛІДЧА ДІЯ</span>
+                            <span className="third-envelope__action-status">ОЧІКУЄ МАТЕРІАЛІВ</span>
+                          </div>
+                          <h3>Аналіз телефонних контактів</h3>
+                          <p>Матеріал: розшифрування дзвінків та результати дослідження відкритих джерел (OSINT).</p>
+                          <div className="third-envelope__action-note">
+                            <strong>Результат ще не відкрито</strong>
+                            <span>Спочатку опрацюйте матеріали. Встановіть, які номери належать конкретним особам, а потім визначте, кого доцільно викликати на допит.</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                   </div>
                   <div className="third-envelope__decision-footer">
                     <button className="is-quiet" onClick={resetChoice}>
@@ -713,7 +730,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
                   <strong>Перевірити, з ким Ковальчук спілкувався перед загибеллю</strong>
                   <span>Очікує на отримання розшифровки телефонних номерів</span>
                 </div>
-                <span className="third-envelope__notebook-status">НЕ ВИКОНАНО</span>
+                <span className="third-envelope__notebook-status">НЕДОСТУПНО</span>
               </div>
               <div className="third-envelope__notebook-empty-lines" aria-hidden="true">
                 {Array.from({ length: 5 }, (_, index) => (
