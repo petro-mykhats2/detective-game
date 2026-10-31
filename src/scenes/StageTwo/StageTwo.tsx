@@ -42,6 +42,8 @@ export default function StageTwo({ onBack, onComplete }: Props) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const musicVolumeBeforeVoiceRef = useRef<number | null>(null)
   const autoNextStartedRef = useRef(false)
+  // Синхронний захист від повторного кліку до наступного React-render.
+  const continueToEnvelopeThreeStartedRef = useRef(false)
 
   function getMusicElement() {
     // App.tsx містить один постійний елемент <audio> для фонової музики.
@@ -165,12 +167,14 @@ export default function StageTwo({ onBack, onComplete }: Props) {
   }
 
   function continueToEnvelopeThree() {
-    if (transitioning) return
+    // useRef блокує повторний виклик миттєво, ще до оновлення стану transitioning.
+    if (continueToEnvelopeThreeStartedRef.current || transitioning) return
+    continueToEnvelopeThreeStartedRef.current = true
     stopDialogue()
     setTransitioning(true)
     transitionTimer.current = window.setTimeout(() => {
-      onComplete()
       transitionTimer.current = null
+      onComplete()
     }, 320)
   }
   const documents = [
@@ -398,9 +402,10 @@ export default function StageTwo({ onBack, onComplete }: Props) {
             <button
               type="button"
               className="stage-one-primary"
+              disabled={transitioning}
               onClick={continueToEnvelopeThree}
             >
-              Перейти до конверта № 3 →
+              {transitioning ? "Відкриваємо конверт № 3…" : "Перейти до конверта № 3 →"}
             </button>
           </div>
           <p className="stage-two-hint">
