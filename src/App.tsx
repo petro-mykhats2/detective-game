@@ -4,8 +4,9 @@ import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
 import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
+import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 
-type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "terminal"
+type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "stage-three" | "terminal"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -256,7 +257,14 @@ export default function App() {
       )}
 
       {screen === "stage-two" && (
-        <StageTwo onBack={() => setScreen("stage-one")} onComplete={() => setScreen("terminal")} />
+        <StageTwo onBack={() => setScreen("stage-one")} onComplete={() => setScreen("stage-three")} />
+      )}
+
+      {screen === "stage-three" && (
+        <ThirdEnvelope
+          onBack={() => setScreen("stage-two")}
+          onComplete={() => setScreen("terminal")}
+        />
       )}
 
       {screen === "terminal" && (
