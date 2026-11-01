@@ -157,6 +157,9 @@ export default function App() {
   }
 
   async function toggleMusic() {
+    // Під час сцени начальника використовується окрема фонова атмосфера.
+    // Не запускаємо глобальну музику поверх неї.
+    if (screen === "stage-three-briefing") return
     const next = !musicEnabled
     setMusicEnabled(next)
     const music = musicRef.current
