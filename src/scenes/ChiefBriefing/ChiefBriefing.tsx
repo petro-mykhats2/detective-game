@@ -29,6 +29,7 @@ const dialogue = [
 export default function ChiefBriefing({ onContinue }: Props) {
   const ambienceRef = useRef<HTMLAudioElement>(null)
   const voiceRef = useRef<HTMLAudioElement>(null)
+  const voiceLockedRef = useRef(false) // Захист від подвійного кліку до оновлення React-стану.
   const [playback, setPlayback] = useState<PlaybackState>("ready")
   const [activeLine, setActiveLine] = useState(0)
   const [ambienceBlocked, setAmbienceBlocked] = useState(false)
@@ -47,6 +48,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
       voice.pause()
       voice.currentTime = 0
     }
+    voiceLockedRef.current = false
     if (ambience) {
       ambience.pause()
       ambience.currentTime = 0
@@ -58,7 +60,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
     const handleVisibilityChange = () => {
       if (document.hidden) {
         stopAllAudio()
-        setPlayback((current) => current === "playing" ? "ready" : current)
+        voiceLockedRef.current = false
+      setPlayback((current) => current === "playing" ? "ready" : current)
       }
     }
 
@@ -74,7 +77,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
   async function startBriefing() {
     const voice = voiceRef.current
     const ambience = ambienceRef.current
-    if (!voice || playback === "playing") return
+    if (!voice || voiceLockedRef.current || playback === "playing") return
+    voiceLockedRef.current = true
 
     voice.pause()
     voice.currentTime = 0
@@ -97,6 +101,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
       await voice.play()
       setPlayback("playing")
     } catch {
+      voiceLockedRef.current = false
       restoreAmbience()
       setPlayback("unavailable")
     }
@@ -120,6 +125,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
   }, [])
 
   function handleVoiceEnded() {
+    voiceLockedRef.current = false
     setPlayback("finished")
     setActiveLine(dialogue.length - 1)
     restoreAmbience()
