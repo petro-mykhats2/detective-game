@@ -5,6 +5,7 @@ import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
 import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
+import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
 
 type Screen =
   | "start"
@@ -12,6 +13,7 @@ type Screen =
   | "handoff"
   | "stage-one"
   | "stage-two"
+  | "stage-three-briefing"
   | "stage-three"
   | "terminal"
 
@@ -265,8 +267,12 @@ export default function App() {
       {screen === "stage-two" && (
         <StageTwo
           onBack={() => setScreen("stage-one")}
-          onComplete={() => setScreen("stage-three")}
+          onComplete={() => setScreen("stage-three-briefing")}
         />
+      )}
+
+      {screen === "stage-three-briefing" && (
+        <ChiefBriefing onContinue={() => setScreen("stage-three")} />
       )}
 
       {screen === "stage-three" && (
