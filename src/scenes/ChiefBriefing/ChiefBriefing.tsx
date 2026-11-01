@@ -29,83 +29,142 @@ const dialogue = [
 export default function ChiefBriefing({ onContinue }: Props) {
   const ambienceRef = useRef<HTMLAudioElement>(null)
   const voiceRef = useRef<HTMLAudioElement>(null)
-  const voiceLockedRef = useRef(false) // Захист від подвійного кліку до оновлення React-стану.
+  const voiceLockedRef = useRef(false)
+  const autoplayTimerRef = useRef<number | null>(null)
+  const fadeFrameRef = useRef<number | null>(null)
   const [playback, setPlayback] = useState<PlaybackState>("ready")
   const [activeLine, setActiveLine] = useState(0)
-  const [ambienceBlocked, setAmbienceBlocked] = useState(false)
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false)
+
+  // Плавна зміна гучності без різких стартів/зупинок.
+  const fadeVolume = useCallback((
+    audio: HTMLAudioElement,
+    target: number,
+    duration = 1200,
+  ) => {
+    if (fadeFrameRef.current !== null) cancelAnimationFrame(fadeFrameRef.current)
+    const from = audio.volume
+    const startedAt = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - startedAt) / duration)
+      // Ease-in-out: м'який початок і завершення.
+      const eased = progress * progress * (3 - 2 * progress)
+      audio.volume = Math.max(0, Math.min(1, from + (target - from) * eased))
+      if (progress < 1) fadeFrameRef.current = requestAnimationFrame(tick)
+      else fadeFrameRef.current = null
+    }
+    fadeFrameRef.current = requestAnimationFrame(tick)
+  }, [])
 
   const restoreAmbience = useCallback(() => {
     const ambience = ambienceRef.current
-    if (ambience) ambience.volume = AMBIENCE_VOLUME_NORMAL
-  }, [])
+    if (ambience) fadeVolume(ambience, AMBIENCE_VOLUME_NORMAL, 1400)
+  }, [fadeVolume])
 
-  // Зупиняємо обидва аудіофайли при виході зі сцени, зміні сторінки
-  // або приховуванні вкладки. Це не дає звуку продовжуватися у фоні.
   const stopAllAudio = useCallback(() => {
+    if (autoplayTimerRef.current !== null) {
+      window.clearTimeout(autoplayTimerRef.current)
+      autoplayTimerRef.current = null
+    }
+    if (fadeFrameRef.current !== null) {
+      cancelAnimationFrame(fadeFrameRef.current)
+      fadeFrameRef.current = null
+    }
     const voice = voiceRef.current
     const ambience = ambienceRef.current
     if (voice) {
       voice.pause()
       voice.currentTime = 0
+      voice.volume = 0
     }
     voiceLockedRef.current = false
     if (ambience) {
       ambience.pause()
       ambience.currentTime = 0
-      ambience.volume = AMBIENCE_VOLUME_NORMAL
+      ambience.volume = 0
     }
   }, [])
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopAllAudio()
-        voiceLockedRef.current = false
-      setPlayback((current) => current === "playing" ? "ready" : current)
-      }
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      stopAllAudio()
-    }
-  }, [stopAllAudio])
-
-  // Відтворення запускається лише явною дією гравця, щоб браузер не блокував звук.
-  // Поки промова звучить, фонова атмосфера автоматично приглушується.
   async function startBriefing() {
     const voice = voiceRef.current
     const ambience = ambienceRef.current
     if (!voice || voiceLockedRef.current || playback === "playing") return
     voiceLockedRef.current = true
+    setAutoplayBlocked(false)
+    setActiveLine(0)
 
     voice.pause()
     voice.currentTime = 0
-    voice.volume = CHIEF_VOICE_VOLUME
-    setActiveLine(0)
+    voice.volume = 0
 
-    if (ambience) {
-      ambience.volume = AMBIENCE_VOLUME_NORMAL
+    if (ambience && ambience.paused) {
+      ambience.volume = 0
       try {
         await ambience.play()
-        setAmbienceBlocked(false)
+        fadeVolume(ambience, AMBIENCE_VOLUME_DURING_VOICE, 900)
       } catch {
-        setAmbienceBlocked(true)
+        // Голос усе одно можна відтворити, навіть якщо браузер заблокував атмосферу.
       }
+    } else if (ambience) {
+      fadeVolume(ambience, AMBIENCE_VOLUME_DURING_VOICE, 900)
     }
-
-    if (ambience) ambience.volume = AMBIENCE_VOLUME_DURING_VOICE
 
     try {
       await voice.play()
       setPlayback("playing")
+      fadeVolume(voice, CHIEF_VOICE_VOLUME, 1300)
     } catch {
       voiceLockedRef.current = false
       restoreAmbience()
       setPlayback("unavailable")
+      setAutoplayBlocked(true)
     }
   }
+
+  // Атмосфера запускається відразу після появи сцени.
+  // Голос начальника стартує автоматично через 2 секунди.
+  // Якщо браузер заборонить autoplay зі звуком, показуємо кнопку ручного запуску.
+  useEffect(() => {
+    let cancelled = false
+    const ambience = ambienceRef.current
+
+    const beginSceneAudio = async () => {
+      if (ambience) {
+        ambience.volume = 0
+        try {
+          await ambience.play()
+          if (cancelled) return
+          fadeVolume(ambience, AMBIENCE_VOLUME_NORMAL, 1800)
+        } catch {
+          if (!cancelled) setAutoplayBlocked(true)
+        }
+      }
+
+      autoplayTimerRef.current = window.setTimeout(() => {
+        if (!cancelled) void startBriefing()
+      }, 2000)
+    }
+
+    void beginSceneAudio()
+
+    return () => {
+      cancelled = true
+      stopAllAudio()
+    }
+  // startBriefing uses current refs/state only for this initial scene entry.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fadeVolume, stopAllAudio])
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopAllAudio()
+        setPlayback((current) => current === "playing" ? "ready" : current)
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange)
+  }, [stopAllAudio])
 
   // Оцінюємо позицію голосу відносно довжини файлу й показуємо субтитри по черзі.
   // Це приблизна синхронізація; для ідеального збігу можна буде додати таймкоди.
@@ -210,10 +269,10 @@ export default function ChiefBriefing({ onContinue }: Props) {
           </div>
 
           <div className="chief-briefing__controls">
-            {playback !== "playing" && playback !== "finished" && (
+            {(playback === "unavailable" || autoplayBlocked) && playback !== "playing" && playback !== "finished" && (
               <button className="chief-briefing__primary" onClick={startBriefing}>
                 <span className="chief-briefing__play-icon">▶</span>
-                {playback === "unavailable" ? "Спробувати відтворити знову" : "Вислухати начальника"}
+                "Увімкнути звук"
               </button>
             )}
             {playback === "playing" && (
@@ -227,8 +286,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
             </button>
           </div>
 
-          {ambienceBlocked && (
-            <p className="chief-briefing__audio-note">Фонове аудіо не запустилося. Перевірте файл у папці public/audio.</p>
+          {autoplayBlocked && playback !== "playing" && (
+            <p className="chief-briefing__audio-note">Браузер заблокував автоматичне відтворення. Натисніть «Увімкнути звук».</p>
           )}
         </div>
       </section>
