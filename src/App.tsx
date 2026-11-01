@@ -81,15 +81,16 @@ export default function App() {
     // Пробуємо запустити музику одразу при відкритті стартової сторінки.
     // Деякі браузери блокують autoplay зі звуком; кнопка звуку або «Почати розслідування»
     // повторить спробу після дії користувача.
-    if (musicEnabled) {
+    if (musicEnabled && screen !== "stage-three-briefing") {
       void music
         .play()
         .then(() => setAudioBlocked(false))
         .catch(() => setAudioBlocked(true))
     } else {
+      // Під час брифінгу звучить окрема атмосфера кабінету — глобальну музику зупиняємо.
       music.pause()
     }
-  }, [musicEnabled])
+  }, [musicEnabled, screen])
 
   useEffect(
     () => () => {
