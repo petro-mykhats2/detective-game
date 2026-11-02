@@ -18,6 +18,8 @@ const MUSIC_SELECTOR = 'audio[src="/investigation-theme.mp3"]'
 const MUSIC_DURING_VIDEO = 0.12
 const INTRO_DELAY_DESKTOP = 300
 const INTRO_DELAY_TOUCH = 250
+const MUSIC_FADE_DURATION_MS = 1400
+const MUSIC_FADE_INTERVAL_MS = 25
 
 const choices: Choice[] = [
   {
@@ -318,24 +320,58 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
   const transitionTimer = useRef<number | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const previousMusicVolume = useRef<number | null>(null)
+  const musicFadeTimer = useRef<number | null>(null)
   const [videoError, setVideoError] = useState(false)
 
   const choice = choices.find((item) => item.id === selected)
   const selectedAnswer = choice?.answers.find((item) => item.id === answerId)
 
+  function fadeMusicTo(targetVolume: number, onComplete?: () => void) {
+    const music = getMusicElement()
+    if (!music) {
+      onComplete?.()
+      return
+    }
+
+    if (musicFadeTimer.current !== null) {
+      window.clearInterval(musicFadeTimer.current)
+      musicFadeTimer.current = null
+    }
+
+    const startVolume = music.volume
+    const startTime = performance.now()
+
+    musicFadeTimer.current = window.setInterval(() => {
+      const progress = Math.min((performance.now() - startTime) / MUSIC_FADE_DURATION_MS, 1)
+      // Плавне ease-in-out згасання/відновлення без стрибка гучності.
+      const eased = progress * progress * (3 - 2 * progress)
+      music.volume = Math.max(0, Math.min(1, startVolume + (targetVolume - startVolume) * eased))
+
+      if (progress >= 1) {
+        if (musicFadeTimer.current !== null) {
+          window.clearInterval(musicFadeTimer.current)
+          musicFadeTimer.current = null
+        }
+        music.volume = targetVolume
+        onComplete?.()
+      }
+    }, MUSIC_FADE_INTERVAL_MS)
+  }
+
   function duckMusic() {
     const music = getMusicElement()
     if (!music || previousMusicVolume.current !== null) return
     previousMusicVolume.current = music.volume
-    music.volume = MUSIC_DURING_VIDEO
+    fadeMusicTo(MUSIC_DURING_VIDEO)
   }
 
   function restoreMusic() {
     const music = getMusicElement()
-    if (music && previousMusicVolume.current !== null) {
-      music.volume = previousMusicVolume.current
-      previousMusicVolume.current = null
-    }
+    const volumeToRestore = previousMusicVolume.current
+    if (!music || volumeToRestore === null) return
+
+    previousMusicVolume.current = null
+    fadeMusicTo(volumeToRestore)
   }
 
   function finishVideo() {
@@ -371,6 +407,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
     )
     return () => {
       if (introTimer.current !== null) window.clearTimeout(introTimer.current)
+      if (musicFadeTimer.current !== null) window.clearInterval(musicFadeTimer.current)
       if (transitionTimer.current !== null)
         window.clearTimeout(transitionTimer.current)
       if (videoRef.current) videoRef.current.pause()
