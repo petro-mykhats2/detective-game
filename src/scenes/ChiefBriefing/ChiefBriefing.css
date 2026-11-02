@@ -99,3 +99,45 @@
   .chief-briefing__controls button { width: 100%; min-height: 40px; padding: 9px 12px; }
   .chief-briefing__footer { padding-top: 8px; }
 }
+
+
+/* Фіксуємо нижній службовий рядок унизу екрана, щоб він не стрибав
+   через зміну висоти субтитрів або появу елементів керування. */
+.chief-briefing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.chief-briefing__scene {
+  flex: 1 0 auto;
+}
+.chief-briefing__footer {
+  width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Фото начальника приховане на початку та плавно проявляється
+   після CONNECTION_DELAY_MS, коли компонент додає клас is-connected. */
+.chief-briefing__portrait {
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.chief-briefing.is-connected .chief-briefing__portrait {
+  opacity: 1;
+}
+.chief-briefing__recording {
+  transition: color .35s ease, border-color .35s ease, background .35s ease;
+}
+.chief-briefing.is-connected .chief-briefing__recording {
+  border-color: #ffffff25;
+}
+
+/* Не анімуємо фото, якщо користувач вимкнув рух у системних налаштуваннях. */
+@media (prefers-reduced-motion: reduce) {
+  .chief-briefing__portrait {
+    transition: none;
+    opacity: 1;
+  }
+}
