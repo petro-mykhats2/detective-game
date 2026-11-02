@@ -18,6 +18,8 @@ const CHIEF_VOICE_VOLUME = 1
 
 // ЧАСИ З'ЄДНАННЯ: затримка до появи фото начальника, у мілісекундах.
 const CONNECTION_DELAY_MS = 2500
+// Окреме фото-заглушка після завершення промови. Додайте власний файл у public.
+const CHIEF_CLOSED_IMAGE = "/chief-office-closed-placeholder.jpeg"
 
 const dialogue = [
   {
@@ -246,7 +248,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
 
   return (
     <main
-      className={`chief-briefing ${connectionComplete ? "is-connected" : ""}`}
+      className={`chief-briefing ${connectionComplete ? "is-connected" : ""} ${playback === "finished" ? "is-closed" : ""}`}
       aria-label="Брифінг начальника слідчого підрозділу"
     >
       <div className="chief-briefing__vignette" aria-hidden="true" />
@@ -264,7 +266,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
               Якщо файлу ще немає, стилізована заглушка збереже композицію сцени. */}
           <img
             className="chief-briefing__portrait"
-            src="/chief-office.jpeg"
+            key={playback === "finished" ? "closed-portrait" : "active-portrait"}
+            src={playback === "finished" ? CHIEF_CLOSED_IMAGE : "/chief-office.jpeg"}
             alt="Начальник слідчого підрозділу за робочим столом"
             onError={(event) => {
               event.currentTarget.style.display = "none"
@@ -291,7 +294,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
             <strong>СЛУЖБОВА НАРАДА</strong>
           </div>
           <div className="chief-briefing__recording">
-            <i /> {connectionComplete ? "ЗВ’ЯЗОК ВІДКРИТО" : "З’ЄДНАННЯ…"}
+            <i /> {playback === "finished" ? "ЗВ’ЯЗОК ЗАКРИТО" : connectionComplete ? "ЗВ’ЯЗОК ВІДКРИТО" : "З’ЄДНАННЯ…"}
           </div>
         </div>
 
