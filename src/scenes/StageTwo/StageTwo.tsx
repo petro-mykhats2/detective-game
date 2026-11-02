@@ -4,6 +4,7 @@ type Props = { onBack: () => void; onComplete: () => void }
 
 const AUDIO_STAGE_TWO_INTRO = "/audio/assistant-stage-two-intro.mp3"
 const AUDIO_STAGE_TWO_NEXT = "/audio/assistant-stage-two-next.mp3"
+const AUDIO_ENVELOPE_TRANSITION = "/audio/perechid.mp3"
 
 // ПАУЗИ ПЕРЕД АВТОВІДТВОРЕННЯМ (мс): окремо для комп’ютерів і мобільних пристроїв.
 // На комп’ютері 2500 = 2,5 секунди для атмосфери.
@@ -44,6 +45,7 @@ export default function StageTwo({ onBack, onComplete }: Props) {
   const autoNextStartedRef = useRef(false)
   // Синхронний захист від повторного кліку до наступного React-render.
   const continueToEnvelopeThreeStartedRef = useRef(false)
+  const envelopeTransitionAudioRef = useRef<HTMLAudioElement | null>(null)
 
   function getMusicElement() {
     // App.tsx містить один постійний елемент <audio> для фонової музики.
@@ -171,6 +173,13 @@ export default function StageTwo({ onBack, onComplete }: Props) {
     if (continueToEnvelopeThreeStartedRef.current || transitioning) return
     continueToEnvelopeThreeStartedRef.current = true
     stopDialogue()
+    const transitionAudio = new Audio(AUDIO_ENVELOPE_TRANSITION)
+    transitionAudio.preload = "auto"
+    transitionAudio.volume = 1
+    envelopeTransitionAudioRef.current = transitionAudio
+    void transitionAudio.play().catch(() => {
+      // Якщо браузер блокує звук, перехід усе одно має відбутися.
+    })
     setTransitioning(true)
     transitionTimer.current = window.setTimeout(() => {
       transitionTimer.current = null
