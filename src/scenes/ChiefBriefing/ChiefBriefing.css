@@ -54,12 +54,7 @@
 .chief-briefing__playing-note,.chief-briefing__afterword{width:100%;margin:0;color:#b8c3b5;font-size:11px;line-height:1.7}
 .chief-briefing__audio-note{color:#c69a86;font-size:10px}
 .chief-briefing__footer{padding-top:18px;border-top:1px solid #ffffff1a}
-to{opacity:1}}
-to{opacity:1;transform:translateY(0);filter:blur(0)}}
-to{transform:scale(1.09)}}
-to{opacity:1;transform:translateY(0)}}
-@keyframes cb-wave{from{height:4px;opacity:.45}to{height:18px;opacity:1}}
-50%{opacity:.35}}
+/* Невикористані keyframes прибрано: попередній фрагмент був обрізаний і ламав парсер CSS. */
 @media(max-width:850px){.chief-briefing__scene{grid-template-columns:1fr;gap:30px;margin-top:28px}.chief-briefing__portrait-wrap{position:relative;top:auto;min-height:clamp(320px,52vh,520px)}.chief-briefing__dialogue{padding-top:0}.chief-briefing__subtitle{min-height:0}.chief-briefing__transcript{max-height:240px;overflow:auto}}
 @media(max-width:560px){.chief-briefing{padding:18px 15px 28px}.chief-briefing__topline,.chief-briefing__footer{font-size:7px;letter-spacing:.05em;align-items:flex-start}.chief-briefing__portrait-wrap{min-height:360px}.chief-briefing__identity span{font-size:7px}.chief-briefing__dialogue h1{font-size:42px}.chief-briefing__controls{align-items:stretch;flex-direction:column}.chief-briefing__controls button{width:100%}}
 @media(prefers-reduced-motion:reduce){.chief-briefing *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
