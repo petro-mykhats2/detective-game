@@ -52,7 +52,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
   const voiceRef = useRef<HTMLAudioElement>(null)
   const voiceLockedRef = useRef(false)
   const autoplayTimerRef = useRef<number | null>(null)
-  const fadeFrameRef = useRef<number | null>(null)
+  const ambienceFadeFrameRef = useRef<number | null>(null)
+  const voiceFadeFrameRef = useRef<number | null>(null)
   const [playback, setPlayback] = useState<PlaybackState>("ready")
   const [activeLine, setActiveLine] = useState(0)
   const [autoplayBlocked, setAutoplayBlocked] = useState(false)
@@ -60,8 +61,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
   // Плавна зміна гучності без різких стартів/зупинок.
   const fadeVolume = useCallback(
     (audio: HTMLAudioElement, target: number, duration = 1200) => {
-      if (fadeFrameRef.current !== null)
-        cancelAnimationFrame(fadeFrameRef.current)
+      const frameRef = audio === ambienceRef.current ? ambienceFadeFrameRef : voiceFadeFrameRef
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
       const from = audio.volume
       const startedAt = performance.now()
       const tick = (now: number) => {
@@ -69,10 +70,10 @@ export default function ChiefBriefing({ onContinue }: Props) {
         // Ease-in-out: м'який початок і завершення.
         const eased = progress * progress * (3 - 2 * progress)
         audio.volume = Math.max(0, Math.min(1, from + (target - from) * eased))
-        if (progress < 1) fadeFrameRef.current = requestAnimationFrame(tick)
-        else fadeFrameRef.current = null
+        if (progress < 1) frameRef.current = requestAnimationFrame(tick)
+        else frameRef.current = null
       }
-      fadeFrameRef.current = requestAnimationFrame(tick)
+      frameRef.current = requestAnimationFrame(tick)
     },
     [],
   )
@@ -87,9 +88,13 @@ export default function ChiefBriefing({ onContinue }: Props) {
       window.clearTimeout(autoplayTimerRef.current)
       autoplayTimerRef.current = null
     }
-    if (fadeFrameRef.current !== null) {
-      cancelAnimationFrame(fadeFrameRef.current)
-      fadeFrameRef.current = null
+    if (ambienceFadeFrameRef.current !== null) {
+      cancelAnimationFrame(ambienceFadeFrameRef.current)
+      ambienceFadeFrameRef.current = null
+    }
+    if (voiceFadeFrameRef.current !== null) {
+      cancelAnimationFrame(voiceFadeFrameRef.current)
+      voiceFadeFrameRef.current = null
     }
     const voice = voiceRef.current
     const ambience = ambienceRef.current
@@ -226,7 +231,6 @@ export default function ChiefBriefing({ onContinue }: Props) {
       aria-label="Брифінг начальника слідчого підрозділу"
     >
       <div className="chief-briefing__vignette" aria-hidden="true" />
-      <div className="chief-briefing__grain" aria-hidden="true" />
 
       <header className="chief-briefing__topline">
         <span>
@@ -348,9 +352,10 @@ export default function ChiefBriefing({ onContinue }: Props) {
               </span>
             )}
             {playback === "finished" && (
-              <p className="chief-briefing__afterword">
-                Рішення за вами. Уважно вивчіть матеріали третього конверта.
-              </p>
+              <button className="chief-briefing__primary" onClick={startBriefing}>
+                <span className="chief-briefing__play-icon">↻</span>
+                Прослухати звернення ще раз
+              </button>
             )}
             <button
               className="chief-briefing__continue"
