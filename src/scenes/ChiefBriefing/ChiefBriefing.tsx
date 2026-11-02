@@ -181,18 +181,6 @@ export default function ChiefBriefing({ onContinue }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fadeVolume, stopAllAudio])
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopAllAudio()
-        setPlayback((current) => (current === "playing" ? "ready" : current))
-      }
-    }
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    return () =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-  }, [stopAllAudio])
-
   // Оцінюємо позицію голосу відносно довжини файлу й показуємо субтитри по черзі.
   // Це приблизна синхронізація; для ідеального збігу можна буде додати таймкоди.
   useEffect(() => {
