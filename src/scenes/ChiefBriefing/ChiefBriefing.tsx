@@ -16,34 +16,51 @@ const AMBIENCE_VOLUME_NORMAL = 0.24
 const AMBIENCE_VOLUME_DURING_VOICE = 0.055
 const CHIEF_VOICE_VOLUME = 1
 
+// ЧАСИ З'ЄДНАННЯ: затримка до появи фото начальника, у мілісекундах.
+const CONNECTION_DELAY_MS = 2500
+
 const dialogue = [
   {
     text: "Бачу, ти вже отримав висновки експертів і первинні матеріали.",
     cue: "ВИМОГА НАЧАЛЬНИКА",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 3400,
   },
   {
     text: "Добре. Тепер уважно вивчи все, що маєш.",
     cue: "УВАЖНО ВИВЧИ МАТЕРІАЛИ",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 2800,
   },
   {
     text: "На мене тиснуть згори. Журналісти телефонують щодня. Усі хочуть знати, що сталося. Чому загинула людина? Чи справді це звичайна дорожньо-транспортна пригода?",
     cue: "ТИСК ЗГОРИ",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 9000,
   },
   {
     text: "Мені потрібні не здогадки. Не припущення. Мені потрібні факти.",
     cue: "ПОТРІБНІ ФАКТИ",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 3500,
   },
   {
     text: "Перевір експертизи. Зістав їх із матеріалами справи. Якщо побачиш обставини, які не узгоджуються з версією ДТП і можуть указувати на умисне вбивство, доповідай негайно.",
     cue: "ПЕРЕВІР КОЖНУ ДЕТАЛЬ",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 9000,
   },
   {
     text: "Тоді розглянемо питання про зміну правової кваліфікації та залучення додаткових сил до розслідування. Але спочатку ти маєш обґрунтувати своє рішення.",
     cue: "РІШЕННЯ МАЄ БУТИ ОБҐРУНТОВАНЕ",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 7000,
   },
   {
     text: "До вечора чекаю від тебе попередній звіт. Не поспішай із висновками… але й не пропусти нічого важливого. Якщо це не просто ДТП — ми повинні це встановити.",
     cue: "ЗВІТ ДО ВЕЧОРА",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 8500,
   },
 ]
 
@@ -57,6 +74,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
   const [playback, setPlayback] = useState<PlaybackState>("ready")
   const [activeLine, setActiveLine] = useState(0)
   const [autoplayBlocked, setAutoplayBlocked] = useState(false)
+  const [connectionComplete, setConnectionComplete] = useState(false)
 
   // Плавна зміна гучності без різких стартів/зупинок.
   const fadeVolume = useCallback(
@@ -147,6 +165,12 @@ export default function ChiefBriefing({ onContinue }: Props) {
     }
   }
 
+  // Через CONNECTION_DELAY_MS показуємо фото й перемикаємо статус з'єднання.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setConnectionComplete(true), CONNECTION_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [])
+
   // Атмосфера запускається відразу після появи сцени.
   // Голос начальника стартує автоматично через 2 секунди.
   // Якщо браузер заборонить autoplay зі звуком, показуємо кнопку ручного запуску.
@@ -189,11 +213,18 @@ export default function ChiefBriefing({ onContinue }: Props) {
 
     const updateLine = () => {
       if (!voice.duration || !Number.isFinite(voice.duration)) return
-      const progress = voice.currentTime / voice.duration
-      const index = Math.min(
-        dialogue.length - 1,
-        Math.floor(progress * dialogue.length),
-      )
+      // Кожна репліка має власний час durationMs. Сума цих значень задає
+      // повну шкалу субтитрів; змінюйте durationMs біля потрібної репліки вище.
+      const elapsedMs = voice.currentTime * 1000
+      let accumulatedMs = 0
+      let index = dialogue.length - 1
+      for (let i = 0; i < dialogue.length; i += 1) {
+        accumulatedMs += dialogue[i].durationMs
+        if (elapsedMs < accumulatedMs) {
+          index = i
+          break
+        }
+      }
       setActiveLine(index)
     }
 
@@ -215,7 +246,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
 
   return (
     <main
-      className="chief-briefing"
+      className={`chief-briefing ${connectionComplete ? "is-connected" : ""}`}
       aria-label="Брифінг начальника слідчого підрозділу"
     >
       <div className="chief-briefing__vignette" aria-hidden="true" />
@@ -260,7 +291,7 @@ export default function ChiefBriefing({ onContinue }: Props) {
             <strong>СЛУЖБОВА НАРАДА</strong>
           </div>
           <div className="chief-briefing__recording">
-            <i /> ЗВ'ЯЗОК ВІДКРИТО
+            <i /> {connectionComplete ? "ЗВ’ЯЗОК ВІДКРИТО" : "З’ЄДНАННЯ…"}
           </div>
         </div>
 
