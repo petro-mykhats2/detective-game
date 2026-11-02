@@ -209,6 +209,10 @@ export default function App() {
                 <path d="M5 12h13M13 6l6 6-6 6" />
               </svg>
             </button>
+            {/* Тимчасова кнопка для тестування прямого переходу до службового брифінгу. Видаліть після тестів. */}
+            <button className="briefing-test-button" onClick={() => setScreen("stage-three-briefing")}>
+              ТЕСТ · ВІДКРИТИ СЛУЖБОВИЙ БРИФІНГ
+            </button>
           </div>
           <div className="intro__footer">
             <span>СИСТЕМА ГОТОВА ДО РОБОТИ</span>
