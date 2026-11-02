@@ -141,3 +141,16 @@
     opacity: 1;
   }
 }
+
+
+/* На широкому екрані текстова колонка дорівнює висоті фото. Блок вступу притиснутий донизу з постійним відступом. */
+@media(min-width:851px){.chief-briefing__scene{align-items:stretch}.chief-briefing__dialogue{display:flex;flex-direction:column;justify-content:flex-end;align-self:stretch;padding:0 0 clamp(18px,3vh,34px)}.chief-briefing__subtitle{display:flex;flex-direction:column;justify-content:center;min-height:142px}}
+/* Плавна поява кожної нової репліки начальника. */
+.chief-briefing__subtitle{animation:chief-subtitle-appear .7s cubic-bezier(.2,.7,.2,1) both}
+.chief-briefing__subtitle p{animation:chief-text-appear .85s cubic-bezier(.2,.7,.2,1) both}
+@keyframes chief-subtitle-appear{from{opacity:0}to{opacity:1}}
+@keyframes chief-text-appear{from{opacity:0;transform:translateY(9px);filter:blur(2px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+/* Після завершення промови показуємо інше фото та трохи затемнюємо його. */
+.chief-briefing.is-closed .chief-briefing__portrait{filter:brightness(.68) saturate(.82)}
+.chief-briefing.is-closed .chief-briefing__portrait-shade{background:linear-gradient(180deg,#070a0c24 15%,#080b0df2 100%),linear-gradient(90deg,#05070855,#05070820 60%)}
+@media(prefers-reduced-motion:reduce){.chief-briefing__subtitle,.chief-briefing__subtitle p{animation:none}}
