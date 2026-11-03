@@ -13,7 +13,7 @@ const OFFICE_AMBIENCE_FILE = "/audio/fon-chief.mp3"
 
 // Гучність фонового аудіо до/після промови та під час голосу.
 const AMBIENCE_VOLUME_NORMAL = 0.24
-const AMBIENCE_VOLUME_DURING_VOICE = 0.055
+const AMBIENCE_VOLUME_DURING_VOICE = 0.15
 const CHIEF_VOICE_VOLUME = 1
 
 // ЧАСИ З'ЄДНАННЯ: затримка до появи фото начальника, у мілісекундах.
@@ -23,46 +23,52 @@ const CHIEF_CLOSED_IMAGE = "/chief-office-closed-placeholder.jpeg"
 
 const dialogue = [
   {
+    text: "",
+    cue: "",
+    // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
+    durationMs: 200,
+  },
+  {
     text: "Бачу, ти вже отримав висновки експертів і первинні матеріали.",
     cue: "ВИМОГА НАЧАЛЬНИКА",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 3400,
+    durationMs: 3900,
   },
   {
     text: "Добре. Тепер уважно вивчи все, що маєш.",
     cue: "УВАЖНО ВИВЧИ МАТЕРІАЛИ",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 2800,
+    durationMs: 3500,
   },
   {
     text: "На мене тиснуть згори. Журналісти телефонують щодня. Усі хочуть знати, що сталося. Чому загинула людина? Чи справді це звичайна дорожньо-транспортна пригода?",
     cue: "ТИСК ЗГОРИ",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 9000,
+    durationMs: 10600,
   },
   {
     text: "Мені потрібні не здогадки. Не припущення. Мені потрібні факти.",
     cue: "ПОТРІБНІ ФАКТИ",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 3500,
+    durationMs: 5300,
   },
   {
     text: "Перевір експертизи. Зістав їх із матеріалами справи. Якщо побачиш обставини, які не узгоджуються з версією ДТП і можуть указувати на умисне вбивство, доповідай негайно.",
     cue: "ПЕРЕВІР КОЖНУ ДЕТАЛЬ",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 9000,
+    durationMs: 11700,
   },
   {
     text: "Тоді розглянемо питання про зміну правової кваліфікації та залучення додаткових сил до розслідування. Але спочатку ти маєш обґрунтувати своє рішення.",
     cue: "РІШЕННЯ МАЄ БУТИ ОБҐРУНТОВАНЕ",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 7000,
+    durationMs: 9700,
   },
   {
     text: "До вечора чекаю від тебе попередній звіт. Не поспішай із висновками… але й не пропусти нічого важливого. Якщо це не просто ДТП — ми повинні це встановити.",
     cue: "ЗВІТ ДО ВЕЧОРА",
     // Тривалість субтитру в мілісекундах; підлаштуйте під аудіофайл.
-    durationMs: 8500,
+    durationMs: 9500,
   },
 ]
 
@@ -81,7 +87,8 @@ export default function ChiefBriefing({ onContinue }: Props) {
   // Плавна зміна гучності без різких стартів/зупинок.
   const fadeVolume = useCallback(
     (audio: HTMLAudioElement, target: number, duration = 1200) => {
-      const frameRef = audio === ambienceRef.current ? ambienceFadeFrameRef : voiceFadeFrameRef
+      const frameRef =
+        audio === ambienceRef.current ? ambienceFadeFrameRef : voiceFadeFrameRef
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
       const from = audio.volume
       const startedAt = performance.now()
@@ -169,7 +176,10 @@ export default function ChiefBriefing({ onContinue }: Props) {
 
   // Через CONNECTION_DELAY_MS показуємо фото й перемикаємо статус з'єднання.
   useEffect(() => {
-    const timer = window.setTimeout(() => setConnectionComplete(true), CONNECTION_DELAY_MS)
+    const timer = window.setTimeout(
+      () => setConnectionComplete(true),
+      CONNECTION_DELAY_MS,
+    )
     return () => window.clearTimeout(timer)
   }, [])
 
@@ -266,8 +276,14 @@ export default function ChiefBriefing({ onContinue }: Props) {
               Якщо файлу ще немає, стилізована заглушка збереже композицію сцени. */}
           <img
             className="chief-briefing__portrait"
-            key={playback === "finished" ? "closed-portrait" : "active-portrait"}
-            src={playback === "finished" ? CHIEF_CLOSED_IMAGE : "/chief-office.jpeg"}
+            key={
+              playback === "finished" ? "closed-portrait" : "active-portrait"
+            }
+            src={
+              playback === "finished"
+                ? CHIEF_CLOSED_IMAGE
+                : "/chief-office.jpeg"
+            }
             alt="Начальник слідчого підрозділу за робочим столом"
             onError={(event) => {
               event.currentTarget.style.display = "none"
@@ -294,7 +310,12 @@ export default function ChiefBriefing({ onContinue }: Props) {
             <strong>СЛУЖБОВА НАРАДА</strong>
           </div>
           <div className="chief-briefing__recording">
-            <i /> {playback === "finished" ? "ЗВ’ЯЗОК ЗАКРИТО" : connectionComplete ? "ЗВ’ЯЗОК ВІДКРИТО" : "З’ЄДНАННЯ…"}
+            <i />{" "}
+            {playback === "finished"
+              ? "ЗВ’ЯЗОК ЗАКРИТО"
+              : connectionComplete
+                ? "ЗВ’ЯЗОК ВІДКРИТО"
+                : "З’ЄДНАННЯ…"}
           </div>
         </div>
 
@@ -368,13 +389,16 @@ export default function ChiefBriefing({ onContinue }: Props) {
                   "Увімкнути звук"
                 </button>
               )}
-            {playback === "playing" && (
+            {/* {playback === "playing" && (
               <span className="chief-briefing__playing-note">
                 Промова триває. Повторне відтворення заблоковано.
               </span>
-            )}
+            )} */}
             {playback === "finished" && (
-              <button className="chief-briefing__primary" onClick={startBriefing}>
+              <button
+                className="chief-briefing__primary"
+                onClick={startBriefing}
+              >
                 <span className="chief-briefing__play-icon">↻</span>
                 Прослухати звернення ще раз
               </button>

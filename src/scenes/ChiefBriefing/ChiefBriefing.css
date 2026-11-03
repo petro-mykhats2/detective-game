@@ -36,6 +36,14 @@
 .chief-briefing__sound-bars{display:flex;align-items:center;gap:3px;height:20px}
 .chief-briefing__sound-bars i{display:block;width:2px;height:5px;background:#b99a6b;opacity:.55}
 .chief-briefing__sound-bars.is-playing i{animation:cb-wave .7s ease-in-out infinite alternate}
+@keyframes cb-wave{0%{height:4px;opacity:.35}100%{height:18px;opacity:1}}
+.chief-briefing__sound-bars.is-playing i:nth-child(1){animation:cb-wave .6s ease-in-out infinite alternate}
+.chief-briefing__sound-bars.is-playing i:nth-child(2){animation:cb-wave .8s ease-in-out infinite alternate .1s}
+.chief-briefing__sound-bars.is-playing i:nth-child(3){animation:cb-wave .5s ease-in-out infinite alternate .2s}
+.chief-briefing__sound-bars.is-playing i:nth-child(4){animation:cb-wave .7s ease-in-out infinite alternate .15s}
+.chief-briefing__sound-bars.is-playing i:nth-child(5){animation:cb-wave .65s ease-in-out infinite alternate .25s}
+
+
 .chief-briefing__subtitle{min-height:155px;padding:24px 0 22px;animation:cb-subtitle-in .55s ease both}
 .chief-briefing__subtitle>span{color:#77868a;font:8px "DM Mono",monospace;letter-spacing:.14em}
 .chief-briefing__subtitle p{margin:13px 0 0;color:#f1eee7;font-size:clamp(16px,1.8vw,21px);line-height:1.8;font-weight:400}
@@ -147,7 +155,7 @@
 @media(min-width:851px){.chief-briefing__scene{align-items:stretch}.chief-briefing__dialogue{display:flex;flex-direction:column;justify-content:flex-end;align-self:stretch;padding:0 0 clamp(18px,3vh,34px)}.chief-briefing__subtitle{display:flex;flex-direction:column;justify-content:center;min-height:142px}}
 /* Плавна поява кожної нової репліки начальника. */
 .chief-briefing__subtitle{animation:chief-subtitle-appear .7s cubic-bezier(.2,.7,.2,1) both}
-.chief-briefing__subtitle p{animation:chief-text-appear .85s cubic-bezier(.2,.7,.2,1) both}
+.chief-briefing__subtitle p{animation:chief-text-appear 3.85s cubic-bezier(.2,.7,.2,1) both}
 @keyframes chief-subtitle-appear{from{opacity:0}to{opacity:1}}
 @keyframes chief-text-appear{from{opacity:0;transform:translateY(9px);filter:blur(2px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 /* Після завершення промови показуємо інше фото та трохи затемнюємо його. */
