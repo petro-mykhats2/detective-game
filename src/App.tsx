@@ -6,6 +6,7 @@ import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
 import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
+import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 
 type Screen =
   | "start"
@@ -14,6 +15,7 @@ type Screen =
   | "stage-one"
   | "stage-two"
   | "stage-three-briefing"
+  | "materials-guide"
   | "stage-three"
   | "terminal"
 
@@ -280,7 +282,14 @@ export default function App() {
       )}
 
       {screen === "stage-three-briefing" && (
-        <ChiefBriefing onContinue={() => setScreen("stage-three")} />
+        <ChiefBriefing onContinue={() => setScreen("materials-guide")} />
+      )}
+
+      {screen === "materials-guide" && (
+        <MaterialsGuide
+          onBack={() => setScreen("stage-three-briefing")}
+          onContinue={() => setScreen("stage-three")}
+        />
       )}
 
       {screen === "stage-three" && (
