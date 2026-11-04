@@ -3,9 +3,9 @@ import "./App.css"
 import ChiefOffice from "./scenes/ChiefOffice/ChiefOffice"
 import { introLines } from "./scenes/ChiefOffice/sceneData"
 import StageOne from "./scenes/StageOne/StageOne"
-import StageTwo from "./scenes/StageTwo/StageTwo"
+import StageTwo from "./scenes/StageTwo/StageTwo"\nimport MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 
-type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "terminal"
+type Screen = "start" | "intro" | "handoff" | "stage-one" | "stage-two" | "terminal" | "materials-guide"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -259,7 +259,7 @@ export default function App() {
         <StageTwo onBack={() => setScreen("stage-one")} onComplete={() => setScreen("terminal")} />
       )}
 
-      {screen === "terminal" && (
+      {screen === "materials-guide" && (\n        <MaterialsGuide onBack={() => setScreen("terminal")} />\n      )}\n\n      {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
           <div className="scene-topline">
             <span>
@@ -268,7 +268,7 @@ export default function App() {
             <span>СПРАВА № 12026170010000456</span>
           </div>
           <div className="terminal-card">
-            <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>
+            <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>\n            <button className="text-button" onClick={() => setScreen("materials-guide")}>Орієнтування в матеріалах справи →</button>
             <h1>Зафіксуйте ключові факти</h1>
             <p className="terminal-instruction">
               Вивчіть документи з фізичного конверта № 1. Запишіть тут факти,
