@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 type Fact = { id: string; label: string; kind: string; text: string; source: string }
 type Section = { id: string; label: string; facts: Fact[] }
@@ -50,10 +50,19 @@ const documents: DocumentItem[] = [
   }
 ]
 
-export default function MaterialsGuide({ onBack }: { onBack: () => void }) {
+export default function MaterialsGuide({
+  onBack,
+  onContinue,
+}: {
+  onBack: () => void
+  onContinue: () => void
+}) {
   const [documentId, setDocumentId] = useState(documents[0].id)
   const [sectionId, setSectionId] = useState(documents[0].sections[0].id)
   const [factId, setFactId] = useState(documents[0].sections[0].facts[0].id)
+  const [selectedConclusion, setSelectedConclusion] = useState<string | null>(null)
+  const [conclusionFeedback, setConclusionFeedback] = useState<"correct" | "incorrect" | null>(null)
+  const continueTimer = useRef<number | null>(null)
   const [notes, setNotes] = useState(() => {
     try { return localStorage.getItem("detective-material-guide-notes-v1") ?? "" } catch { return "" }
   })
@@ -61,6 +70,21 @@ export default function MaterialsGuide({ onBack }: { onBack: () => void }) {
   const section = doc.sections.find(item => item.id === sectionId) ?? doc.sections[0]
   const fact = section.facts.find(item => item.id === factId) ?? section.facts[0]
   const totalFacts = useMemo(() => documents.reduce((sum, item) => sum + item.sections.reduce((s, part) => s + part.facts.length, 0), 0), [])
+
+  useEffect(() => () => {
+    if (continueTimer.current !== null) window.clearTimeout(continueTimer.current)
+  }, [])
+
+  function chooseConclusion(id: string) {
+    if (conclusionFeedback === "correct") return
+    setSelectedConclusion(id)
+    if (id === "a") {
+      setConclusionFeedback("correct")
+      continueTimer.current = window.setTimeout(onContinue, 1300)
+    } else {
+      setConclusionFeedback("incorrect")
+    }
+  }
 
   function changeDocument(id: string) {
     const next = documents.find(item => item.id === id) ?? documents[0]
@@ -85,11 +109,13 @@ export default function MaterialsGuide({ onBack }: { onBack: () => void }) {
       .mg-panel{background:#171d20;border:1px solid #343c3e;padding:clamp(18px,3vw,30px);margin:18px 0}.mg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
       .mg-field label{display:block;color:#a9aaa2;font-size:10px;letter-spacing:.14em;margin-bottom:9px}.mg-field select{width:100%;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:13px 38px 13px 12px;font:inherit;font-size:14px;min-height:48px}
       .mg-docline{color:#c6a46a;font-size:11px;letter-spacing:.08em;margin:20px 0 0}.mg-section-title{font:24px Georgia,serif;margin:0 0 18px}.mg-fact{border-left:2px solid #c6a46a;padding:4px 0 4px 18px;margin:18px 0}.mg-fact h3{font:22px Georgia,serif;margin:9px 0}.mg-fact p{color:#d0d0c8;line-height:1.75;margin:0 0 13px}.mg-source{color:#969e9b;font-size:11px;letter-spacing:.04em}.mg-tag{display:inline-block;border:1px solid #59615f;color:#c6c9c0;padding:5px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-      .mg-warning{border:1px solid #66563d;background:#211e18;color:#cfc1a7;padding:14px 16px;line-height:1.6;font-size:13px;margin-top:20px}.mg-notes{width:100%;box-sizing:border-box;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:14px;font:inherit;line-height:1.6;min-height:130px;resize:vertical}.mg-small{font-size:11px;color:#9ca29d;margin-top:10px}
-      @media(max-width:720px){.mg-grid{grid-template-columns:1fr}.mg-top{align-items:flex-start}.mg-title{line-height:1.08}.mg-panel{padding:17px}}
+      .mg-warning{border:1px solid #66563d;background:#211e18;color:#cfc1a7;padding:14px 16px;line-height:1.6;font-size:13px;margin-top:20px}
+      .mg-answer-list{display:grid;gap:10px;margin-top:20px}.mg-answer{display:flex;align-items:flex-start;gap:13px;width:100%;text-align:left;background:#0f1518;border:1px solid #485052;color:#e9e5dc;padding:15px;line-height:1.6;font:inherit;cursor:pointer}.mg-answer>span{flex:0 0 28px;height:28px;display:grid;place-items:center;border:1px solid #6c716d;color:#c6a46a;font-size:11px}.mg-answer.is-selected{border-color:#c6a46a;background:#211e18}.mg-answer.is-correct{border-color:#78977d}.mg-answer:disabled{cursor:default}.mg-answer-feedback{margin-top:16px;padding:14px 16px;line-height:1.6;font-size:13px}.mg-answer-feedback.is-incorrect{border:1px solid #8c5a50;background:#261b19;color:#e3b8ae}.mg-answer-feedback.is-correct{border:1px solid #58765e;background:#18221b;color:#c6ddc9}
+      .mg-notes{width:100%;box-sizing:border-box;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:14px;font:inherit;line-height:1.6;min-height:130px;resize:vertical}.mg-small{font-size:11px;color:#9ca29d;margin-top:10px}
+      @media(max-width:720px){.mg-grid{grid-template-columns:1fr}.mg-top{align-items:flex-start}.mg-title{line-height:1.08}.mg-panel{padding:17px}.mg-answer{font-size:13px}}
     `}</style>
     <div className="mg-wrap">
-      <div className="mg-top"><span><i/> ЦИФРОВИЙ СУПРОВІД РОЗСЛІДУВАННЯ · СПРАВА № 12026170010000456</span><button className="mg-back" onClick={onBack}>← НАЗАД ДО ТЕРМІНАЛА</button></div>
+      <div className="mg-top"><span><i/> ЦИФРОВИЙ СУПРОВІД РОЗСЛІДУВАННЯ · СПРАВА № 12026170010000456</span><button className="mg-back" onClick={onBack}>← НАЗАД ДО РЕЗУЛЬТАТІВ</button></div>
       <div className="mg-kicker">РОБОЧИЙ ІНСТРУМЕНТ СЛІДЧОГО</div>
       <h1 className="mg-title">Орієнтування в матеріалах справи</h1>
       <p className="mg-lead">Оберіть документ, потрібний розділ і конкретний пункт. Сторінка допомагає знайти відомості в паперових матеріалах, але не формує за слідчого версій чи висновків.</p>
@@ -111,6 +137,48 @@ export default function MaterialsGuide({ onBack }: { onBack: () => void }) {
           <div className="mg-source">ДЖЕРЕЛО: {fact.source}</div>
         </article>
         <div className="mg-warning">Довідковий переказ не замінює оригінал. Перед використанням відомостей у грі звірте формулювання з відповідним пунктом паперового документа. Опис факту та висновок експерта — різні типи інформації.</div>
+      </section>
+      <section className="mg-panel mg-investigation-check">
+        <div className="mg-kicker">ПЕРЕВІРКА ВИСНОВКУ</div>
+        <h2 className="mg-section-title">Яка обставина дає підстави перевірити версію умисного вбивства?</h2>
+        <p className="mg-lead">Зіставте висновок судово-медичного експерта з описом ушкоджень. Оберіть один варіант.</p>
+        <div className="mg-answer-list">
+          {[
+            {
+              id: "a",
+              text: "Смертельна травма голови виникла за життя, а ушкодження, пов’язані з падінням автомобіля, мають посмертний характер.",
+            },
+            {
+              id: "b",
+              text: "Усі ушкодження виникли внаслідок падіння автомобіля.",
+            },
+            {
+              id: "c",
+              text: "Експерт установив особу, яка завдала смертельного удару.",
+            },
+          ].map((option) => (
+            <button
+              type="button"
+              key={option.id}
+              className={`mg-answer ${selectedConclusion === option.id ? "is-selected" : ""} ${conclusionFeedback === "correct" && option.id === "a" ? "is-correct" : ""}`}
+              disabled={conclusionFeedback === "correct"}
+              onClick={() => chooseConclusion(option.id)}
+            >
+              <span>{option.id.toUpperCase()}</span>
+              {option.text}
+            </button>
+          ))}
+        </div>
+        {conclusionFeedback === "incorrect" && (
+          <div className="mg-answer-feedback is-incorrect" role="status">
+            Це не відповідає висновку експерта. Зверніть увагу на різницю між прижиттєвою смертельною травмою та посмертними ушкодженнями від падіння. Спробуйте ще раз.
+          </div>
+        )}
+        {conclusionFeedback === "correct" && (
+          <div className="mg-answer-feedback is-correct" role="status">
+            Правильно. Ця послідовність ушкоджень дає підстави перевірити версію умисного вбивства, але сама по собі не доводить її та не встановлює винну особу. Переходимо до наступного етапу…
+          </div>
+        )}
       </section>
       <section className="mg-panel">
         <div className="mg-kicker">ОСОБИСТІ РОБОЧІ ЗАПИСИ</div>
