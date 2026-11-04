@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import "./ThirdEnvelope.css"
+import MaterialsGuide from "../MaterialsGuide/MaterialsGuide"
 
 type Props = { onBack?: () => void; onComplete: () => void }
 
@@ -308,6 +309,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
   const [videoStarted, setVideoStarted] = useState(false)
   const [videoFinished, setVideoFinished] = useState(false)
   const [opening, setOpening] = useState(false)
+  const [showMaterialsGuide, setShowMaterialsGuide] = useState(false)
   const [noticed, setNoticed] = useState<boolean | null>(null)
   const [selected, setSelected] = useState<ChoiceId | null>(null)
   const [answerId, setAnswerId] = useState<string | null>(null)
@@ -522,7 +524,16 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
             <span>РЕЗУЛЬТАТИ ЕКСПЕРТИЗ</span>
           </div>
           <h1>Картина змінюється</h1>
-          {!opening ? (
+          {showMaterialsGuide ? (
+            <MaterialsGuide
+              onBack={() => {
+                setShowMaterialsGuide(false)
+                setOpening(false)
+                setNoticed(null)
+              }}
+              onContinue={() => setShowMaterialsGuide(false)}
+            />
+          ) : !opening ? (
             <div className="third-envelope__assistant">
               <img
                 src="/assistant-mark.png"
@@ -541,6 +552,7 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
                     onClick={() => {
                       setNoticed(true)
                       setOpening(true)
+                      setShowMaterialsGuide(true)
                     }}
                   >
                     Так, дещо тут справді не сходиться.
