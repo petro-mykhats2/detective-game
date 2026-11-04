@@ -6,7 +6,6 @@ import StageOne from "./scenes/StageOne/StageOne"
 import StageTwo from "./scenes/StageTwo/StageTwo"
 import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
-import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 
 type Screen =
   | "start"
@@ -17,7 +16,6 @@ type Screen =
   | "stage-three-briefing"
   | "stage-three"
   | "terminal"
-  | "materials-guide"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -292,10 +290,6 @@ export default function App() {
         />
       )}
 
-      {screen === "materials-guide" && (
-        <MaterialsGuide onBack={() => setScreen("terminal")} />
-      )}
-
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
           <div className="scene-topline">
@@ -306,9 +300,6 @@ export default function App() {
           </div>
           <div className="terminal-card">
             <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>
-            <button className="text-button" onClick={() => setScreen("materials-guide")}>
-              Орієнтування в матеріалах справи →
-            </button>
             <h1>Зафіксуйте ключові факти</h1>
             <p className="terminal-instruction">
               Вивчіть документи з фізичного конверта № 1. Запишіть тут факти,
