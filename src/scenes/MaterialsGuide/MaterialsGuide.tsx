@@ -362,7 +362,7 @@ export default function MaterialsGuide({
 
   if (submitted) {
     return (
-      <main className="materials-guide">
+      <main className="materials-guide mg-page-enter">
         <style>{styles}</style>
         <div className="mg-wrap">
           <div className="mg-top">
@@ -403,7 +403,7 @@ export default function MaterialsGuide({
   }
 
   return (
-    <main className="materials-guide">
+    <main className="materials-guide mg-page-enter">
       <style>{styles}</style>
       <div className="mg-wrap">
         <div className="mg-top">
@@ -478,14 +478,18 @@ export default function MaterialsGuide({
                 </div>
               )}
 
-              <h2 className="mg-question">Чи вказує цей факт на можливе умисне вбивство?</h2>
-              <div className="mg-answer">
-                <button className={pick.answer === "yes" ? "selected" : ""} onClick={() => { playTransitionSound(); updatePick(index, { answer: "yes" }) }}>ТАК</button>
-                <button className={pick.answer === "no" ? "selected" : ""} onClick={() => updatePick(index, { answer: "no" })}>НІ</button>
-              </div>
+              {!isCorrect && (
+                <div className="mg-question-area">
+                  <h2 className="mg-question">Чи вказує цей факт на можливе умисне вбивство?</h2>
+                  <div className="mg-answer">
+                    <button className={pick.answer === "yes" ? "selected" : ""} onClick={() => { playTransitionSound(); updatePick(index, { answer: "yes" }) }}>ТАК</button>
+                    <button className={pick.answer === "no" ? "selected" : ""} onClick={() => updatePick(index, { answer: "no" })}>НІ</button>
+                  </div>
+                </div>
+              )}
 
               {pick.answer && (
-                <div className={`mg-feedback ${isCorrect ? "good" : "bad"}`}>
+                <div className={`mg-feedback ${isCorrect ? "good" : "bad"} mg-feedback-enter`}>
                   {isCorrect ? "Вірно. " : "Відповідь не зарахована. "}
                   {fact.explanation}
                   {isCorrect && " Вам нараховано 1 бал."}
@@ -495,9 +499,13 @@ export default function MaterialsGuide({
           )
         })}
 
-        <div className="mg-actions">
+        <div className={`mg-actions ${score >= 2 ? "mg-submit-actions-enter" : ""}`}>
           {score >= 1 && <button className="mg-secondary" onClick={addPick}>＋ ДОДАТИ ЩЕ ФАКТИ</button>}
-          {score >= 2 && <button className="mg-primary" onClick={() => { playTransitionSound(); submitFacts() }}>ПОДАТИ ФАКТИ НАЧАЛЬНИКУ →</button>}
+          {score >= 2 && (
+            <button className="mg-primary mg-submit-button" onClick={() => { playTransitionSound(); submitFacts() }}>
+              ПОДАТИ ФАКТИ НАЧАЛЬНИКУ →
+            </button>
+          )}
         </div>
 
         <p className="mg-muted">
@@ -510,6 +518,16 @@ export default function MaterialsGuide({
 }
 
 const styles = `
+  .mg-page-enter{animation:mgPageIn .55s cubic-bezier(.22,.8,.25,1) both}
+  .mg-feedback-enter{animation:mgFeedbackIn .42s cubic-bezier(.22,.8,.25,1) both}
+  .mg-submit-actions-enter{animation:mgSubmitIn .65s cubic-bezier(.16,1,.3,1) both}
+  .mg-submit-button{position:relative;animation:mgSubmitPulse 2.2s ease-in-out .35s infinite}
+  .mg-submit-button::after{content:"";position:absolute;inset:-5px;border:1px solid rgba(198,164,106,.45);border-radius:5px;opacity:0;animation:mgSubmitRing 2.2s ease-out .5s infinite;pointer-events:none}
+  @keyframes mgPageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes mgFeedbackIn{from{opacity:0;transform:translateY(10px);max-height:0}to{opacity:1;transform:translateY(0);max-height:500px}}
+  @keyframes mgSubmitIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes mgSubmitPulse{0%,100%{box-shadow:0 0 0 rgba(198,164,106,0)}50%{box-shadow:0 0 28px rgba(198,164,106,.24)}}
+  @keyframes mgSubmitRing{0%{opacity:0;transform:scale(.96)}20%{opacity:.8}100%{opacity:0;transform:scale(1.06)}}
   .materials-guide{
     position:fixed;
     inset:0;
@@ -664,6 +682,7 @@ const styles = `
   }
 
   @media(prefers-reduced-motion:reduce){
+    .mg-page-enter,.mg-feedback-enter,.mg-submit-actions-enter,.mg-submit-button,.mg-submit-button::after{animation:none}
     .mg-back,.mg-secondary,.mg-answer button,.mg-primary{transition:none}
   }
 `
