@@ -1,125 +1,148 @@
 import { useMemo, useState } from "react"
 
-type Fact = { id: string; label: string; kind: string; text: string; source: string }
+type Fact = { id: string; label: string; text: string; source: string; indicatesIntentionalMurder: boolean; explanation: string }
 type Section = { id: string; label: string; facts: Fact[] }
-type DocumentItem = { id: string; title: string; subtitle: string; sections: Section[] }
+type DocumentItem = { id: string; title: string; sections: Section[] }
 
 const documents: DocumentItem[] = [
   {
-    id: "forensic",
-    title: "Акт судово-медичного дослідження № 102/26",
-    subtitle: "Обласне бюро судово-медичної експертизи · 07–08.07.2026",
+    id: "medical",
+    title: "Акт судово-медичної експертизи № 102/26",
     sections: [
-      { id: "time", label: "Час та обставини дослідження", facts: [
-        { id: "time1", label: "Час початку та завершення", kind: "Реквізити документа", text: "Дослідження розпочато 07.07.2026 о 09:30 та завершено 08.07.2026 о 14:00.", source: "Акт № 102/26, вступна частина" },
-        { id: "time2", label: "Орієнтовний час смерті", kind: "Висновок експерта", text: "У документі наведено орієнтовний час смерті — 22:40–22:50 06.07.2026.", source: "Акт № 102/26, висновкова частина" }
+      { id: "external", label: "II. Зовнішнє дослідження", facts: [
+        { id: "clothing", label: "Стан одягу", text: "Повсякденний одяг; виявлено множинні розриви та плями бурого кольору, схожі на кров.", source: "Акт № 102/26 · Розділ II · Одяг", indicatesIntentionalMurder: false, explanation: "Це опис стану одягу. Сам по собі він не встановлює умисного позбавлення життя." },
+        { id: "head-wound", label: "Забійна рана тім’яної ділянки", text: "Забійна рана розміром 4 × 1,5 см на тім’яній ділянці.", source: "Акт № 102/26 · Розділ II · Тілесні ушкодження", indicatesIntentionalMurder: false, explanation: "Рана є важливою обставиною, але її опис без висновку про механізм і час утворення ще не дає повної відповіді." },
+        { id: "no-belt-marks", label: "Відсутність гематом від ременя", text: "Гематоми від натягу паска безпеки — відсутні.", source: "Акт № 102/26 · Розділ II · Тілесні ушкодження", indicatesIntentionalMurder: true, explanation: "У поєднанні з автотехнічним висновком про застібання ременя на вже мертве тіло це підтримує версію інсценування ДТП. Оцінюйте саме сукупність матеріалів." }
       ]},
-      { id: "injuries", label: "Виявлені тілесні ушкодження", facts: [
-        { id: "inj1", label: "Ушкодження голови", kind: "Опис спостереження", text: "Описано тім’яну рану розміром 4 × 1,5 см та втиснений перелом тім’яної кістки.", source: "Акт № 102/26, дослідницька частина" },
-        { id: "inj2", label: "Ушкодження грудної клітки", kind: "Опис спостереження", text: "Описано множинні переломи ребер з обох боків, 3–8.", source: "Акт № 102/26, дослідницька частина" },
-        { id: "inj3", label: "Ознаки крововтрати", kind: "Опис спостереження", text: "У документі зазначено відсутність ознак гострої крововтрати та асфіксії.", source: "Акт № 102/26, дослідницька частина" }
+      { id: "internal", label: "III. Внутрішнє дослідження", facts: [
+        { id: "skull", label: "Перелом черепа та крововилив", text: "Вдавлений перелом тім’яної кістки під раною. Масивний субарахноїдальний крововилив.", source: "Акт № 102/26 · Розділ III · Череп та головний мозок", indicatesIntentionalMurder: false, explanation: "Це опис ушкодження. Його значення для версії визначається разом із висновком про прижиттєвий характер і механізм травми." },
+        { id: "ribs", label: "Переломи ребер", text: "Множинні двосторонні переломи ребер (3–8); крововиливи у м’які тканини відсутні.", source: "Акт № 102/26 · Розділ III · Грудна клітка", indicatesIntentionalMurder: false, explanation: "У висновку ці переломи віднесено до ушкоджень, характерних для ДТП, і визначено як посмертні." }
       ]},
-      { id: "tests", label: "Додаткові дослідження та висновки", facts: [
-        { id: "tox", label: "Токсикологічне дослідження", kind: "Результат дослідження", text: "У досліджених зразках не виявлено етилового алкоголю, наркотичних і психотропних речовин.", source: "Акт № 102/26, результати токсикології" },
-        { id: "cause", label: "Причина смерті", kind: "Висновок експерта", text: "Причиною смерті визначено відкриту черепно-мозкову травму з втисненим переломом тім’яної кістки та масивним крововиливом у мозок.", source: "Акт № 102/26, висновок" },
-        { id: "mechanism", label: "Механізм травми голови", kind: "Висновок експерта", text: "Експерт пов’язує смертельне ушкодження з дією тупого твердого предмета. У документі наведено можливі приклади предметів.", source: "Акт № 102/26, висновок" },
-        { id: "ribs", label: "Характер переломів ребер", kind: "Висновок експерта", text: "Переломи ребер у висновку пов’язані з дорожньо-транспортною пригодою та охарактеризовані як посмертні.", source: "Акт № 102/26, висновок" }
+      { id: "conclusions", label: "V. Судово-медичний діагноз та висновки", facts: [
+        { id: "premortem", label: "Прижиттєва смертельна травма голови", text: "Смертельна черепно-мозкова травма виникла за життя. Ушкодження, пов’язані з падінням автомобіля, мають посмертний характер.", source: "Акт № 102/26 · Розділ V · Медична оцінка та головний висновок", indicatesIntentionalMurder: true, explanation: "Це ключова ознака: смертельна травма була завдана до падіння автомобіля, отже саме падіння не пояснює причину смерті." },
+        { id: "weapon", label: "Механізм утворення смертельної травми", text: "Смертельна травма тім’яної ділянки — від сильного цілеспрямованого удару тупим твердим предметом.", source: "Акт № 102/26 · Розділ V · Механізм утворення травм", indicatesIntentionalMurder: true, explanation: "Експерт описує цілеспрямований удар тупим предметом як механізм смертельної травми, що є ознакою насильницького нападу." },
+        { id: "toxicology", label: "Результат токсикологічного дослідження", text: "Етиловий спирт, наркотичні та психотропні речовини не виявлено.", source: "Акт № 102/26 · Розділ IV · Хіміко-токсикологічне дослідження", indicatesIntentionalMurder: false, explanation: "Цей результат виключає виявлення перелічених речовин у зразках, але сам по собі не свідчить про умисне вбивство." }
       ]}
     ]
   },
   {
     id: "vehicle",
     title: "Висновок експерта № 142/26-АВТО (V3)",
-    subtitle: "Дністровський НДЕКЦ · 15.07.2026",
     sections: [
-      { id: "vehicle", label: "Ідентифікація та огляд автомобіля", facts: [
-        { id: "car", label: "Автомобіль", kind: "Об’єкт дослідження", text: "Білий Volkswagen Passat B7 Variant, державний номер ВІ 7741 СТ.", source: "Висновок № 142/26-АВТО, об’єкт дослідження" },
-        { id: "damage", label: "Пошкодження задньої частини", kind: "Опис спостереження", text: "Зафіксовано деформації заднього бампера та кришки багажника.", source: "Висновок № 142/26-АВТО, результати огляду" },
-        { id: "paint", label: "Сторонні мікрочастинки фарби", kind: "Результат дослідження", text: "Виявлено темні мікрошари фарби, які за описом експерта не відповідають білому лакофарбовому покриттю дослідженого автомобіля.", source: "Висновок № 142/26-АВТО, результати дослідження" }
+      { id: "body", label: "II. Технічний стан кузова та трасологічний аналіз", facts: [
+        { id: "forced-push", label: "Примусове виштовхування автомобіля", text: "Слідова картина свідчить про примусове виштовхування ТЗ у прірву іншим масивним транспортним засобом.", source: "Висновок № 142/26-АВТО · Розділ II · Експертний висновок", indicatesIntentionalMurder: true, explanation: "Висновок вказує на зовнішній силовий вплив іншого транспортного засобу, а не на звичайне самостійне падіння." },
+        { id: "paint", label: "Сторонні нашарування лакофарбового покриття", text: "У зоні контактного пошкодження виявлено темні чужорідні мікронашарування ЛФП, які відрізняються від штатного білого покриття автомобіля.", source: "Висновок № 142/26-АВТО · Розділ II · Технічний стан кузова", indicatesIntentionalMurder: true, explanation: "Стороннє ЛФП у зоні силового контакту підтримує версію зіткнення з іншим транспортним засобом. Це слід перевіряти разом з іншими ознаками." },
+        { id: "rear-damage", label: "Деформація задньої частини кузова", text: "Виявлено деформацію продавлювання в області заднього бампера та кришки багажного відділення.", source: "Висновок № 142/26-АВТО · Розділ II · Технічний стан кузова", indicatesIntentionalMurder: false, explanation: "Окремий опис деформації не встановлює механізм умисного виштовхування; для цього важливий повний трасологічний висновок." }
       ]},
-      { id: "mechanics", label: "Технічний стан та положення органів керування", facts: [
-        { id: "gear", label: "Положення важеля КПП", kind: "Опис спостереження та висновок", text: "Важіль механічної коробки передач перебував у нейтральному положенні. Експерт зазначає, що ознак перемикання важеля в нейтраль під час падіння не виявлено; положення було обране до падіння.", source: "Висновок № 142/26-АВТО, дослідження КПП" },
-        { id: "belt", label: "Ремінь безпеки водія", kind: "Опис спостереження та висновок", text: "Язичок замка ременя був зафіксований. Водночас не виявлено описаних експертом динамічних слідів навантаження; у висновку зазначено, що ремінь був застебнутий на тілі вже померлої особи.", source: "Висновок № 142/26-АВТО, дослідження ременя" }
+      { id: "controls", label: "II. Аналіз органів управління та систем безпеки", facts: [
+        { id: "neutral", label: "Нейтральне положення КПП до падіння", text: "Фіксатори важеля не мають слідів вибивання передачі під час падіння; це вказує на переведення КПП у нейтральне положення до моменту падіння ТЗ у прірву.", source: "Висновок № 142/26-АВТО · Розділ II · Положення важеля КПП", indicatesIntentionalMurder: true, explanation: "Положення нейтральної передачі було встановлене до падіння та унеможливлювало самостійний рух автомобіля під тягою двигуна. Це підозріла обставина в сукупності з іншими даними." },
+        { id: "belt", label: "Ремінь безпеки застебнутий на вже мертве тіло", text: "Сукупність ознак свідчить про те, що пасок безпеки був застебнутий у замок на вже мертве тіло.", source: "Висновок № 142/26-АВТО · Розділ II · Важлива обставина", indicatesIntentionalMurder: true, explanation: "Це прямо вказує, що ремінь застебнули після смерті водія, що підтримує версію інсценування ДТП." }
       ]},
-      { id: "traces", label: "Сліди та вилучені об’єкти", facts: [
-        { id: "prints", label: "Відбитки пальців", kind: "Результат дослідження", text: "Описано сліди на дверях пасажира, панелі приладів, кермі, важелі КПП та ручці дверей водія. На момент цього висновку порівняльні зразки не були надані, тому особу за ними не встановлено.", source: "Висновок № 142/26-АВТО, дактилоскопічні сліди" },
-        { id: "hair", label: "Волосся", kind: "Вилучені об’єкти", text: "Вилучено коротке темне волосся з підголівника водія (Safe Pack № 1) та довге світле/фарбоване волосся з переднього пасажирського сидіння (Safe Pack № 2). Матеріали запаковано для ДНК-дослідження.", source: "Висновок № 142/26-АВТО, біологічні сліди" },
-        { id: "effects", label: "Особисті речі", kind: "Вилучені об’єкти", text: "Перелічено пошкоджений смартфон 0456-TEL, окуляри 0456-ACC, чорний шкіряний гаманець 0456-WAL та ключі 0456-KEY.", source: "Висновок № 142/26-АВТО, перелік вилученого" }
+      { id: "traces", label: "III. Фіксація та вилучення супутніх речових доказів", facts: [
+        { id: "fingerprints", label: "Виявлені сліди папілярних узорів", text: "Виявлено сліди рук на ручках пасажирських дверей, панелі приладів, кермі, важелі перемикання передач та ручці водійських дверей. Ідентифікація на цьому етапі не проводилась.", source: "Висновок № 142/26-АВТО · Розділ III · Дактилоскопічні сліди", indicatesIntentionalMurder: false, explanation: "Наявність слідів рук без встановлення їх належності не доводить причетність конкретної особи чи умисне вбивство." },
+        { id: "hair", label: "Вилучене волосся", text: "Вилучено коротке темне волосся з підголівника водія та довге світле фарбоване волосся з переднього пасажирського сидіння; об’єкти направлено на ДНК-дослідження.", source: "Висновок № 142/26-АВТО · Розділ III · Біологічні об’єкти", indicatesIntentionalMurder: false, explanation: "Це біологічні об’єкти для подальшого дослідження. Результатів ДНК у цьому документі ще немає." },
+        { id: "phone", label: "Особисті речі потерпілого", text: "Зафіксовано та опечатано розтрощений смартфон, окуляри, гаманець і ключі потерпілого.", source: "Висновок № 142/26-АВТО · Розділ III · Особисті речі", indicatesIntentionalMurder: false, explanation: "Перелік вилучених речей сам по собі не вказує на умисне вбивство." }
+      ]},
+      { id: "summary", label: "V. Підсумкові висновки", facts: [
+        { id: "summary-impact", label: "Ознаки зовнішнього силового впливу", text: "Пошкодження задньої частини кузова та стороннє темне ЛФП можуть свідчити про зіштовхування стороннім транспортним засобом.", source: "Висновок № 142/26-АВТО · Розділ V · Пункт 2", indicatesIntentionalMurder: true, explanation: "Експерт прямо допускає зіткнення зі стороннім транспортним засобом; це підтримує версію примусового скидання автомобіля." }
       ]}
     ]
   }
 ]
 
-const kindClass = (kind: string) => kind.toLowerCase().replaceAll(" ", "-")
+type Pick = { documentId: string; sectionId: string; factId: string; answer: "yes" | "no" | "" }
+const blankPick = (): Pick => ({ documentId: documents[0].id, sectionId: documents[0].sections[0].id, factId: documents[0].sections[0].facts[0].id, answer: "" })
 
-export default function MaterialsGuide({ onBack }: { onBack: () => void }) {
-  const [documentId, setDocumentId] = useState(documents[0].id)
-  const [sectionId, setSectionId] = useState(documents[0].sections[0].id)
-  const [factId, setFactId] = useState(documents[0].sections[0].facts[0].id)
-  const [notes, setNotes] = useState(() => {
-    try { return localStorage.getItem("detective-material-guide-notes-v1") ?? "" } catch { return "" }
-  })
-  const doc = documents.find(item => item.id === documentId) ?? documents[0]
-  const section = doc.sections.find(item => item.id === sectionId) ?? doc.sections[0]
-  const fact = section.facts.find(item => item.id === factId) ?? section.facts[0]
-  const totalFacts = useMemo(() => documents.reduce((sum, item) => sum + item.sections.reduce((s, part) => s + part.facts.length, 0), 0), [])
-
-  function changeDocument(id: string) {
-    const next = documents.find(item => item.id === id) ?? documents[0]
-    setDocumentId(id); setSectionId(next.sections[0].id); setFactId(next.sections[0].facts[0].id)
+export default function MaterialsGuide({ onBack, onSubmit }: { onBack: () => void; onSubmit?: (facts: string[]) => void }) {
+  const [picks, setPicks] = useState<Pick[]>([blankPick()])
+  const [submitted, setSubmitted] = useState(false)
+  const [reviewed, setReviewed] = useState(false)
+  const correctFacts = useMemo(() => {
+    return picks.filter(p => {
+      const doc = documents.find(d => d.id === p.documentId)
+      const section = doc?.sections.find(s => s.id === p.sectionId)
+      const fact = section?.facts.find(f => f.id === p.factId)
+      return fact && p.answer === (fact.indicatesIntentionalMurder ? "yes" : "no") && fact.indicatesIntentionalMurder
+    })
+  }, [picks])
+  const score = correctFacts.length
+  const usedIds = new Set(picks.map(p => p.factId))
+  const getFact = (pick: Pick) => documents.find(d => d.id === pick.documentId)?.sections.find(s => s.id === pick.sectionId)?.facts.find(f => f.id === pick.factId)
+  const updatePick = (index: number, patch: Partial<Pick>) => setPicks(old => old.map((p, i) => i === index ? { ...p, ...patch, answer: patch.factId || patch.sectionId || patch.documentId ? "" : (patch.answer ?? p.answer) } : p))
+  const changeDocument = (index: number, documentId: string) => {
+    const doc = documents.find(d => d.id === documentId)!
+    setPicks(old => old.map((p, i) => i === index ? { documentId, sectionId: doc.sections[0].id, factId: doc.sections[0].facts[0].id, answer: "" } : p))
   }
-  function changeSection(id: string) {
-    const next = doc.sections.find(item => item.id === id) ?? doc.sections[0]
-    setSectionId(id); setFactId(next.facts[0].id)
+  const changeSection = (index: number, sectionId: string) => {
+    const p = picks[index]
+    const doc = documents.find(d => d.id === p.documentId)!
+    const section = doc.sections.find(s => s.id === sectionId)!
+    setPicks(old => old.map((item, i) => i === index ? { ...item, sectionId, factId: section.facts[0].id, answer: "" } : item))
   }
-  function saveNotes(value: string) {
-    setNotes(value)
-    try { localStorage.setItem("detective-material-guide-notes-v1", value) } catch { /* local storage unavailable */ }
+  const addPick = () => setPicks(old => [...old, blankPick()])
+  const answered = picks.every(p => p.answer !== "")
+  const submitFacts = () => {
+    setSubmitted(true)
+    onSubmit?.(correctFacts.map(p => getFact(p)?.text ?? "").filter(Boolean))
   }
 
   return <main className="materials-guide">
     <style>{`
-      .materials-guide{min-height:100vh;background:#0d1114;color:#e9e5dc;padding:clamp(20px,4vw,54px);font-family:inherit}
-      .mg-wrap{max-width:1120px;margin:0 auto}.mg-top{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #343a3b;padding-bottom:18px;margin-bottom:38px;color:#a7aaa4;font-size:11px;letter-spacing:.16em}
-      .mg-top i,.mg-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c6a46a;margin-right:9px}
-      .mg-back{background:transparent;border:1px solid #555b59;color:#ddd8cc;padding:10px 15px;cursor:pointer;letter-spacing:.08em;font:inherit;font-size:11px}
-      .mg-kicker{color:#c6a46a;font-size:11px;letter-spacing:.2em;margin-bottom:12px}.mg-title{font-family:Georgia,serif;font-weight:400;font-size:clamp(34px,5vw,58px);margin:0 0 12px}.mg-lead{color:#aeb2ac;max-width:720px;line-height:1.7;margin-bottom:32px}
-      .mg-panel{background:#171d20;border:1px solid #343c3e;padding:clamp(18px,3vw,30px);margin:18px 0}.mg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-      .mg-field label{display:block;color:#a9aaa2;font-size:10px;letter-spacing:.14em;margin-bottom:9px}.mg-field select{width:100%;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:13px 38px 13px 12px;font:inherit;font-size:14px;min-height:48px}
-      .mg-docline{color:#c6a46a;font-size:11px;letter-spacing:.08em;margin:20px 0 0}.mg-section-title{font:24px Georgia,serif;margin:0 0 18px}.mg-fact{border-left:2px solid #c6a46a;padding:4px 0 4px 18px;margin:18px 0}.mg-fact h3{font:22px Georgia,serif;margin:9px 0}.mg-fact p{color:#d0d0c8;line-height:1.75;margin:0 0 13px}.mg-source{color:#969e9b;font-size:11px;letter-spacing:.04em}.mg-tag{display:inline-block;border:1px solid #59615f;color:#c6c9c0;padding:5px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-      .mg-warning{border:1px solid #66563d;background:#211e18;color:#cfc1a7;padding:14px 16px;line-height:1.6;font-size:13px;margin-top:20px}.mg-notes{width:100%;box-sizing:border-box;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:14px;font:inherit;line-height:1.6;min-height:130px;resize:vertical}.mg-small{font-size:11px;color:#9ca29d;margin-top:10px}
-      @media(max-width:720px){.mg-grid{grid-template-columns:1fr}.mg-top{align-items:flex-start}.mg-title{line-height:1.08}.mg-panel{padding:17px}}
+      .materials-guide{min-height:100vh;background:#0d1114;color:#e9e5dc;padding:clamp(18px,4vw,48px);font-family:inherit}
+      .mg-wrap{max-width:1120px;margin:0 auto}.mg-top{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #343a3b;padding-bottom:18px;margin-bottom:34px;color:#a7aaa4;font-size:11px;letter-spacing:.13em}
+      .mg-top i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c6a46a;margin-right:9px}.mg-back,.mg-secondary{background:transparent;border:1px solid #555b59;color:#ddd8cc;padding:11px 15px;cursor:pointer;font:inherit;font-size:11px;letter-spacing:.06em}
+      .mg-kicker{color:#c6a46a;font-size:10px;letter-spacing:.2em;margin-bottom:12px}.mg-title{font:400 clamp(34px,5vw,56px)/1.08 Georgia,serif;margin:0 0 12px}.mg-lead{color:#aeb2ac;max-width:760px;line-height:1.7;margin-bottom:28px}
+      .mg-panel{background:#171d20;border:1px solid #343c3e;padding:clamp(16px,3vw,26px);margin:16px 0}.mg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+      .mg-field label{display:block;color:#a9aaa2;font-size:10px;letter-spacing:.12em;margin-bottom:9px}.mg-field select{width:100%;background:#0f1518;color:#eee9df;border:1px solid #485052;padding:13px 34px 13px 11px;font:inherit;font-size:13px;min-height:48px}
+      .mg-question{font:24px Georgia,serif;margin:0 0 14px}.mg-statement{border-left:2px solid #c6a46a;padding:3px 0 3px 16px;color:#d9d7cf;line-height:1.75}.mg-source{color:#9ca49f;font-size:11px;margin-top:13px}
+      .mg-answer{display:flex;gap:10px;margin-top:20px}.mg-answer button,.mg-primary{border:1px solid #8c754e;background:#c6a46a;color:#111;padding:12px 22px;cursor:pointer;font:inherit;font-size:12px;letter-spacing:.08em}.mg-answer button.selected{background:#e6d0a7;box-shadow:0 0 0 2px #c6a46a}.mg-feedback{margin-top:15px;padding:13px 15px;background:#101619;border:1px solid #3c4848;color:#c9cec7;line-height:1.6;font-size:13px}.mg-feedback.good{border-color:#55735f}.mg-feedback.bad{border-color:#80634d}
+      .mg-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.mg-score{font:24px Georgia,serif;color:#e4d0a9}.mg-muted{font-size:12px;color:#9da49f;line-height:1.6}.mg-success{border:1px solid #55735f;background:#17231c;padding:17px;margin-top:18px;line-height:1.6}.mg-report{border:1px solid #424a49;padding:15px;margin:12px 0;line-height:1.6}.mg-report strong{color:#e3d0a9}
+      @media(max-width:760px){.mg-grid{grid-template-columns:1fr}.mg-top{align-items:flex-start;flex-direction:column}.mg-answer button{flex:1}}
     `}</style>
     <div className="mg-wrap">
-      <div className="mg-top"><span><i/> ЦИФРОВИЙ СУПРОВІД РОЗСЛІДУВАННЯ · СПРАВА № 12026170010000456</span><button className="mg-back" onClick={onBack}>← НАЗАД ДО ТЕРМІНАЛА</button></div>
-      <div className="mg-kicker">РОБОЧИЙ ІНСТРУМЕНТ СЛІДЧОГО</div>
-      <h1 className="mg-title">Орієнтування в матеріалах справи</h1>
-      <p className="mg-lead">Оберіть документ, потрібний розділ і конкретний пункт. Сторінка допомагає знайти відомості в паперових матеріалах, але не формує за слідчого версій чи висновків.</p>
-      <section className="mg-panel">
-        <div className="mg-grid">
-          <div className="mg-field"><label htmlFor="mg-doc">01 / ДОКУМЕНТ</label><select id="mg-doc" value={documentId} onChange={e=>changeDocument(e.target.value)}>{documents.map(d=><option key={d.id} value={d.id}>{d.title}</option>)}</select></div>
-          <div className="mg-field"><label htmlFor="mg-section">02 / РОЗДІЛ</label><select id="mg-section" value={sectionId} onChange={e=>changeSection(e.target.value)}>{doc.sections.map(s=><option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
-          <div className="mg-field"><label htmlFor="mg-fact">03 / ПУНКТ АБО ФРАГМЕНТ</label><select id="mg-fact" value={factId} onChange={e=>setFactId(e.target.value)}>{section.facts.map(f=><option key={f.id} value={f.id}>{f.label}</option>)}</select></div>
+      <div className="mg-top"><span><i/> СПРАВА № 12026170010000456 · АНАЛІЗ МАТЕРІАЛІВ</span><button className="mg-back" onClick={onBack}>← НАЗАД</button></div>
+      {!submitted ? <>
+        <div className="mg-kicker">АНАЛІТИЧНЕ ЗАВДАННЯ · ЕТАП 01</div>
+        <h1 className="mg-title">Знайдіть ознаки умисного вбивства</h1>
+        <p className="mg-lead">У матеріалах є як важливі для версії слідства обставини, так і нейтральні відомості. Оберіть документ, розділ і конкретний фрагмент. Потім визначте, чи вказує він на можливе умисне вбивство.</p>
+        <div className="mg-score">Правильні факти: {score} · 1 бал за кожен</div>
+        {picks.map((pick, index) => {
+          const doc = documents.find(d => d.id === pick.documentId)!
+          const section = doc.sections.find(s => s.id === pick.sectionId)!
+          const fact = section.facts.find(f => f.id === pick.factId)!
+          const duplicate = picks.some((p, i) => i !== index && p.factId === pick.factId && p.documentId === pick.documentId)
+          const isCorrect = pick.answer !== "" && pick.answer === (fact.indicatesIntentionalMurder ? "yes" : "no") && fact.indicatesIntentionalMurder
+          const isIncorrect = pick.answer !== "" && !isCorrect
+          return <section className="mg-panel" key={index}>
+            <div className="mg-kicker">ФАКТ ДЛЯ ПЕРЕВІРКИ · {String(index + 1).padStart(2,"0")}</div>
+            <div className="mg-grid">
+              <div className="mg-field"><label>01 / ДОКУМЕНТ</label><select value={pick.documentId} onChange={e=>changeDocument(index,e.target.value)}>{documents.map(d=><option value={d.id} key={d.id}>{d.title}</option>)}</select></div>
+              <div className="mg-field"><label>02 / РОЗДІЛ</label><select value={pick.sectionId} onChange={e=>changeSection(index,e.target.value)}>{doc.sections.map(s=><option value={s.id} key={s.id}>{s.label}</option>)}</select></div>
+              <div className="mg-field"><label>03 / ФРАГМЕНТ</label><select value={pick.factId} onChange={e=>updatePick(index,{factId:e.target.value})}>{section.facts.map(f=><option value={f.id} key={f.id} disabled={usedIds.has(f.id) && f.id !== pick.factId}>{f.label}</option>)}</select></div>
+            </div>
+            <div className="mg-report"><div className="mg-kicker">ОБРАНИЙ ФРАГМЕНТ</div><p className="mg-statement">{fact.text}</p><div className="mg-source">{fact.source}</div></div>
+            {duplicate && <div className="mg-feedback bad">Цей факт уже обрано в іншому блоці. Оберіть інший фрагмент.</div>}
+            <h2 className="mg-question">Чи вказує цей факт на можливе умисне вбивство?</h2>
+            <div className="mg-answer"><button className={pick.answer==="yes"?"selected":""} onClick={()=>updatePick(index,{answer:"yes"})}>ТАК</button><button className={pick.answer==="no"?"selected":""} onClick={()=>updatePick(index,{answer:"no"})}>НІ</button></div>
+            {pick.answer && <div className={`mg-feedback ${isCorrect?"good":"bad"}`}>{isCorrect ? "Вірно. " : "Відповідь не зарахована. "}{fact.explanation}{isCorrect ? " Вам нараховано 1 бал." : ""}</div>}
+          </section>
+        })}
+        <div className="mg-actions">
+          {score >= 1 && <button className="mg-secondary" onClick={addPick}>＋ ДОДАТИ ЩЕ ФАКТИ</button>}
+          {score >= 2 && <button className="mg-primary" onClick={submitFacts}>ПОДАТИ ФАКТИ НАЧАЛЬНИКУ →</button>}
         </div>
-        <div className="mg-docline">{doc.subtitle} · {totalFacts} довідкових фрагментів у каталозі</div>
-      </section>
-      <section className="mg-panel" aria-live="polite">
-        <div className="mg-kicker">ОБРАНИЙ ФРАГМЕНТ</div>
-        <h2 className="mg-section-title">{section.label}</h2>
-        <article className="mg-fact">
-          <span className="mg-tag">{fact.kind}</span>
-          <h3>{fact.label}</h3>
-          <p>{fact.text}</p>
-          <div className="mg-source">ДЖЕРЕЛО: {fact.source}</div>
-        </article>
-        <div className="mg-warning">Довідковий переказ не замінює оригінал. Перед використанням відомостей у грі звірте формулювання з відповідним пунктом паперового документа. Опис факту та висновок експерта — різні типи інформації.</div>
-      </section>
-      <section className="mg-panel">
-        <div className="mg-kicker">ОСОБИСТІ РОБОЧІ ЗАПИСИ</div>
-        <h2 className="mg-section-title">Мої нотатки</h2>
-        <textarea className="mg-notes" value={notes} onChange={e=>saveNotes(e.target.value)} placeholder="Записуйте власні спостереження, питання та версії. Відокремлюйте підтверджені факти від припущень."/>
-        <div className="mg-small">Нотатки автоматично зберігаються локально в цьому браузері на цьому пристрої.</div>
-      </section>
+        <p className="mg-muted">Повторний вибір уже використаного фрагмента не допускається. Нейтральні факти також можна обирати, але бал нараховується лише за правильне визначення ознаки умисного вбивства.</p>
+      </> : <section className="mg-panel">
+        <div className="mg-kicker">ЗВІТ ДЛЯ КЕРІВНИКА СЛІДЧОЇ ГРУПИ</div>
+        <h1 className="mg-title">Факти подано</h1>
+        <p className="mg-lead">До розгляду передано {correctFacts.length} правильно визначених фактів.</p>
+        {correctFacts.map((p, i) => {
+          const fact = getFact(p)!
+          return <div className="mg-report" key={fact.id}><strong>{i+1}. {fact.label}</strong><p>{fact.text}</p><div className="mg-source">{fact.source}</div></div>
+        })}
+        <div className="mg-success">Начальник отримав зібрані факти. Наступний етап — оцінка сукупності обставин і визначення подальших слідчих дій.</div>
+        <div className="mg-actions"><button className="mg-primary" onClick={()=>setReviewed(true)} disabled={reviewed}>{reviewed ? "ЗВІТ ПЕРЕГЛЯНУТО" : "ПІДТВЕРДИТИ ОЗНАЙОМЛЕННЯ"}</button><button className="mg-secondary" onClick={onBack}>ПОВЕРНУТИСЯ ДО ТЕРМІНАЛА</button></div>
+      </section>}
     </div>
   </main>
 }
