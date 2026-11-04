@@ -422,7 +422,6 @@ export default function MaterialsGuide({
               otherIndex !== index && getFact(other)?.groupId === fact.groupId,
           )
           const isCorrect = pick.answer === "yes" && fact.kind === "key" && !duplicate
-          const isWrong = pick.answer !== "" && !isCorrect
 
           return (
             <section className="mg-panel" key={index}>
