@@ -394,7 +394,7 @@ export default function MaterialsGuide({
             </div>
             <div className="mg-actions">
               <button className="mg-primary" onClick={onContinue}>ПЕРЕЙТИ ДО НАСТУПНОГО ЕТАПУ →</button>
-              <button className="mg-secondary" onClick={() => setSubmitted(false)}>ПЕРЕВІРИТИ ВИБІР</button>
+              
             </div>
           </section>
         </div>
@@ -419,7 +419,7 @@ export default function MaterialsGuide({
           перевірити версію умисного вбивства.
         </p>
 
-        <div className="mg-score">Правильно знайдено: {score} · 1 бал за ключову ознаку</div>
+        <div className="mg-score">Правильно знайдено: {score} · 1 бал за ключову ознаку</div>\n        <p className="mg-reminder">Знайдіть щонайменше 2 ключові факти. У матеріалах є й інші важливі обставини — уважно перевіряйте їх, але не зараховуйте двічі той самий доказовий комплекс.</p>
 
         {picks.map((pick, index) => {
           const document = documents.find(item => item.id === pick.documentId) ?? documents[0]
@@ -437,19 +437,19 @@ export default function MaterialsGuide({
               <div className="mg-grid">
                 <div className="mg-field">
                   <label>01 / ДОКУМЕНТ</label>
-                  <select value={pick.documentId} onChange={event => changeDocument(index, event.target.value)}>
+                  <select value={pick.documentId} disabled={isCorrect} onChange={event => changeDocument(index, event.target.value)}>
                     {documents.map(item => <option value={item.id} key={item.id}>{item.title}</option>)}
                   </select>
                 </div>
                 <div className="mg-field">
                   <label>02 / РОЗДІЛ</label>
-                  <select value={pick.sectionId} onChange={event => changeSection(index, event.target.value)}>
+                  <select value={pick.sectionId} disabled={isCorrect} onChange={event => changeSection(index, event.target.value)}>
                     {document.sections.map(item => <option value={item.id} key={item.id}>{item.label}</option>)}
                   </select>
                 </div>
                 <div className="mg-field">
                   <label>03 / ФРАГМЕНТ</label>
-                  <select value={pick.factId} onChange={event => updatePick(index, { factId: event.target.value })}>
+                  <select value={pick.factId} disabled={isCorrect} onChange={event => updatePick(index, { factId: event.target.value })}>
                     {section.facts.map(item => (
                       <option
                         value={item.id}
@@ -517,7 +517,7 @@ export default function MaterialsGuide({
   )
 }
 
-const styles = `
+const styles = `\n  .mg-reminder{margin:10px 0 22px;padding:12px 15px;border:1px solid rgba(194,151,83,.3);border-left:3px solid #c39753;background:rgba(194,151,83,.07);color:#d7c6a8;font-size:13px;line-height:1.6}\n
   .mg-page-enter{animation:mgPageIn .55s cubic-bezier(.22,.8,.25,1) both}
   .mg-feedback-enter{animation:mgFeedbackIn .42s cubic-bezier(.22,.8,.25,1) both}
   .mg-submit-actions-enter{animation:mgSubmitIn .65s cubic-bezier(.16,1,.3,1) both}
