@@ -23,6 +23,7 @@ export default function StageFour() {
   const oldMusicVolume = useRef<number | null>(null)
   const voiceFrame = useRef<number | null>(null)
   const musicFrame = useRef<number | null>(null)
+  const voiceFadeOutStarted = useRef(false)
 
   function fade(audio: HTMLAudioElement, target: number, ms: number, frameRef: { current: number | null }, done?: () => void) {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
@@ -56,6 +57,7 @@ export default function StageFour() {
     if (!voice.current || playing) return
     const audio = voice.current
     audio.pause(); audio.currentTime = 0; audio.volume = 0
+    voiceFadeOutStarted.current = false
     setLine(0)
     const bg = music()
     if (bg) {
@@ -74,7 +76,13 @@ export default function StageFour() {
     const audio = voice.current
     if (!audio || !playing) return
     const update = () => {
-      if (audio.duration) setLine(Math.min(lines.length - 1, Math.floor(audio.currentTime / audio.duration * lines.length)))
+      if (audio.duration) {
+        setLine(Math.min(lines.length - 1, Math.floor(audio.currentTime / audio.duration * lines.length)))
+        if (!voiceFadeOutStarted.current && audio.duration - audio.currentTime <= 0.8) {
+          voiceFadeOutStarted.current = true
+          fade(audio, 0, 750, voiceFrame)
+        }
+      }
     }
     audio.addEventListener("timeupdate", update)
     return () => audio.removeEventListener("timeupdate", update)
