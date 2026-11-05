@@ -479,6 +479,7 @@ export default function ThirdEnvelope({ mode, onBack, onComplete }: Props) {
         )}
       </header>
 
+      {introOnly && (
       <div
         className={`third-envelope__intro-media ${videoStarted ? "is-visible" : ""}`}
       >
@@ -519,8 +520,9 @@ export default function ThirdEnvelope({ mode, onBack, onComplete }: Props) {
           </div>
         )}
       </div>
+      )}
 
-      {videoFinished && (
+      {(videoFinished || !introOnly) && (
         <div className="third-envelope__content">
           <div className="third-envelope__eyebrow">
             <span>КОНВЕРТ № 3</span>
