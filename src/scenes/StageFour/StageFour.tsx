@@ -21,19 +21,20 @@ export default function StageFour() {
   const [choice, setChoice] = useState<number | null>(null)
   const voice = useRef<HTMLAudioElement>(null)
   const oldMusicVolume = useRef<number | null>(null)
-  const frame = useRef<number | null>(null)
+  const voiceFrame = useRef<number | null>(null)
+  const musicFrame = useRef<number | null>(null)
 
-  function fade(audio: HTMLAudioElement, target: number, ms: number, done?: () => void) {
-    if (frame.current !== null) cancelAnimationFrame(frame.current)
+  function fade(audio: HTMLAudioElement, target: number, ms: number, frameRef: React.MutableRefObject<number | null>, done?: () => void) {
+    if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
     const start = audio.volume
     const began = performance.now()
     const tick = (now: number) => {
       const p = Math.min(1, (now - began) / ms)
       audio.volume = start + (target - start) * p * p * (3 - 2 * p)
-      if (p < 1) frame.current = requestAnimationFrame(tick)
-      else { frame.current = null; done?.() }
+      if (p < 1) frameRef.current = requestAnimationFrame(tick)
+      else { frameRef.current = null; done?.() }
     }
-    frame.current = requestAnimationFrame(tick)
+    frameRef.current = requestAnimationFrame(tick)
   }
   function music() {
     return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
@@ -41,12 +42,12 @@ export default function StageFour() {
   function restoreMusic() {
     const bg = music()
     if (bg && oldMusicVolume.current !== null) {
-      fade(bg, oldMusicVolume.current, 1000)
+      fade(bg, oldMusicVolume.current, 1000, musicFrame)
       oldMusicVolume.current = null
     }
   }
   function stopVoice() {
-    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    if (voiceFrame.current !== null) cancelAnimationFrame(voiceFrame.current)
     if (voice.current) { voice.current.pause(); voice.current.currentTime = 0; voice.current.volume = 0 }
     setPlaying(false)
     restoreMusic()
@@ -55,18 +56,19 @@ export default function StageFour() {
     if (!voice.current || playing) return
     const audio = voice.current
     audio.pause(); audio.currentTime = 0; audio.volume = 0
+    setLine(0)
     const bg = music()
     if (bg) {
       if (oldMusicVolume.current === null) oldMusicVolume.current = bg.volume
-      fade(bg, 0.12, 900)
+      fade(bg, 0.12, 900, musicFrame)
     }
     void audio.play().then(() => {
-      setPlaying(true); setFinished(false); setLine(0); fade(audio, 1, 650)
-    }).catch(() => { setPlaying(false); restoreMusic() })
+      setPlaying(true); setFinished(false); setLine(0); fade(audio, 1, 650, voiceFrame)
+    }).catch(() => { setPlaying(false); setLine(lines.length - 1); restoreMusic() })
   }
   useEffect(() => {
     const timer = window.setTimeout(playVoice, 600)
-    return () => { window.clearTimeout(timer); stopVoice() }
+    return () => { window.clearTimeout(timer); stopVoice(); if (musicFrame.current !== null) cancelAnimationFrame(musicFrame.current) }
   }, [])
   useEffect(() => {
     const audio = voice.current
@@ -81,7 +83,7 @@ export default function StageFour() {
     if (choice !== null) return
     setChoice(index)
     const audio = voice.current
-    if (audio && !audio.paused) fade(audio, 0, 300, () => { audio.pause(); audio.currentTime = 0; setPlaying(false); restoreMusic() })
+    if (audio && !audio.paused) fade(audio, 0, 300, voiceFrame, () => { audio.pause(); audio.currentTime = 0; setPlaying(false); restoreMusic() })
     else stopVoice()
   }
   return <main className="stage-four" aria-label="Етап 4: рішення начальника">
