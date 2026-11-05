@@ -2,23 +2,26 @@ import { useEffect, useRef, useState } from "react"
 import "./StageFour.css"
 
 const VOICE = "/audio/chief-stage-four-response.mp3"
-const lines = [
+const chiefMessages = [
   "Капітане, доповідь отримав. Ти добре попрацював.",
   "Сукупність установлених обставин дає достатні підстави перевіряти версію умисного вбивства. Це вже не можна розглядати лише як звичайну дорожньо-транспортну пригоду.",
-  "Я ініціюю зміну правової кваліфікації провадження за ознаками умисного вбивства. Забезпечу необхідне сприяння та доручу підрозділу підтримати твою роботу.",
-  "Відтепер кожен крок має бути обґрунтований матеріалами справи. Не поспішай із висновками, але й не втрачай часу. Розраховую на тебе."
+  "Кваліфікацію справи змінено на умисне вбивство. Я забезпечу необхідне сприяння для подальшого розслідування.",
+  "Відтепер кожен крок має бути обґрунтований матеріалами справи. Розраховую на тебе."
 ]
 const choices = [
-  { label: "Зрозумів. Починаю невідкладні перевірки.", reply: "Добре. Дій послідовно й документуй кожну встановлену обставину. Якщо з’являться нові дані — доповідай одразу.", note: "Доручення прийнято. Слідчий продовжує роботу за новою версією." },
-  { label: "Перш ніж почати, хочу уточнити першочергові дії.", reply: "Почни з перевірки обставин, які не узгоджуються з версією ДТП. Зістав висновки експертів, показання та цифрові дані. Черговість дій визначай за доказами й процесуальними підставами.", note: "Начальник уточнив загальний напрям роботи. Конкретні слідчі дії потребують належних підстав." },
-  { label: "Прошу забезпечити додаткову підтримку слідчої групи.", reply: "Забезпечу необхідне сприяння. Узгоджу залучення оперативних працівників і фахівців у межах їхніх повноважень.", note: "Запит на підтримку зафіксовано. Питання залучення додаткових працівників буде опрацьовано." }
+  { label: "Зрозумів. Починаю невідкладні перевірки.", reply: "Добре. Дій послідовно й документуй кожну встановлену обставину. Якщо з’являться нові дані — доповідай одразу." },
+  { label: "Хочу уточнити першочергові дії.", reply: "Почни з перевірки обставин, які не узгоджуються з версією ДТП. Зістав висновки експертів, показання та цифрові дані." },
+  { label: "Прошу забезпечити додаткову підтримку слідчої групи.", reply: "Забезпечу необхідне сприяння. Узгоджу залучення оперативних працівників і фахівців у межах їхніх повноважень." }
 ]
+type ChatMessage = { id: string; from: "chief" | "me"; text: string }
 
 export default function StageFour() {
   const [playing, setPlaying] = useState(false)
   const [finished, setFinished] = useState(false)
-  const [line, setLine] = useState(-1)
+  const [visibleChiefMessages, setVisibleChiefMessages] = useState(0)
   const [choice, setChoice] = useState<number | null>(null)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const chatRef = useRef<HTMLDivElement>(null)
   const voice = useRef<HTMLAudioElement>(null)
   const oldMusicVolume = useRef<number | null>(null)
   const voiceFrame = useRef<number | null>(null)
@@ -58,7 +61,6 @@ export default function StageFour() {
     const audio = voice.current
     audio.pause(); audio.currentTime = 0; audio.volume = 0
     voiceFadeOutStarted.current = false
-    setLine(0)
     const bg = music()
     if (bg) {
       if (oldMusicVolume.current === null) oldMusicVolume.current = bg.volume
@@ -66,7 +68,7 @@ export default function StageFour() {
     }
     void audio.play().then(() => {
       setPlaying(true); setFinished(false); setLine(0); fade(audio, 1, 650, voiceFrame)
-    }).catch(() => { setPlaying(false); setLine(lines.length - 1); restoreMusic() })
+    }).catch(() => { setPlaying(false); setFinished(true); restoreMusic() })
   }
   useEffect(() => {
     const timer = window.setTimeout(playVoice, 600)
@@ -90,31 +92,83 @@ export default function StageFour() {
     return () => audio.removeEventListener("timeupdate", update)
   }, [playing])
   function choose(index: number) {
-    if (choice !== null) return
+    if (choice !== null || visibleChiefMessages < chiefMessages.length) return
     setChoice(index)
+    setMessages([
+      { id: `me-${index}`, from: "me", text: choices[index].label },
+      { id: `chief-${index}`, from: "chief", text: choices[index].reply },
+    ])
     const audio = voice.current
-    if (audio && !audio.paused) fade(audio, 0, 300, voiceFrame, () => { audio.pause(); audio.currentTime = 0; setPlaying(false); restoreMusic() })
-    else stopVoice()
+    if (audio && !audio.paused) {
+      fade(audio, 0, 300, voiceFrame, () => {
+        audio.pause()
+        audio.currentTime = 0
+        setPlaying(false)
+        restoreMusic()
+      })
+    } else {
+      stopVoice()
+    }
   }
-  return <main className="stage-four" aria-label="Етап 4: рішення начальника">
-    <header className="stage-four__topline"><span><i /> СЛУЖБОВЕ ПОВІДОМЛЕННЯ</span><span>ЕТАП 04 · СПРАВА № 12026170010000456</span></header>
-    {choice === null ? <section className="stage-four__panel">
-      <div className="stage-four__kicker">ЗВ’ЯЗОК ІЗ НАЧАЛЬНИКОМ СЛІДЧОГО ПІДРОЗДІЛУ</div>
-      <div className="stage-four__speaker"><b>Н</b><div><strong>НАЧАЛЬНИК СЛІДЧОГО ПІДРОЗДІЛУ</strong><span>{playing ? "ГОВОРИТЬ · З’ЄДНАННЯ АКТИВНЕ" : "СЛУЖБОВИЙ КАНАЛ ЗВ’ЯЗКУ"}</span></div></div>
-      <h1>Твоя доповідь змінила хід справи.</h1>
-      <div className="stage-four__message">{lines.map((s,i)=><p className={i<=line?"is-visible":""} key={s}>{s}</p>)}</div>
-      <div className="stage-four__audio"><span>{playing?"НАЧАЛЬНИК ГОВОРИТЬ":finished?"ЗВЕРНЕННЯ ЗАВЕРШЕНО":"АУДІОЗВЕРНЕННЯ"}</span><button disabled={playing} onClick={playVoice}>{playing?"▶ Відтворюється…":"↻ Прослухати звернення"}</button></div>
-      <div className="stage-four__choices"><label>ВАША ВІДПОВІДЬ НАЧАЛЬНИКУ</label>{choices.map((c,i)=><button key={c.label} onClick={()=>choose(i)}><span>0{i+1}</span><strong>{c.label}</strong><b>→</b></button>)}</div>
-    </section> : <section className="stage-four__panel stage-four__response">
-      <div className="stage-four__kicker">ПРОДОВЖЕННЯ СЛУЖБОВОЇ РОЗМОВИ</div>
-      <div className="stage-four__speaker"><b>Н</b><div><strong>НАЧАЛЬНИК СЛІДЧОГО ПІДРОЗДІЛУ</strong><span>ВІДПОВІДЬ ОТРИМАНО</span></div></div>
-      <h1>Рішення зафіксовано.</h1>
-      <div className="stage-four__selected"><label>ВАША ВІДПОВІДЬ</label><p>{choices[choice].label}</p></div>
-      <p className="stage-four__reply">{choices[choice].reply}</p>
-      <div className="stage-four__note"><label>СЛУЖБОВА ВІДМІТКА</label><p>{choices[choice].note}</p></div>
-      <div className="stage-four__end">КІНЕЦЬ ПОВІДОМЛЕННЯ · ЕТАП 04</div>
-    </section>}
-    <footer className="stage-four__footer"><span>ВНУТРІШНЄ КОРИСТУВАННЯ</span><span>ДОПОВІДЬ ПРИЙНЯТО · ПРОВАДЖЕННЯ № 12026170010000456</span></footer>
-    <audio ref={voice} src={VOICE} preload="auto" onEnded={()=>{setPlaying(false);setFinished(true);restoreMusic()}} onError={()=>{setPlaying(false);restoreMusic()}} />
-  </main>
+
+  return (
+    <main className="stage-four" aria-label="Етап 4: службовий чат">
+      <div className="stage-four__phone">
+        <header className="stage-four__statusbar"><span>09:41</span><span>СЛУЖБОВИЙ КАНАЛ</span><span>● ● ●</span></header>
+        <header className="stage-four__chat-header">
+          <div className="stage-four__avatar">Н</div>
+          <div className="stage-four__contact">
+            <strong>Начальник слідчого підрозділу</strong>
+            <span>{playing ? "голосове повідомлення…" : "службовий канал · онлайн"}</span>
+          </div>
+          <div className="stage-four__header-mark">⋯</div>
+        </header>
+
+        <div className="stage-four__chat" ref={chatRef}>
+          <div className="stage-four__date">СЬОГОДНІ</div>
+          {Array.from({ length: visibleChiefMessages }).map((_, index) => (
+            <div className="stage-four__bubble stage-four__bubble--chief" key={`chief-${index}`}>
+              <p>{chiefMessages[index]}</p>
+              <span>начальник · {index === visibleChiefMessages - 1 && playing ? "говорить" : `09:4${index + 1}`}</span>
+            </div>
+          ))}
+          {choice !== null && messages.map((message) => (
+            <div className={`stage-four__bubble stage-four__bubble--${message.from}`} key={message.id}>
+              <p>{message.text}</p>
+              <span>{message.from === "me" ? "ви · щойно" : "начальник · щойно"}</span>
+            </div>
+          ))}
+          {choice === null && visibleChiefMessages >= chiefMessages.length && (
+            <div className="stage-four__typing">Начальник очікує на відповідь…</div>
+          )}
+        </div>
+
+        <div className="stage-four__composer">
+          {choice === null ? (
+            <>
+              <div className="stage-four__composer-label">ВАША ВІДПОВІДЬ</div>
+              <div className="stage-four__choices">
+                {choices.map((item, index) => (
+                  <button key={item.label} onClick={() => choose(index)}>
+                    <span>{index + 1}</span><strong>{item.label}</strong><b>›</b>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : <div className="stage-four__composer-done">Відповідь надіслано</div>}
+        </div>
+
+        <div className="stage-four__audio">
+          <span>{playing ? "НАЧАЛЬНИК ГОВОРИТЬ" : finished ? "ЗВЕРНЕННЯ ЗАВЕРШЕНО" : "АУДІОЗВЕРНЕННЯ"}</span>
+          <button disabled={playing} onClick={playVoice}>{playing ? "▶ Відтворюється…" : "↻ Прослухати ще раз"}</button>
+        </div>
+        <footer className="stage-four__footer"><span>ЕТАП 04</span><span>СПРАВА № 12026170010000456</span></footer>
+      </div>
+      <audio ref={voice} src={VOICE} preload="auto"
+        onEnded={() => { setPlaying(false); setFinished(true); restoreMusic() }}
+        onError={() => { setPlaying(false); setFinished(true); restoreMusic() }}
+      />
+    </main>
+  )
+
 }
