@@ -197,6 +197,7 @@ export default function App() {
         <section className="intro" aria-label="Початок гри">
           <div className="intro__classification">
             КРИМІНАЛЬНЕ РОЗСЛІДУВАННЯ <span>///</span> ДОСЬЄ № 001
+          </div>
           <div className="intro__center">
             <div className="intro__overline">
               <span /> КОЖНА ДЕТАЛЬ МАЄ ЗНАЧЕННЯ
@@ -241,6 +242,7 @@ export default function App() {
               <i /> ПОВІДОМЛЕННЯ ВІД НАПАРНИКА
             </span>
             <span>ЕТАП 01 · ПЕРВИННІ МАТЕРІАЛИ</span>
+          </div>
           <div className="handoff-card">
             <img className="assistant-mark" src="/assistant-mark.png" />
             <div className="narration-kicker">КАПІТАНЕ МАРЧЕНКО, ДО УВАГИ</div>
@@ -316,6 +318,7 @@ export default function App() {
               <i /> РОБОЧИЙ ТЕРМІНАЛ
             </span>
             <span>СПРАВА № 12026170010000456</span>
+          </div>
           <div className="terminal-card">
             <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>
             <h1>Зафіксуйте ключові факти</h1>
