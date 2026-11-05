@@ -71,6 +71,8 @@ export default function StageFour() {
   useEffect(() => {
     const timer = window.setTimeout(playVoice, 600)
     return () => { window.clearTimeout(timer); stopVoice(); if (musicFrame.current !== null) cancelAnimationFrame(musicFrame.current) }
+    // Сцена запускає озвучення лише один раз під час входу.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     const audio = voice.current
