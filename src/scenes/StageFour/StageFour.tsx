@@ -24,7 +24,7 @@ export default function StageFour() {
   const voiceFrame = useRef<number | null>(null)
   const musicFrame = useRef<number | null>(null)
 
-  function fade(audio: HTMLAudioElement, target: number, ms: number, frameRef: React.MutableRefObject<number | null>, done?: () => void) {
+  function fade(audio: HTMLAudioElement, target: number, ms: number, frameRef: { current: number | null }, done?: () => void) {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
     const start = audio.volume
     const began = performance.now()
