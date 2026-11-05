@@ -7,6 +7,7 @@ import StageTwo from "./scenes/StageTwo/StageTwo"
 import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
 import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
+import StageFour from "./scenes/StageFour/StageFour"
 
 type Screen =
   | "start"
@@ -19,6 +20,7 @@ type Screen =
   | "materials-guide"
   | "stage-three"
   | "terminal"
+  | "stage-four"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -297,7 +299,7 @@ export default function App() {
       {screen === "materials-guide" && (
         <MaterialsGuide
             onBack={() => setScreen("stage-three-intro")}
-            onContinue={() => setScreen("stage-three")}
+            onContinue={() => setScreen("stage-four")}
           />
       )}
 
@@ -308,6 +310,8 @@ export default function App() {
             onComplete={() => setScreen("terminal")}
           />
       )}
+
+      {screen === "stage-four" && <StageFour />}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
