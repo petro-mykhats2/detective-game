@@ -17,3 +17,191 @@
 @keyframes stage-four-in{from{opacity:0}to{opacity:1}}@keyframes stage-four-panel-in{from{opacity:0;transform:translateY(18px);filter:blur(3px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 @media(max-width:620px){.stage-four{padding:20px 16px}.stage-four__topline,.stage-four__footer{font-size:8px;letter-spacing:.08em}.stage-four__topline span:last-child,.stage-four__footer span:last-child{max-width:52%;text-align:right}.stage-four__panel{margin:34px auto;padding:23px 18px}.stage-four__speaker{margin:21px 0 24px}.stage-four__speaker strong{font-size:9px}.stage-four__audio{align-items:flex-start;flex-direction:column}.stage-four__choices button{grid-template-columns:26px 1fr 15px;padding:12px}.stage-four__choices button strong{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.stage-four,.stage-four__panel,.stage-four__message p{animation:none!important;transition:none!important}.stage-four__message p{opacity:1;transform:none;filter:none}}
+
+/* Stage 4 — мобільний месенджер. Внутрішній чат має власний scroll-контейнер. */
+.stage-four {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: radial-gradient(circle at 20% 10%, rgba(46,57,63,.85), transparent 42%), linear-gradient(135deg,#10161a,#050709 75%);
+}
+
+.stage-four__phone {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(430px,100%);
+  height: min(920px,calc(100dvh - 40px));
+  min-height: 600px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(190,157,112,.38);
+  border-radius: 34px;
+  background: #0b1014;
+  box-shadow: 0 28px 100px rgba(0,0,0,.65), 0 0 0 7px rgba(255,255,255,.025);
+}
+
+.stage-four__statusbar,
+.stage-four__footer {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 16px;
+  color: #69747b;
+  background: #090d10;
+  font: 8px/1.2 "DM Mono",monospace;
+  letter-spacing: .08em;
+}
+
+.stage-four__chat-header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 16px;
+  border-top: 1px solid rgba(220,215,204,.07);
+  border-bottom: 1px solid rgba(220,215,204,.12);
+  background: rgba(16,21,25,.98);
+}
+
+.stage-four__avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid #9b7c51;
+  border-radius: 50%;
+  background: linear-gradient(145deg,#4b4b43,#171d20);
+  color: #e4c18c;
+  font: 17px Georgia,serif;
+}
+
+.stage-four__contact { min-width: 0; flex: 1; }
+.stage-four__contact strong {
+  display: block;
+  overflow: hidden;
+  color: #eeeae2;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stage-four__contact span {
+  display: block;
+  margin-top: 4px;
+  color: #7e898f;
+  font: 8px "DM Mono",monospace;
+  letter-spacing: .08em;
+}
+.stage-four__header-mark { color: #9d8a6b; font-size: 20px; }
+
+.stage-four__chat {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 18px 15px 24px;
+  scrollbar-color: #675238 #0b0e11;
+  background: linear-gradient(rgba(8,12,15,.82),rgba(8,12,15,.94)), radial-gradient(circle at 70% 20%,rgba(107,81,48,.11),transparent 40%);
+}
+
+.stage-four__date {
+  width: fit-content;
+  margin: 0 auto 18px;
+  padding: 5px 9px;
+  border: 1px solid rgba(220,215,204,.1);
+  border-radius: 10px;
+  color: #69747b;
+  background: rgba(255,255,255,.025);
+  font: 7px "DM Mono",monospace;
+  letter-spacing: .12em;
+}
+
+.stage-four__bubble {
+  max-width: 84%;
+  margin: 0 0 10px;
+  padding: 10px 12px 8px;
+  border: 1px solid rgba(220,215,204,.08);
+  border-radius: 15px;
+  animation: stage-four-message-in .42s ease both;
+}
+.stage-four__bubble p { margin: 0; color: #d8d5ce; font-size: 12px; line-height: 1.65; }
+.stage-four__bubble span { display: block; margin-top: 5px; color: #747f85; font: 7px "DM Mono",monospace; }
+.stage-four__bubble--chief { margin-right: auto; border-bottom-left-radius: 4px; background: #171e23; }
+.stage-four__bubble--me { margin-left: auto; border-bottom-right-radius: 4px; border-color: rgba(190,157,112,.28); background: rgba(91,66,38,.52); }
+.stage-four__bubble--me p { color: #eee5d7; }
+.stage-four__typing { margin: 5px 0 8px 3px; color: #8b9499; font: 8px "DM Mono",monospace; letter-spacing: .06em; }
+
+.stage-four__composer {
+  flex: 0 0 auto;
+  padding: 11px 13px 9px;
+  border-top: 1px solid rgba(220,215,204,.1);
+  background: #0d1317;
+}
+.stage-four__composer-label { margin: 0 2px 7px; color: #a98b62; font: 7px "DM Mono",monospace; letter-spacing: .12em; }
+.stage-four__choices { display: grid; gap: 6px; margin-top: 0; }
+.stage-four__choices button {
+  display: grid;
+  grid-template-columns: 22px minmax(0,1fr) 14px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 39px;
+  padding: 8px 9px;
+  border: 1px solid rgba(220,215,204,.12);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+  color: #e7e2d9;
+  text-align: left;
+  cursor: pointer;
+  transition: background .2s,border-color .2s,transform .2s;
+}
+.stage-four__choices button:hover { border-color: rgba(198,158,99,.58); background: rgba(153,112,61,.12); transform: translateY(-1px); }
+.stage-four__choices button span {
+  display: grid; width: 21px; height: 21px; place-items: center;
+  border: 1px solid rgba(190,157,112,.35); border-radius: 50%;
+  color: #cba56f; font: 8px "DM Mono",monospace;
+}
+.stage-four__choices button strong { font-size: 10px; font-weight: 500; line-height: 1.45; }
+.stage-four__choices button b { color: #cba56f; font-size: 17px; font-weight: 400; }
+.stage-four__composer-done { color: #818b91; font: 8px "DM Mono",monospace; letter-spacing: .1em; text-align: center; }
+
+.stage-four__audio {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 13px;
+  border-top: 1px solid rgba(220,215,204,.07);
+  background: #090e11;
+}
+.stage-four__audio span { color: #758087; font: 7px "DM Mono",monospace; letter-spacing: .1em; }
+.stage-four__audio button { border: 0; background: transparent; color: #b99868; font: 8px "DM Mono",monospace; cursor: pointer; }
+.stage-four__audio button:disabled { color: #596269; cursor: not-allowed; }
+
+.stage-four__footer { padding: 7px 13px 10px; color: #59646b; }
+
+@keyframes stage-four-message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 620px) {
+  .stage-four { padding: 0; place-items: stretch; }
+  .stage-four__phone {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .stage-four__statusbar { padding-top: max(10px,env(safe-area-inset-top)); }
+  .stage-four__chat { padding-bottom: 18px; }
+}
