@@ -40,9 +40,11 @@ export default function StageFour() {
     }
     frameRef.current = requestAnimationFrame(tick)
   }
+
   function music() {
     return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
   }
+
   function restoreMusic() {
     const bg = music()
     if (bg && oldMusicVolume.current !== null) {
@@ -50,54 +52,93 @@ export default function StageFour() {
       oldMusicVolume.current = null
     }
   }
+
   function stopVoice() {
     if (voiceFrame.current !== null) cancelAnimationFrame(voiceFrame.current)
-    if (voice.current) { voice.current.pause(); voice.current.currentTime = 0; voice.current.volume = 0 }
+    if (voice.current) {
+      voice.current.pause()
+      voice.current.currentTime = 0
+      voice.current.volume = 0
+    }
     setPlaying(false)
     restoreMusic()
   }
+
   function playVoice() {
     if (!voice.current || playing) return
     const audio = voice.current
-    audio.pause(); audio.currentTime = 0; audio.volume = 0
+    audio.pause()
+    audio.currentTime = 0
+    audio.volume = 0
     voiceFadeOutStarted.current = false
+    setVisibleChiefMessages(0)
+
     const bg = music()
     if (bg) {
       if (oldMusicVolume.current === null) oldMusicVolume.current = bg.volume
       fade(bg, 0.12, 900, musicFrame)
     }
+
     void audio.play().then(() => {
-      setPlaying(true); setFinished(false); setLine(0); fade(audio, 1, 650, voiceFrame)
-    }).catch(() => { setPlaying(false); setFinished(true); restoreMusic() })
+      setPlaying(true)
+      setFinished(false)
+      fade(audio, 1, 650, voiceFrame)
+    }).catch(() => {
+      setPlaying(false)
+      setFinished(true)
+      restoreMusic()
+    })
   }
+
   useEffect(() => {
     const timer = window.setTimeout(playVoice, 600)
-    return () => { window.clearTimeout(timer); stopVoice(); if (musicFrame.current !== null) cancelAnimationFrame(musicFrame.current) }
+    return () => {
+      window.clearTimeout(timer)
+      stopVoice()
+      if (musicFrame.current !== null) cancelAnimationFrame(musicFrame.current)
+    }
     // Сцена запускає озвучення лише один раз під час входу.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   useEffect(() => {
     const audio = voice.current
     if (!audio || !playing) return
+
     const update = () => {
       if (audio.duration) {
-        setLine(Math.min(lines.length - 1, Math.floor(audio.currentTime / audio.duration * lines.length)))
+        const progress = Math.min(1, audio.currentTime / audio.duration)
+        const count = Math.min(
+          chiefMessages.length,
+          Math.max(1, Math.ceil(progress * chiefMessages.length))
+        )
+        setVisibleChiefMessages(count)
+
         if (!voiceFadeOutStarted.current && audio.duration - audio.currentTime <= 0.8) {
           voiceFadeOutStarted.current = true
           fade(audio, 0, 750, voiceFrame)
         }
       }
     }
+
     audio.addEventListener("timeupdate", update)
     return () => audio.removeEventListener("timeupdate", update)
   }, [playing])
+
+  useEffect(() => {
+    const chat = chatRef.current
+    if (chat) chat.scrollTop = chat.scrollHeight
+  }, [visibleChiefMessages, messages])
+
   function choose(index: number) {
     if (choice !== null || visibleChiefMessages < chiefMessages.length) return
+
     setChoice(index)
     setMessages([
       { id: `me-${index}`, from: "me", text: choices[index].label },
       { id: `chief-${index}`, from: "chief", text: choices[index].reply },
     ])
+
     const audio = voice.current
     if (audio && !audio.paused) {
       fade(audio, 0, 300, voiceFrame, () => {
@@ -165,10 +206,14 @@ export default function StageFour() {
         <footer className="stage-four__footer"><span>ЕТАП 04</span><span>СПРАВА № 12026170010000456</span></footer>
       </div>
       <audio ref={voice} src={VOICE} preload="auto"
-        onEnded={() => { setPlaying(false); setFinished(true); restoreMusic() }}
+        onEnded={() => {
+          setPlaying(false)
+          setFinished(true)
+          setVisibleChiefMessages(chiefMessages.length)
+          restoreMusic()
+        }}
         onError={() => { setPlaying(false); setFinished(true); restoreMusic() }}
       />
     </main>
   )
-
 }
