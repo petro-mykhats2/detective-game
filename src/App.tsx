@@ -224,7 +224,6 @@ export default function App() {
             </span>
           </div>
         </section>
-        </div>
       )}
 
       {screen === "intro" && (
@@ -267,7 +266,6 @@ export default function App() {
             </button>
           </div>
         </section>
-        </div>
       )}
 
       {screen === "stage-one" && (
@@ -350,7 +348,6 @@ export default function App() {
             </div>
           </div>
         </section>
-        </div>
       )}
 
       <button
