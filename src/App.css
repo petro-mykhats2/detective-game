@@ -541,15 +541,3 @@ button { font: inherit; }
 .briefing-test-button{margin-top:14px;padding:10px 14px;border:1px dashed rgba(196,161,106,.65);background:rgba(8,10,11,.42);color:rgba(225,197,155,.9);font:9px/1.4 "DM Mono",monospace;letter-spacing:.1em;cursor:pointer;transition:background .25s,border-color .25s,color .25s}
 .briefing-test-button:hover{background:rgba(119,78,35,.3);border-color:#d0a56b;color:#fff0d8}
 .briefing-test-button:focus-visible{outline:2px solid #dfbd88;outline-offset:4px}
-
-.scene-transition{
-  min-height:100%;
-  animation:sceneWindowIn .58s cubic-bezier(.22,.8,.25,1) both;
-}
-@keyframes sceneWindowIn{
-  from{opacity:0;transform:translateY(14px) scale(.995)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-@media(prefers-reduced-motion:reduce){
-  .scene-transition{animation:none}
-}
