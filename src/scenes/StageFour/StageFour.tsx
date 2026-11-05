@@ -18,7 +18,7 @@ type ChatMessage = { id: string; from: "chief" | "me"; text: string }
 export default function StageFour() {
   const [playing, setPlaying] = useState(false)
   const [finished, setFinished] = useState(false)
-  const [visibleChiefMessages, setVisibleChiefMessages] = useState(0)
+  const [visibleChiefMessages, setVisibleChiefMessages] = useState(chiefMessages.length)
   const [choice, setChoice] = useState<number | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const chatRef = useRef<HTMLDivElement>(null)
@@ -71,7 +71,7 @@ export default function StageFour() {
     audio.currentTime = 0
     audio.volume = 0
     voiceFadeOutStarted.current = false
-    setVisibleChiefMessages(0)
+    setVisibleChiefMessages(chiefMessages.length)
 
     const bg = music()
     if (bg) {
@@ -106,18 +106,9 @@ export default function StageFour() {
     if (!audio || !playing) return
 
     const update = () => {
-      if (audio.duration) {
-        const progress = Math.min(1, audio.currentTime / audio.duration)
-        const count = Math.min(
-          chiefMessages.length,
-          Math.max(1, Math.ceil(progress * chiefMessages.length))
-        )
-        setVisibleChiefMessages(count)
-
-        if (!voiceFadeOutStarted.current && audio.duration - audio.currentTime <= 0.8) {
-          voiceFadeOutStarted.current = true
-          fade(audio, 0, 750, voiceFrame)
-        }
+      if (audio.duration && !voiceFadeOutStarted.current && audio.duration - audio.currentTime <= 0.8) {
+        voiceFadeOutStarted.current = true
+        fade(audio, 0, 750, voiceFrame)
       }
     }
 
@@ -170,7 +161,7 @@ export default function StageFour() {
           {Array.from({ length: visibleChiefMessages }).map((_, index) => (
             <div className="stage-four__bubble stage-four__bubble--chief" key={`chief-${index}`}>
               <p>{chiefMessages[index]}</p>
-              <span>начальник · {index === visibleChiefMessages - 1 && playing ? "говорить" : `09:4${index + 1}`}</span>
+              <span>начальник · {playing ? "говорить" : `09:4${index + 1}`}</span>
             </div>
           ))}
           {choice !== null && messages.map((message) => (
