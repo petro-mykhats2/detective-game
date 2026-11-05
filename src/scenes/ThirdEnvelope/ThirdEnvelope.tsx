@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import "./ThirdEnvelope.css"
-import MaterialsGuide from "../MaterialsGuide/MaterialsGuide"
 
-type Props = { onBack?: () => void; onComplete: () => void }
+type Props = {
+  mode: "intro" | "choices"
+  onBack?: () => void
+  onComplete: () => void
+}
 
 type ChoiceId = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
 
@@ -304,12 +307,12 @@ function getMusicElement() {
   return document.querySelector(MUSIC_SELECTOR) as HTMLAudioElement | null
 }
 
-export default function ThirdEnvelope({ onBack, onComplete }: Props) {
+export default function ThirdEnvelope({ mode, onBack, onComplete }: Props) {
+  const introOnly = mode === "intro"
   const [introVisible, setIntroVisible] = useState(false)
   const [videoStarted, setVideoStarted] = useState(false)
   const [videoFinished, setVideoFinished] = useState(false)
   const [opening, setOpening] = useState(false)
-  const [showMaterialsGuide, setShowMaterialsGuide] = useState(false)
   const [noticed, setNoticed] = useState<boolean | null>(null)
   const [selected, setSelected] = useState<ChoiceId | null>(null)
   const [answerId, setAnswerId] = useState<string | null>(null)
@@ -524,16 +527,8 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
             <span>РЕЗУЛЬТАТИ ЕКСПЕРТИЗ</span>
           </div>
           <h1>Картина змінюється</h1>
-          {showMaterialsGuide ? (
-            <MaterialsGuide
-              onBack={() => {
-                setShowMaterialsGuide(false)
-                setOpening(false)
-                setNoticed(null)
-              }}
-              onContinue={() => setShowMaterialsGuide(false)}
-            />
-          ) : !opening ? (
+          {introOnly ? (
+
             <div className="third-envelope__assistant">
               <img
                 src="/assistant-mark.png"
@@ -544,15 +539,16 @@ export default function ThirdEnvelope({ onBack, onComplete }: Props) {
                   НАПАРНИК <small>ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</small>
                 </div>
                 <p>
-                  Результати експертизи досить цікаві… Я ж казав, що тут щось не
-                  так. Ви теж це помітили?
+                  Здається, у нас серйозне завдання від начальника: мусимо знайти факти,
+                  які могли б свідчити про вбивство. До речі, висновки експертиз
+                  досить цікаві… Я ж казав, що тут щось не так. Ви теж це помітили?
                 </p>
                 <div className="third-envelope__actions">
                   <button
                     onClick={() => {
                       setNoticed(true)
                       setOpening(true)
-                      setShowMaterialsGuide(true)
+                      onComplete()
                     }}
                   >
                     Так, дещо тут справді не сходиться.
