@@ -218,6 +218,9 @@ export default function App() {
             <button className="briefing-test-button" onClick={() => setScreen("stage-three-briefing")}>
               ТЕСТ · ВІДКРИТИ СЛУЖБОВИЙ БРИФІНГ
             </button>
+            <button className="briefing-test-button" onClick={() => setScreen("stage-four")}>
+              ТЕСТ · ВІДКРИТИ ЕТАП 04
+            </button>
           </div>
           <div className="intro__footer">
             <span>СИСТЕМА ГОТОВА ДО РОБОТИ</span>
