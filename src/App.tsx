@@ -194,11 +194,9 @@ export default function App() {
       <div className="film-grain" aria-hidden="true" />
 
       {screen === "start" && (
-        <div className="scene-transition" key="start">
         <section className="intro" aria-label="Початок гри">
           <div className="intro__classification">
             КРИМІНАЛЬНЕ РОЗСЛІДУВАННЯ <span>///</span> ДОСЬЄ № 001
-          </div>
           <div className="intro__center">
             <div className="intro__overline">
               <span /> КОЖНА ДЕТАЛЬ МАЄ ЗНАЧЕННЯ
@@ -229,24 +227,20 @@ export default function App() {
       )}
 
       {screen === "intro" && (
-        <div className="scene-transition" key="intro">
         <ChiefOffice
           lines={introLines}
           voiceStatus={voiceStatus}
           onContinue={continueToMaterials}
         />
-        </div>
       )}
 
       {screen === "handoff" && (
-        <div className="scene-transition" key="handoff">
         <section className="handoff-screen" aria-label="Інструкція напарника">
           <div className="scene-topline">
             <span>
               <i /> ПОВІДОМЛЕННЯ ВІД НАПАРНИКА
             </span>
             <span>ЕТАП 01 · ПЕРВИННІ МАТЕРІАЛИ</span>
-          </div>
           <div className="handoff-card">
             <img className="assistant-mark" src="/assistant-mark.png" />
             <div className="narration-kicker">КАПІТАНЕ МАРЧЕНКО, ДО УВАГИ</div>
@@ -275,67 +269,53 @@ export default function App() {
       )}
 
       {screen === "stage-one" && (
-        <div className="scene-transition" key="stage-one">
         <StageOne
           onBack={() => setScreen("handoff")}
           onComplete={() => setScreen("stage-two")}
         />
-        </div>
       )}
 
       {screen === "stage-two" && (
-        <div className="scene-transition" key="stage-two">
         <StageTwo
           onBack={() => setScreen("stage-one")}
           onComplete={() => setScreen("stage-three-briefing")}
         />
-        </div>
       )}
 
       {screen === "stage-three-briefing" && (
-        <div className="scene-transition" key="stage-three-briefing">
-          <ChiefBriefing onContinue={() => setScreen("stage-three-intro")} />
-        </div>
+        <ChiefBriefing onContinue={() => setScreen("stage-three-intro")} />
       )}
 
       {screen === "stage-three-intro" && (
-        <div className="scene-transition" key="stage-three-intro">
-          <ThirdEnvelope
+        <ThirdEnvelope
             mode="intro"
             onBack={() => setScreen("stage-three-briefing")}
             onComplete={() => setScreen("materials-guide")}
           />
-        </div>
       )}
 
       {screen === "materials-guide" && (
-        <div className="scene-transition" key="materials-guide">
-          <MaterialsGuide
+        <MaterialsGuide
             onBack={() => setScreen("stage-three-intro")}
             onContinue={() => setScreen("stage-three")}
           />
-        </div>
       )}
 
       {screen === "stage-three" && (
-        <div className="scene-transition" key="stage-three">
-          <ThirdEnvelope
+        <ThirdEnvelope
             mode="choices"
             onBack={() => setScreen("stage-two")}
             onComplete={() => setScreen("terminal")}
           />
-        </div>
       )}
 
       {screen === "terminal" && (
-        <div className="scene-transition" key="terminal">
         <section className="terminal-screen" aria-label="Робочий термінал">
           <div className="scene-topline">
             <span>
               <i /> РОБОЧИЙ ТЕРМІНАЛ
             </span>
             <span>СПРАВА № 12026170010000456</span>
-          </div>
           <div className="terminal-card">
             <div className="narration-kicker">ОСОБИСТІ НОТАТКИ СЛІДЧОГО</div>
             <h1>Зафіксуйте ключові факти</h1>
