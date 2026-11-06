@@ -8,6 +8,7 @@ import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
 import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 import StageFour from "./scenes/StageFour/StageFour"
+import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 
 type Screen =
   | "start"
@@ -21,6 +22,7 @@ type Screen =
   | "stage-three"
   | "terminal"
   | "stage-four"
+  | "fourth-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -314,7 +316,7 @@ export default function App() {
           />
       )}
 
-      {screen === "stage-four" && <StageFour />}
+      {screen === "stage-four" && (\n        <StageFour onComplete={() => setScreen("fourth-envelope")} />\n      )}\n\n      {screen === "fourth-envelope" && (\n        <FourthEnvelope onComplete={() => setScreen("terminal")} />\n      )}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
