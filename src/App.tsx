@@ -316,7 +316,7 @@ export default function App() {
           />
       )}
 
-      {screen === "stage-four" && (\n        <StageFour onComplete={() => setScreen("fourth-envelope")} />\n      )}\n\n      {screen === "fourth-envelope" && (\n        <FourthEnvelope onComplete={() => setScreen("terminal")} />\n      )}
+      {screen === "stage-four" && (\n        <StageFour onComplete={() => setScreen("fourth-envelope")} />\n      )}\n\n      {screen === "fourth-envelope" && (\n        <FourthEnvelope />\n      )}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
