@@ -3,22 +3,39 @@ import "./StageFour.css"
 
 const VOICE = "/audio/chief-stage-four-response.mp3"
 const chiefMessages = [
-  "Капітане, доповідь отримав. Ти добре попрацював.",
-  "Сукупність установлених обставин дає достатні підстави перевіряти версію умисного вбивства. Це вже не можна розглядати лише як звичайну дорожньо-транспортну пригоду.",
-  "Кваліфікацію справи змінено на умисне вбивство. Я забезпечу необхідне сприяння для подальшого розслідування.",
-  "Відтепер кожен крок має бути обґрунтований матеріалами справи. Розраховую на тебе."
+  "Марченко, доповідь отримав. Молодець, що протиснув експертизи.",
+  "Отже, маємо вбивство: СМЕ дала вдавлений перелом від удару тупим, а автотехніки підтвердили таран і ремінь на труп.",
+  "Міняємо кваліфікацію в ЄРДР на ч. 1 ст. 115 (умисне). Підтримку групи гарантую.",
+  "Як дієш далі?",
 ]
+
 const choices = [
-  { label: "Зрозумів. Починаю невідкладні перевірки.", reply: "Добре. Дій послідовно й документуй кожну встановлену обставину. Якщо з’являться нові дані — доповідай одразу." },
-  { label: "Хочу уточнити першочергові дії.", reply: "Почни з перевірки обставин, які не узгоджуються з версією ДТП. Зістав висновки експертів, показання та цифрові дані." },
-  { label: "Прошу забезпечити додаткову підтримку слідчої групи.", reply: "Забезпечу необхідне сприяння. Узгоджу залучення оперативних працівників і фахівців у межах їхніх повноважень." }
+  {
+    label:
+      "Терміново виїжджаю з обшуком на дачу у С/Т «Зелений Гай», оскільки за білінгом Cell ID 4598 телефон вимкнувся саме там о 22:45. Паралельно призначаю експертизи, викликаю на допит всіх хто контактував з Ковальчуком у день вбивства",
+    reply:
+      "Чудовий, вичерпний план! Бачу, ти детально опрацював усі суперечності в матеріалах. Дій послідовно, документуй кожну дрібницю та доповідай про перебіг обшуку. Успіху, Марченку, розкрути цю справу!",
+  },
+  {
+    label:
+      "Зараз уважно перечитаю всі протоколи допитів і висновки експертів, а вже потім сформую конкретні доручення оперативникам.",
+    reply:
+      "Розумно. Спочатку зістав усі факти та розбіжності в документах — від білінгу до банківських виписок, а вже потім давай завдання оперативній групі. Головне — не пропусти жодної дрібниці.",
+  },
+  {
+    label: "П'ю каву, шефе, їм булочку і, може, почну сьогодні... 🤔🫡",
+    reply: "Працюй давай, жартівник. 👍",
+    secondReply: "Час йде, швидше! Бери людей і погнав!!! 🚓",
+  },
 ]
 type ChatMessage = { id: string; from: "chief" | "me"; text: string }
 
 export default function StageFour() {
   const [playing, setPlaying] = useState(false)
   const [finished, setFinished] = useState(false)
-  const [visibleChiefMessages, setVisibleChiefMessages] = useState(chiefMessages.length)
+  const [visibleChiefMessages, setVisibleChiefMessages] = useState(
+    chiefMessages.length,
+  )
   const [choice, setChoice] = useState<number | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const chatRef = useRef<HTMLDivElement>(null)
@@ -28,7 +45,13 @@ export default function StageFour() {
   const musicFrame = useRef<number | null>(null)
   const voiceFadeOutStarted = useRef(false)
 
-  function fade(audio: HTMLAudioElement, target: number, ms: number, frameRef: { current: number | null }, done?: () => void) {
+  function fade(
+    audio: HTMLAudioElement,
+    target: number,
+    ms: number,
+    frameRef: { current: number | null },
+    done?: () => void,
+  ) {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
     const start = audio.volume
     const began = performance.now()
@@ -36,13 +59,18 @@ export default function StageFour() {
       const p = Math.min(1, (now - began) / ms)
       audio.volume = start + (target - start) * p * p * (3 - 2 * p)
       if (p < 1) frameRef.current = requestAnimationFrame(tick)
-      else { frameRef.current = null; done?.() }
+      else {
+        frameRef.current = null
+        done?.()
+      }
     }
     frameRef.current = requestAnimationFrame(tick)
   }
 
   function music() {
-    return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
+    return document.querySelector(
+      'audio[src="/investigation-theme.mp3"]',
+    ) as HTMLAudioElement | null
   }
 
   function restoreMusic() {
@@ -79,15 +107,18 @@ export default function StageFour() {
       fade(bg, 0.12, 900, musicFrame)
     }
 
-    void audio.play().then(() => {
-      setPlaying(true)
-      setFinished(false)
-      fade(audio, 1, 650, voiceFrame)
-    }).catch(() => {
-      setPlaying(false)
-      setFinished(true)
-      restoreMusic()
-    })
+    void audio
+      .play()
+      .then(() => {
+        setPlaying(true)
+        setFinished(false)
+        fade(audio, 1, 650, voiceFrame)
+      })
+      .catch(() => {
+        setPlaying(false)
+        setFinished(true)
+        restoreMusic()
+      })
   }
 
   useEffect(() => {
@@ -106,7 +137,11 @@ export default function StageFour() {
     if (!audio || !playing) return
 
     const update = () => {
-      if (audio.duration && !voiceFadeOutStarted.current && audio.duration - audio.currentTime <= 0.8) {
+      if (
+        audio.duration &&
+        !voiceFadeOutStarted.current &&
+        audio.duration - audio.currentTime <= 0.8
+      ) {
         voiceFadeOutStarted.current = true
         fade(audio, 0, 750, voiceFrame)
       }
@@ -146,12 +181,18 @@ export default function StageFour() {
   return (
     <main className="stage-four" aria-label="Етап 4: службовий чат">
       <div className="stage-four__phone">
-        <header className="stage-four__statusbar"><span>09:41</span><span>СЛУЖБОВИЙ КАНАЛ</span><span>● ● ●</span></header>
+        <header className="stage-four__statusbar">
+          <span>09:41</span>
+          <span>СЛУЖБОВИЙ КАНАЛ</span>
+          <span>● ● ●</span>
+        </header>
         <header className="stage-four__chat-header">
           <div className="stage-four__avatar">Н</div>
           <div className="stage-four__contact">
             <strong>Начальник слідчого підрозділу</strong>
-            <span>{playing ? "голосове повідомлення…" : "службовий канал · онлайн"}</span>
+            <span>
+              {playing ? "голосове повідомлення…" : "службовий канал · онлайн"}
+            </span>
           </div>
           <div className="stage-four__header-mark">⋯</div>
         </header>
@@ -159,19 +200,32 @@ export default function StageFour() {
         <div className="stage-four__chat" ref={chatRef}>
           <div className="stage-four__date">СЬОГОДНІ</div>
           {Array.from({ length: visibleChiefMessages }).map((_, index) => (
-            <div className="stage-four__bubble stage-four__bubble--chief" key={`chief-${index}`}>
+            <div
+              className="stage-four__bubble stage-four__bubble--chief"
+              key={`chief-${index}`}
+            >
               <p>{chiefMessages[index]}</p>
-              <span>начальник · {playing ? "говорить" : `09:4${index + 1}`}</span>
+              <span>
+                начальник · {playing ? "говорить" : `09:4${index + 1}`}
+              </span>
             </div>
           ))}
-          {choice !== null && messages.map((message) => (
-            <div className={`stage-four__bubble stage-four__bubble--${message.from}`} key={message.id}>
-              <p>{message.text}</p>
-              <span>{message.from === "me" ? "ви · щойно" : "начальник · щойно"}</span>
-            </div>
-          ))}
+          {choice !== null &&
+            messages.map((message) => (
+              <div
+                className={`stage-four__bubble stage-four__bubble--${message.from}`}
+                key={message.id}
+              >
+                <p>{message.text}</p>
+                <span>
+                  {message.from === "me" ? "ви · щойно" : "начальник · щойно"}
+                </span>
+              </div>
+            ))}
           {choice === null && visibleChiefMessages >= chiefMessages.length && (
-            <div className="stage-four__typing">Начальник очікує на відповідь…</div>
+            <div className="stage-four__typing">
+              Начальник очікує на відповідь…
+            </div>
           )}
         </div>
 
@@ -182,28 +236,50 @@ export default function StageFour() {
               <div className="stage-four__choices">
                 {choices.map((item, index) => (
                   <button key={item.label} onClick={() => choose(index)}>
-                    <span>{index + 1}</span><strong>{item.label}</strong><b>›</b>
+                    <span>{index + 1}</span>
+                    <strong>{item.label}</strong>
+                    <b>›</b>
                   </button>
                 ))}
               </div>
             </>
-          ) : <div className="stage-four__composer-done">Відповідь надіслано</div>}
+          ) : (
+            <div className="stage-four__composer-done">Відповідь надіслано</div>
+          )}
         </div>
 
         <div className="stage-four__audio">
-          <span>{playing ? "НАЧАЛЬНИК ГОВОРИТЬ" : finished ? "ЗВЕРНЕННЯ ЗАВЕРШЕНО" : "АУДІОЗВЕРНЕННЯ"}</span>
-          <button disabled={playing} onClick={playVoice}>{playing ? "▶ Відтворюється…" : "↻ Прослухати ще раз"}</button>
+          <span>
+            {playing
+              ? "НАЧАЛЬНИК ГОВОРИТЬ"
+              : finished
+                ? "ЗВЕРНЕННЯ ЗАВЕРШЕНО"
+                : "АУДІОЗВЕРНЕННЯ"}
+          </span>
+          <button disabled={playing} onClick={playVoice}>
+            {playing ? "▶ Відтворюється…" : "↻ Прослухати ще раз"}
+          </button>
         </div>
-        <footer className="stage-four__footer"><span>ЕТАП 04</span><span>СПРАВА № 12026170010000456</span></footer>
+        <footer className="stage-four__footer">
+          <span>ЕТАП 04</span>
+          <span>СПРАВА № 12026170010000456</span>
+        </footer>
       </div>
-      <audio ref={voice} src={VOICE} preload="auto"
+      <audio
+        ref={voice}
+        src={VOICE}
+        preload="auto"
         onEnded={() => {
           setPlaying(false)
           setFinished(true)
           setVisibleChiefMessages(chiefMessages.length)
           restoreMusic()
         }}
-        onError={() => { setPlaying(false); setFinished(true); restoreMusic() }}
+        onError={() => {
+          setPlaying(false)
+          setFinished(true)
+          restoreMusic()
+        }}
       />
     </main>
   )
