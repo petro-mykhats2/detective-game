@@ -7,9 +7,7 @@
   min-height: 100dvh;
   box-sizing: border-box;
   padding: clamp(22px, 5vw, 62px) clamp(22px, 5vw, 62px) 92px;
-  background:
-    radial-gradient(circle at 18% 8%, rgba(112, 82, 47, .18), transparent 36%),
-    linear-gradient(145deg, #10161a 0%, #070a0c 76%);
+  background: transparent;
   color: #eef1f3;
 }
 
@@ -84,10 +82,12 @@
   align-items: start;
   gap: 20px;
   padding: clamp(20px, 3.5vw, 32px);
-  border: 1px solid #4b4130;
+  border: 1px solid rgba(75, 65, 48, .78);
   border-radius: 10px;
-  background: #10151bf0;
-  box-shadow: 0 22px 80px #0005;
+  background: rgba(16, 21, 27, .82);
+  box-shadow: 0 22px 80px rgba(0, 0, 0, .32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .fourth-envelope__assistant > .assistant-mark {
@@ -156,19 +156,6 @@
   align-self: flex-start;
   flex: 0 0 auto;
   margin-top: 12px;
-  border: 1px solid rgba(190,149,91,.48);
-  border-radius: 5px;
-  padding: 11px 14px;
-  background: #241d14;
-  color: #ead4b2;
-  font-size: 11px;
-  cursor: pointer;
-  transition: background .25s ease, border-color .25s ease, color .25s ease;
-}
-
-.fourth-envelope__audio:hover:not(:disabled) {
-  background: #352818;
-  border-color: #b28b55;
 }
 
 .fourth-envelope__audio:disabled {
@@ -180,26 +167,11 @@
   display: grid;
   gap: 10px;
   margin-top: 20px;
+  animation: panel-in .45s .12s ease both;
 }
 
 .fourth-envelope__actions button {
   width: 100%;
-  min-height: 50px;
-  border: 1px solid rgba(211,195,171,.16);
-  border-radius: 2px;
-  background: rgba(5,8,11,.62);
-  color: rgba(239,236,229,.82);
-  padding: 13px 14px;
-  font: 12px/1.7 Manrope, sans-serif;
-  text-align: left;
-  cursor: pointer;
-  transition: background .25s ease, border-color .25s ease, color .25s ease, opacity .25s ease;
-}
-
-.fourth-envelope__actions button:hover {
-  border-color: rgba(190,149,91,.6);
-  background: rgba(36,29,20,.6);
-  color: #f5e6d1;
 }
 
 .fourth-envelope__footer {
@@ -239,10 +211,6 @@
 
 .fourth-envelope__assistant {
   animation: fourth-envelope-dialogue-in .55s cubic-bezier(.2,.75,.2,1) both;
-}
-
-.fourth-envelope__actions {
-  animation: panel-in .45s .12s ease both;
 }
 
 @media (max-width: 600px) {
@@ -322,7 +290,6 @@
 
   .fourth-envelope__actions button {
     min-height: 46px;
-    font-size: 11px;
   }
 
   .fourth-envelope__footer {
