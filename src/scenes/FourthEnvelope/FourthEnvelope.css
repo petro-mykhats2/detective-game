@@ -84,7 +84,7 @@
   padding: clamp(20px, 3.5vw, 32px);
   border: 1px solid rgba(75, 65, 48, .78);
   border-radius: 10px;
-  background: rgba(16, 21, 27, .82);
+  background: rgba(16, 21, 27, .90);
   box-shadow: 0 22px 80px rgba(0, 0, 0, .32);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -143,8 +143,8 @@
 
 .fourth-envelope__text p {
   margin: 0 0 14px;
-  color: #c1c8cf;
-  font-size: 15px;
+  color: #ffffff;
+  font-size: 18px;
   line-height: 1.85;
 }
 
