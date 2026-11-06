@@ -11,6 +11,7 @@ import StageFour from "./scenes/StageFour/StageFour"
 import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
+import NotebookTestForm from "./components/InvestigatorNotebook/NotebookTestForm"
 
 type Screen =
   | "start"
@@ -226,6 +227,7 @@ export default function App() {
             <button className="briefing-test-button" onClick={() => setScreen("stage-four")}>
               ТЕСТ · ВІДКРИТИ ЕТАП 04
             </button>
+            <NotebookTestForm />
           </div>
           <div className="intro__footer">
             <span>СИСТЕМА ГОТОВА ДО РОБОТИ</span>
