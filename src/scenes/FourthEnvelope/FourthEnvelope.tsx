@@ -149,7 +149,7 @@ export default function FourthEnvelope() {
 
               <button
                 type="button"
-                className="fourth-envelope__audio"
+                className="stage-one-secondary fourth-envelope__audio"
                 disabled={playingDialogue}
                 onClick={playDialogue}
               >
@@ -161,10 +161,10 @@ export default function FourthEnvelope() {
           </section>
 
           <div className="fourth-envelope__actions">
-            <button type="button" onClick={() => {}}>
+            <button className="stage-one-secondary" type="button" onClick={() => {}}>
               Запросити інші матеріали
             </button>
-            <button type="button" onClick={() => {}}>
+            <button className="stage-one-primary" type="button" onClick={() => {}}>
               Допоможеш розібратись, напарнику
             </button>
           </div>
