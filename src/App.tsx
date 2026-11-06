@@ -9,6 +9,8 @@ import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
 import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 import StageFour from "./scenes/StageFour/StageFour"
 import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
+import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
+import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 
 type Screen =
   | "start"
@@ -188,7 +190,8 @@ export default function App() {
   }
 
   return (
-    <main className={`experience is-ready experience--${screen}`}>
+    <InvestigatorNotebookProvider>
+      <main className={`experience is-ready experience--${screen}`}>
       <div
         className="experience__background"
         style={{ backgroundImage: `url("${BACKGROUND_IMAGE}")` }}
@@ -365,6 +368,8 @@ export default function App() {
         </section>
       )}
 
+      <InvestigatorNotebook />
+
       <button
         className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
         onClick={toggleMusic}
@@ -410,6 +415,7 @@ export default function App() {
         }}
         preload="auto"
       />
-    </main>
+      </main>
+    </InvestigatorNotebookProvider>
   )
 }
