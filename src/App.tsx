@@ -368,10 +368,11 @@ export default function App() {
         </section>
       )}
 
-      <InvestigatorNotebook />
+      <div className="experience__utilities">
+        <InvestigatorNotebook />
 
-      <button
-        className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
+        <button
+          className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
         onClick={toggleMusic}
         aria-label={
           musicEnabled ? "Вимкнути фонову музику" : "Увімкнути фонову музику"
@@ -415,6 +416,7 @@ export default function App() {
         }}
         preload="auto"
       />
+      </div>
       </main>
     </InvestigatorNotebookProvider>
   )
