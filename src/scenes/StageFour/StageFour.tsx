@@ -8,7 +8,9 @@ const chiefMessages = [
   "Як дієш далі?",
 ]
 
-type Choice = { label: string; reply: string; secondReply?: string }\n\nconst choices: Choice[] = [
+type Choice = { label: string; reply: string; secondReply?: string }
+
+const choices: Choice[] = [
   {
     label:
       "Терміново виїжджаю з обшуком на дачу у С/Т «Зелений Гай», оскільки за білінгом Cell ID 4598 телефон вимкнувся саме там о 22:45. Паралельно призначаю експертизи, викликаю на допит всіх хто контактував з Ковальчуком у день вбивства",
@@ -41,6 +43,7 @@ export default function StageFour({
   const [typing, setTyping] = useState(false)
   const chatRef = useRef<HTMLDivElement>(null)
   const secondReplyTimer = useRef<number | null>(null)
+  const notificationSound = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
     return () => {
@@ -65,6 +68,11 @@ export default function StageFour({
       { id: `me-${index}`, from: "me", text: selected.label },
       { id: `chief-${index}`, from: "chief", text: selected.reply },
     ])
+
+    if (notificationSound.current) {
+      notificationSound.current.currentTime = 0
+      void notificationSound.current.play().catch(() => {})
+    }
 
     if (selected.secondReply) {
       setTyping(true)
@@ -176,6 +184,7 @@ export default function StageFour({
           Закінчити листування і відкрити конверт 04 <span aria-hidden="true">→</span>
         </button>
       </div>
+      <audio ref={notificationSound} src="/audio/message-notification.mp3" preload="auto" />
     </main>
   )
 }
