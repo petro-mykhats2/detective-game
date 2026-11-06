@@ -8,7 +8,7 @@ const chiefMessages = [
   "Як дієш далі?",
 ]
 
-const choices = [
+type Choice = { label: string; reply: string; secondReply?: string }\n\nconst choices: Choice[] = [
   {
     label:
       "Терміново виїжджаю з обшуком на дачу у С/Т «Зелений Гай», оскільки за білінгом Cell ID 4598 телефон вимкнувся саме там о 22:45. Паралельно призначаю експертизи, викликаю на допит всіх хто контактував з Ковальчуком у день вбивства",
