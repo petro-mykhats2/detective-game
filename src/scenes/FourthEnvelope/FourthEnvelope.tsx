@@ -1,10 +1,6 @@
 import "./FourthEnvelope.css"
 
-type Props = {
-  onComplete: () => void
-}
-
-export default function FourthEnvelope({ onComplete }: Props) {
+export default function FourthEnvelope() {
   return (
     <main className="fourth-envelope" aria-label="Конверт 4">
       <div className="fourth-envelope__wrap">
@@ -42,13 +38,6 @@ export default function FourthEnvelope({ onComplete }: Props) {
               </button>
             </div>
 
-            <button
-              className="fourth-envelope__continue"
-              type="button"
-              onClick={onComplete}
-            >
-              Відкрити конверт № 4 <span aria-hidden="true">→</span>
-            </button>
           </div>
         </section>
 
