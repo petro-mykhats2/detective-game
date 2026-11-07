@@ -323,8 +323,8 @@
 }
 
 .fourth-envelope__modal {
-  width: min(920px, 100%);
-  max-height: min(88dvh, 820px);
+  width: min(1080px, 100%);
+  max-height: min(90dvh, 900px);
   overflow: hidden;
   border: 1px solid rgba(75, 65, 48, .9);
   border-radius: 10px;
@@ -377,9 +377,9 @@
 }
 
 .fourth-envelope__modal-content {
-  max-height: calc(min(88dvh, 820px) - 53px);
+  max-height: calc(min(90dvh, 900px) - 53px);
   overflow-y: auto;
-  padding: 28px;
+  padding: 34px 40px 38px;
   scrollbar-color: #675238 #0b0e11;
 }
 
@@ -403,13 +403,17 @@
 }
 
 .fourth-envelope__modal-text {
-  color: #f4f4f1;
+  width: 100%;
+  color: #ffffff;
 }
 
 .fourth-envelope__modal-text p {
-  margin: 0 0 13px;
-  font-size: 15px;
-  line-height: 1.72;
+  width: 100%;
+  margin: 0 0 16px;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.78;
+  letter-spacing: 0;
 }
 
 .fourth-envelope__modal-text p:last-child {
@@ -489,9 +493,9 @@
 }
 
 .fourth-envelope__procedural-copy small {
-  color: #87919b;
-  font-size: 12px;
-  line-height: 1.55;
+  color: #f2f2ef;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .fourth-envelope__modal-actions {
@@ -499,6 +503,67 @@
   grid-template-columns: minmax(0, 1fr) 180px;
   gap: 10px;
   margin-top: 18px;
+}
+
+.fourth-envelope__submission-confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  margin-top: 18px;
+  padding: 15px 17px;
+  border: 1px solid rgba(128, 183, 155, .45);
+  border-radius: 5px;
+  background: rgba(39, 69, 54, .28);
+  color: #ffffff;
+}
+
+.fourth-envelope__submission-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #80b79b;
+  border-radius: 50%;
+  color: #b7dfc6;
+  font: 13px/1 "DM Mono", monospace;
+}
+
+.fourth-envelope__submission-confirmation strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #ffffff;
+  font: 12px/1.4 "DM Mono", monospace;
+  letter-spacing: .04em;
+}
+
+.fourth-envelope__submission-confirmation small {
+  display: block;
+  color: #dce5df;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.fourth-envelope__procedural-option.is-added {
+  border-color: rgba(128, 183, 155, .5);
+  background: rgba(39, 69, 54, .2);
+  cursor: not-allowed;
+}
+
+.fourth-envelope__procedural-option.is-added:hover {
+  transform: none;
+}
+
+.fourth-envelope__procedural-option.is-added .fourth-envelope__procedural-check {
+  border-color: #80b79b;
+  background: rgba(128, 183, 155, .16);
+  color: #b7dfc6;
+}
+
+.fourth-envelope__procedural-option.is-added .fourth-envelope__procedural-copy strong,
+.fourth-envelope__procedural-option.is-added .fourth-envelope__procedural-copy small {
+  color: #ffffff;
 }
 
 .fourth-envelope__modal-actions button {
@@ -545,12 +610,12 @@
 
   .fourth-envelope__modal-content {
     max-height: calc(94dvh - 53px);
-    padding: 20px 16px max(24px, env(safe-area-inset-bottom));
+    padding: 20px 18px max(24px, env(safe-area-inset-bottom));
   }
 
   .fourth-envelope__modal-text p {
-    font-size: 13px;
-    line-height: 1.7;
+    font-size: 14px;
+    line-height: 1.72;
   }
 
   .fourth-envelope__modal-question {
