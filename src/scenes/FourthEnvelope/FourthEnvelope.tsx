@@ -161,15 +161,6 @@ export default function FourthEnvelope() {
     restoreMusicVolume()
   }
 
-  function stopInvestigationTheme() {
-    const music = getMusicElement()
-
-    if (music) {
-      music.pause()
-      music.currentTime = 0
-    }
-  }
-
   function openMaterialsModal() {
     stopDialogue()
     setShowSubmissionConfirmation(false)
