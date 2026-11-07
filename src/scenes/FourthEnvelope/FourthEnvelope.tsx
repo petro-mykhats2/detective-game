@@ -151,7 +151,7 @@ export default function FourthEnvelope() {
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [showDocumentsModal, setShowDocumentsModal] = useState(false)
   const [selectedActions, setSelectedActions] = useState<string[]>([])
-  const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])
+  const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])\n  const [expandedDocumentIds, setExpandedDocumentIds] = useState<string[]>([])
   const [showSubmissionConfirmation, setShowSubmissionConfirmation] =
     useState(false)
   const { notes, addNote } = useInvestigatorNotebook()
@@ -194,6 +194,14 @@ export default function FourthEnvelope() {
   function openDocumentsModal() {
     stopDialogue()
     setShowDocumentsModal(true)
+  }
+
+  function toggleDocument(id: string) {
+    setExpandedDocumentIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    )
   }
 
   function toggleProceduralAction(id: string) {
@@ -594,34 +602,61 @@ export default function FourthEnvelope() {
                 </div>
 
                 <div className="fourth-envelope__documents-list">
-                  {envelope4DocsAnalysis.map((document, index) => (
-                    <article
-                      key={document.documentName}
-                      className="fourth-envelope__document-card"
-                    >
-                      <div className="fourth-envelope__document-number">
-                        {String(index + 1).padStart(2, "0")}
-                      </div>
-                      <div className="fourth-envelope__document-body">
-                        <h3>{document.documentName}</h3>
+                  {envelope4DocsAnalysis.map((document, index) => {
+                    const expanded = expandedDocumentIds.includes(document.documentName)
+                    const detailsId = `fourth-envelope-document-details-${index}`
 
-                        <div className="fourth-envelope__document-section">
-                          <span>ЩО ЦЕ</span>
-                          <p>{document.whatIsIt}</p>
-                        </div>
+                    return (
+                      <article
+                        key={document.documentName}
+                        className={`fourth-envelope__document-card${expanded ? " is-expanded" : ""}`}
+                      >
+                        <button
+                          type="button"
+                          className="fourth-envelope__document-trigger"
+                          aria-expanded={expanded}
+                          aria-controls={detailsId}
+                          onClick={() => toggleDocument(document.documentName)}
+                        >
+                          <span className="fourth-envelope__document-number">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="fourth-envelope__document-title">
+                            {document.documentName}
+                          </span>
+                          <span
+                            className="fourth-envelope__document-chevron"
+                            aria-hidden="true"
+                          >
+                            <span />
+                          </span>
+                        </button>
 
-                        <div className="fourth-envelope__document-section">
-                          <span>КЛЮЧОВІ ФАКТИ</span>
-                          <p>{document.keyFacts}</p>
-                        </div>
+                        <div
+                          id={detailsId}
+                          className="fourth-envelope__document-details"
+                          aria-hidden={!expanded}
+                        >
+                          <div className="fourth-envelope__document-details-inner">
+                            <div className="fourth-envelope__document-section">
+                              <span>ЩО ЦЕ</span>
+                              <p>{document.whatIsIt}</p>
+                            </div>
 
-                        <div className="fourth-envelope__document-section fourth-envelope__document-section--analysis">
-                          <span>ЯК АНАЛІЗУВАТИ</span>
-                          <p>{document.howToAnalyze}</p>
+                            <div className="fourth-envelope__document-section">
+                              <span>КЛЮЧОВІ ФАКТИ</span>
+                              <p>{document.keyFacts}</p>
+                            </div>
+
+                            <div className="fourth-envelope__document-section fourth-envelope__document-section--analysis">
+                              <span>ЯК АНАЛІЗУВАТИ</span>
+                              <p>{document.howToAnalyze}</p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  ))}
+                      </article>
+                    )
+                  })}
                 </div>
 
                 <div className="fourth-envelope__modal-actions fourth-envelope__documents-actions">
