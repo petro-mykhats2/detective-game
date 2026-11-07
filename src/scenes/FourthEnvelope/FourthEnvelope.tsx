@@ -69,7 +69,9 @@ export default function FourthEnvelope() {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [selectedActions, setSelectedActions] = useState<string[]>([])
-  const { addNote } = useInvestigatorNotebook()
+  const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])
+  const [showSubmissionConfirmation, setShowSubmissionConfirmation] = useState(false)
+  const { notes, addNote } = useInvestigatorNotebook()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const musicVolumeBeforeVoiceRef = useRef<number | null>(null)
 
@@ -100,7 +102,25 @@ export default function FourthEnvelope() {
     restoreMusicVolume()
   }
 
+  function stopInvestigationTheme() {
+    const music = getMusicElement()
+
+    if (music) {
+      music.pause()
+      music.currentTime = 0
+    }
+  }
+
+  function openMaterialsModal() {
+    stopDialogue()
+    stopInvestigationTheme()
+    setShowSubmissionConfirmation(false)
+    setShowMaterialsModal(true)
+  }
+
   function toggleProceduralAction(id: string) {
+    if (submittedActionIds.includes(id)) return
+
     setSelectedActions((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
@@ -109,9 +129,17 @@ export default function FourthEnvelope() {
   }
 
   function submitProceduralActions() {
-    const selected = PROCEDURAL_ACTIONS.filter((action) =>
-      selectedActions.includes(action.id),
+    const selected = PROCEDURAL_ACTIONS.filter(
+      (action) =>
+        selectedActions.includes(action.id) &&
+        !submittedActionIds.includes(action.id) &&
+        !notes.some((note) => note.title === action.title),
     )
+
+    if (selected.length === 0) {
+      setSelectedActions([])
+      return
+    }
 
     selected.forEach((action) => {
       addNote({
@@ -122,8 +150,16 @@ export default function FourthEnvelope() {
       })
     })
 
+    setSubmittedActionIds((current) => [
+      ...current,
+      ...selected.map((action) => action.id),
+    ])
     setSelectedActions([])
-    setShowMaterialsModal(false)
+    setShowSubmissionConfirmation(true)
+
+    const confirmationAudio = new Audio("/audio/perechid.mp3")
+    confirmationAudio.volume = 1
+    void confirmationAudio.play().catch(() => undefined)
   }
 
   function playDialogue() {
@@ -237,7 +273,7 @@ export default function FourthEnvelope() {
             <button
               className="stage-one-secondary"
               type="button"
-              onClick={() => setShowMaterialsModal(true)}
+              onClick={openMaterialsModal}
             >
               Запросити інші матеріали
             </button>
@@ -299,7 +335,7 @@ export default function FourthEnvelope() {
                   </div>
                 </div>
 
-                <div className="fourth-envelope__modal-text">
+                <div className="fourth-envelope__modal-text" id="fourth-envelope-materials-title">
                   <p>
                     Капітане, по експертизах ми зараз чекаємо результати
                     трасології зліпків взуття (41-42 та 44-45 розміру) та
@@ -335,34 +371,64 @@ export default function FourthEnvelope() {
                 <div className="fourth-envelope__procedural-list">
                   {PROCEDURAL_ACTIONS.map((action) => {
                     const checked = selectedActions.includes(action.id)
+                    const alreadyAdded =
+                      submittedActionIds.includes(action.id) ||
+                      notes.some((note) => note.title === action.title)
 
                     return (
                       <label
                         key={action.id}
-                        className={`fourth-envelope__procedural-option${checked ? " is-selected" : ""}`}
+                        className={`fourth-envelope__procedural-option${checked ? " is-selected" : ""}${alreadyAdded ? " is-added" : ""}`}
                       >
                         <input
                           type="checkbox"
-                          checked={checked}
+                          checked={checked || alreadyAdded}
+                          disabled={alreadyAdded}
                           onChange={() => toggleProceduralAction(action.id)}
                         />
                         <span className="fourth-envelope__procedural-check">
-                          {checked ? "✓" : ""}
+                          {alreadyAdded ? "✓" : checked ? "✓" : ""}
                         </span>
                         <span className="fourth-envelope__procedural-copy">
                           <strong>{action.title}</strong>
-                          <small>{action.details}</small>
+                          <small>
+                            {alreadyAdded
+                              ? "Дію вже додано до блокнота. Повторне надсилання недоступне."
+                              : action.details}
+                          </small>
                         </span>
                       </label>
                     )
                   })}
                 </div>
 
+                {showSubmissionConfirmation && (
+                  <div className="fourth-envelope__submission-confirmation" role="status">
+                    <span className="fourth-envelope__submission-icon">✓</span>
+                    <div>
+                      <strong>Дії додано до блокнота</strong>
+                      <small>
+                        Запит збережено у блокноті слідчого. Додані дії більше не
+                        можна надіслати повторно.
+                      </small>
+                    </div>
+                  </div>
+                )}
+
                 <div className="fourth-envelope__modal-actions">
                   <button
                     type="button"
                     className="stage-one-primary"
-                    disabled={selectedActions.length === 0}
+                    disabled={
+                      selectedActions.length === 0 ||
+                      selectedActions.every((id) => {
+                        const action = PROCEDURAL_ACTIONS.find((item) => item.id === id)
+                        return (
+                          submittedActionIds.includes(id) ||
+                          Boolean(action && notes.some((note) => note.title === action.title))
+                        )
+                      })
+                    }
                     onClick={submitProceduralActions}
                   >
                     Подати запит на вибрані процесуальні дії
