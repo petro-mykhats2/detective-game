@@ -17,42 +17,36 @@ type ProceduralAction = {
 
 const PROCEDURAL_ACTIONS: ProceduralAction[] = [
   {
-    id: "shoe-traceology",
-    title: "Трасологічна експертиза зліпків взуття",
-    details: "Порівняти зліпки взуття 41–42 та 44–45 розміру з можливими зразками.",
+    id: "olena-interrogation",
+    title: "Повторний допит Олени Ковальчук",
+    details:
+      "Перевірка показань дружини потерпілого щодо приховування статків, походження готівки та сплати туру на Мальдіви.",
   },
   {
-    id: "grass-dna",
-    title: "ДНК-експертиза крові з трави",
-    details: "Встановити належність біологічного матеріалу, вилученого на дачі.",
+    id: "atm-video-request",
+    title: "Витребування відео з банкомату «ДністроБанк»",
+    details:
+      "Отримання записів камер за 05.07.2026 о 11:15 (Термінал #402, Філія № 4) для ідентифікації особи, яка вносила 118 676 грн.",
   },
   {
-    id: "hair-expertise",
-    title: "Експертиза світлої волосини з автомобіля",
-    details: "Встановити походження волосини та отримати доступний генетичний профіль.",
+    id: "svitlychnyi-interrogation",
+    title: "Допит Вадима Світличного",
+    details:
+      "Опитування чоловіка Ірини Світличної щодо мотиву ревнощів до потерпілого та перевірка його алібі на вечір 06.07.2026.",
   },
   {
-    id: "fingerprints",
-    title: "Дактилоскопічна експертиза",
-    details: "Дослідити відбитки з керма та дверей автомобіля.",
+    id: "waterworks-doc-seizure",
+    title: "Вилучення документів КП «Міськводоканал»",
+    details:
+      "Тимчасовий доступ до кошторисів, закриваючих актів та договорів із ТОВ «ДніпроСпецБуд», які відмовлявся підписувати Ковальчук.",
   },
   {
-    id: "phone-forensics",
-    title: "Комп'ютерно-технічна експертиза телефону Ковальчука",
-    details: "Спробувати відновити дані, паролі та іншу інформацію з розтрощеного телефону.",
-  },
-  {
-    id: "wallet-and-items",
-    title: "Детальний огляд вилучених речей",
-    details: "Окремо перевірити розбиті окуляри, документи з ключами, посвідченням водія, свідоцтвом про реєстрацію ТЗ та вміст чорного шкіряного гаманця, включно з банківськими картками й готівкою.",
-  },
-  {
-    id: "additional-interrogation",
-    title: "Додаткові допити у справі",
-    details: "Призначити додаткові допити осіб, чиї свідчення можуть уточнити обставини події.",
+    id: "cell-4598-triangulation",
+    title: "Аналіз радіоелектронної обстановки (Cell ID 4598)",
+    details:
+      "Отримання вигрузки CDR щодо всіх активних абонентів у секторі С/Т «Зелений Гай» за 06.07.2026 з 21:30 по 23:15.",
   },
 ]
-
 
 function isTouchDevice() {
   return window.matchMedia("(pointer: coarse)").matches
@@ -70,7 +64,8 @@ export default function FourthEnvelope() {
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [selectedActions, setSelectedActions] = useState<string[]>([])
   const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])
-  const [showSubmissionConfirmation, setShowSubmissionConfirmation] = useState(false)
+  const [showSubmissionConfirmation, setShowSubmissionConfirmation] =
+    useState(false)
   const { notes, addNote } = useInvestigatorNotebook()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const musicVolumeBeforeVoiceRef = useRef<number | null>(null)
@@ -335,7 +330,10 @@ export default function FourthEnvelope() {
                   </div>
                 </div>
 
-                <div className="fourth-envelope__modal-text" id="fourth-envelope-materials-title">
+                <div
+                  className="fourth-envelope__modal-text"
+                  id="fourth-envelope-materials-title"
+                >
                   <p>
                     Капітане, по експертизах ми зараз чекаємо результати
                     трасології зліпків взуття (41-42 та 44-45 розміру) та
@@ -346,21 +344,20 @@ export default function FourthEnvelope() {
                     дактилоскопію відбитків з керма і дверей.
                   </p>
                   <p>
-                    Ну і головне — розтрощений телефон Ковальчука: якщо
-                    технарям вдасться витягнути з нього дані та паролі, у нас
-                    буде багато нової роботи.
+                    Ну і головне — розтрощений телефон Ковальчука: якщо технарям
+                    вдасться витягнути з нього дані та паролі, у нас буде багато
+                    нової роботи.
                   </p>
                   <p>
                     До того ж, я наполягаю, щоб ми детально оглянули й інші
                     вилучені речі: розбиті окуляри, особисті документи з
-                    ключами, посвідченням водія та свідоцтвом про реєстрацію
-                    ТЗ.
+                    ключами, посвідченням водія та свідоцтвом про реєстрацію ТЗ.
                   </p>
                   <p>
-                    І особливо — чорний шкіряний гаманець із внутрішньої
-                    кишені його куртки: треба ретельно перевірити весь його
-                    вміст, усі банківські картки та готівку, бо там може бути
-                    щось дуже цікаве.
+                    І особливо — чорний шкіряний гаманець із внутрішньої кишені
+                    його куртки: треба ретельно перевірити весь його вміст, усі
+                    банківські картки та готівку, бо там може бути щось дуже
+                    цікаве.
                   </p>
                 </div>
 
@@ -403,13 +400,16 @@ export default function FourthEnvelope() {
                 </div>
 
                 {showSubmissionConfirmation && (
-                  <div className="fourth-envelope__submission-confirmation" role="status">
+                  <div
+                    className="fourth-envelope__submission-confirmation"
+                    role="status"
+                  >
                     <span className="fourth-envelope__submission-icon">✓</span>
                     <div>
                       <strong>Дії додано до блокнота</strong>
                       <small>
-                        Запит збережено у блокноті слідчого. Додані дії більше не
-                        можна надіслати повторно.
+                        Запит збережено у блокноті слідчого. Додані дії більше
+                        не можна надіслати повторно.
                       </small>
                     </div>
                   </div>
@@ -422,10 +422,15 @@ export default function FourthEnvelope() {
                     disabled={
                       selectedActions.length === 0 ||
                       selectedActions.every((id) => {
-                        const action = PROCEDURAL_ACTIONS.find((item) => item.id === id)
+                        const action = PROCEDURAL_ACTIONS.find(
+                          (item) => item.id === id,
+                        )
                         return (
                           submittedActionIds.includes(id) ||
-                          Boolean(action && notes.some((note) => note.title === action.title))
+                          Boolean(
+                            action &&
+                            notes.some((note) => note.title === action.title),
+                          )
                         )
                       })
                     }

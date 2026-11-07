@@ -286,14 +286,14 @@
   box-shadow: 0 0 0 3px rgba(70, 70, 65, .08);
 }
 
-.investigator-notebook__status--progress { color: #b27932; }
-.investigator-notebook__status--rejected { color: #a14f48; }
-.investigator-notebook__status--completed { color: #4f765d; }
-.investigator-notebook__status--waiting { color: #55728b; }
-.investigator-notebook__status--decision { color: #756047; }
-.investigator-notebook__status--blocked { color: #784c4c; }
-.investigator-notebook__status--conditions { color: #826c3d; }
-.investigator-notebook__status--pending { color: #69717a; }
+.investigator-notebook__status--progress { color: #ff9800; }
+.investigator-notebook__status--rejected { color: #f44336; }
+.investigator-notebook__status--completed { color: #4caf50; }
+.investigator-notebook__status--waiting { color: #2196f3; }
+.investigator-notebook__status--decision { color: #ffb300; }
+.investigator-notebook__status--blocked { color: #e53935; }
+.investigator-notebook__status--conditions { color: #ffc107; }
+.investigator-notebook__status--pending { color: #90a4ae; }
 
 .investigator-notebook__delete {
   border: 0;
