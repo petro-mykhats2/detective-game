@@ -541,3 +541,40 @@ button { font: inherit; }
 .briefing-test-button{margin-top:14px;padding:10px 14px;border:1px dashed rgba(196,161,106,.65);background:rgba(8,10,11,.42);color:rgba(225,197,155,.9);font:9px/1.4 "DM Mono",monospace;letter-spacing:.1em;cursor:pointer;transition:background .25s,border-color .25s,color .25s}
 .briefing-test-button:hover{background:rgba(119,78,35,.3);border-color:#d0a56b;color:#fff0d8}
 .briefing-test-button:focus-visible{outline:2px solid #dfbd88;outline-offset:4px}
+
+
+/* Панель швидкого доступу: блокнот завжди поруч із керуванням музикою. */
+.experience__utilities {
+  position: absolute;
+  z-index: 900;
+  top: max(12px, env(safe-area-inset-top));
+  right: clamp(16px, 3vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.experience__utilities .sound-toggle {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+.experience__utilities .investigator-notebook-trigger {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+}
+
+@media (max-width: 600px) {
+  .experience__utilities {
+    top: max(10px, env(safe-area-inset-top));
+    right: 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .experience__utilities .sound-toggle {
+    max-width: none;
+  }
+}

@@ -7,6 +7,11 @@ import StageTwo from "./scenes/StageTwo/StageTwo"
 import ThirdEnvelope from "./scenes/ThirdEnvelope/ThirdEnvelope"
 import ChiefBriefing from "./scenes/ChiefBriefing/ChiefBriefing"
 import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
+import StageFour from "./scenes/StageFour/StageFour"
+import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
+import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
+import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
+import NotebookTestForm from "./components/InvestigatorNotebook/NotebookTestForm"
 
 type Screen =
   | "start"
@@ -19,6 +24,8 @@ type Screen =
   | "materials-guide"
   | "stage-three"
   | "terminal"
+  | "stage-four"
+  | "fourth-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -184,7 +191,8 @@ export default function App() {
   }
 
   return (
-    <main className={`experience is-ready experience--${screen}`}>
+    <InvestigatorNotebookProvider>
+      <main className={`experience is-ready experience--${screen}`}>
       <div
         className="experience__background"
         style={{ backgroundImage: `url("${BACKGROUND_IMAGE}")` }}
@@ -216,6 +224,10 @@ export default function App() {
             <button className="briefing-test-button" onClick={() => setScreen("stage-three-briefing")}>
               ТЕСТ · ВІДКРИТИ СЛУЖБОВИЙ БРИФІНГ
             </button>
+            <button className="briefing-test-button" onClick={() => setScreen("stage-four")}>
+              ТЕСТ · ВІДКРИТИ ЕТАП 04
+            </button>
+            <NotebookTestForm />
           </div>
           <div className="intro__footer">
             <span>СИСТЕМА ГОТОВА ДО РОБОТИ</span>
@@ -297,7 +309,7 @@ export default function App() {
       {screen === "materials-guide" && (
         <MaterialsGuide
             onBack={() => setScreen("stage-three-intro")}
-            onContinue={() => setScreen("stage-three")}
+            onContinue={() => setScreen("stage-four")}
           />
       )}
 
@@ -307,6 +319,14 @@ export default function App() {
             onBack={() => setScreen("stage-two")}
             onComplete={() => setScreen("terminal")}
           />
+      )}
+
+      {screen === "stage-four" && (
+        <StageFour onComplete={() => setScreen("fourth-envelope")} />
+      )}
+
+      {screen === "fourth-envelope" && (
+        <FourthEnvelope />
       )}
 
       {screen === "terminal" && (
@@ -350,8 +370,11 @@ export default function App() {
         </section>
       )}
 
-      <button
-        className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
+      <div className="experience__utilities">
+        <InvestigatorNotebook />
+
+        <button
+          className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
         onClick={toggleMusic}
         aria-label={
           musicEnabled ? "Вимкнути фонову музику" : "Увімкнути фонову музику"
@@ -395,6 +418,8 @@ export default function App() {
         }}
         preload="auto"
       />
-    </main>
+      </div>
+      </main>
+    </InvestigatorNotebookProvider>
   )
 }

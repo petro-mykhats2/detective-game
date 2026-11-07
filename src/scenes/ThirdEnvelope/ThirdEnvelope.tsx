@@ -500,22 +500,49 @@ export default function ThirdEnvelope({ mode, onBack, onComplete }: Props) {
           <div
             className="third-envelope__video-placeholder"
             role="img"
-            aria-label="Відеозаглушка: на стіл кладуть матеріали експертиз"
+            aria-label="Шість нових матеріалів справи розкладено на столі"
           >
             <div className="third-envelope__table-light" />
-            <div className="third-envelope__paper third-envelope__paper--one">
-              <span>ВИСНОВОК</span>
-              <b>СУДОВО-МЕДИЧНА ЕКСПЕРТИЗА</b>
-              <small>№ 102/26</small>
+            <div className="third-envelope__documents">
+              <article className="third-envelope__paper">
+                <span>СУДОВО-МЕДИЧНИЙ ДОКУМЕНТ</span>
+                <b>СУДМЕДЕКСПЕРТИЗА</b>
+                <small>Обласне бюро · Акт № 102/26</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
+              <article className="third-envelope__paper">
+                <span>ЕКСПЕРТНИЙ ВИСНОВОК</span>
+                <b>АВТОТЕХНІЧНА ЕКСПЕРТИЗА</b>
+                <small>НДЕКЦ МВС · № 142/26-АВТО (V3)</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
+              <article className="third-envelope__paper">
+                <span>ФІНАНСОВИЙ ДОКУМЕНТ</span>
+                <b>БАНКІВСЬКА ВИПИСКА</b>
+                <small>АТ «ДНІСТРОБАНК» · Ковальчук І. В.</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
+              <article className="third-envelope__paper">
+                <span>ДАНІ ОПЕРАТОРА ЗВ’ЯЗКУ</span>
+                <b>МОБІЛЬНИЙ БІЛІНГ · CDR</b>
+                <small>Оператор «Dnicell» · Ковальчук І. В.</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
+              <article className="third-envelope__paper">
+                <span>АНАЛІТИЧНА ДОВІДКА</span>
+                <b>OSINT-ДОВІДКА</b>
+                <small>Деанонімізація · цифрові сліди Б-абонентів</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
+              <article className="third-envelope__paper">
+                <span>ДОДАТОК ДО ПРОТОКОЛУ</span>
+                <b>СХЕМА БАЗОВИХ СТАНЦІЙ</b>
+                <small>Сектори · азимути · зони тріангуляції</small>
+                <i className="third-envelope__paper-flag" aria-hidden="true">⚑</i>
+              </article>
             </div>
-            <div className="third-envelope__paper third-envelope__paper--two">
-              <span>ЕКСПЕРТНЕ ДОСЛІДЖЕННЯ</span>
-              <b>АВТОТЕХНІЧНА ЕКСПЕРТИЗА</b>
-              <small>МАТЕРІАЛИ СПРАВИ</small>
-            </div>
-            <div className="third-envelope__hand-shadow" />
             <div className="third-envelope__placeholder-caption">
-              НОВІ МАТЕРІАЛИ НАДІЙШЛИ
+              НАДІЙШЛО 6 НОВИХ МАТЕРІАЛІВ
             </div>
           </div>
         )}
