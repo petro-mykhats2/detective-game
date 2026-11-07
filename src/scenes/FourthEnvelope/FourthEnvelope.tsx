@@ -15,6 +15,69 @@ type ProceduralAction = {
   details: string
 }
 
+const envelope4DocsAnalysis = [
+  {
+    documentName: "Витяг з ЄРДР",
+    whatIsIt: "Офіційна зміна статті злочину.",
+    keyFacts: "Справу перекваліфіковано з ДТП на умисне вбивство — ч. 1 ст. 115 КК України.",
+    howToAnalyze: "Це наше зелене світло. Тепер ми маємо всі повноваження на жорсткі допити, затримання та невідкладні обшуки. Вбивство було інсценовано під аварію.",
+  },
+  {
+    documentName: "Протокол та схема огляду місця події (Дача № 42)",
+    whatIsIt: "Звіт первинної групи з місця, де телефон потерпілого вимкнувся о 22:45.",
+    keyFacts: "На траві знайшли бурі плями крові та гіпсовий зліпок невідомого взуття 44-45 розміру, спрямований до виїзду. Знаряддя не знайшли.",
+    howToAnalyze: "Головний провал попередників: вони оглянули тільки двір і не заходили в сам будинок! Треба негайно брати ухвалу на обшук всередині дачі. Також розмір 44-45 — це наша головна зачіпка для пошуку виконавця вбивства.",
+  },
+  {
+    documentName: "Допит судмедексперта Дмитренка А. С.",
+    whatIsIt: "Пояснення лікаря, який першим оглядав тіло і машину на дні прірви.",
+    keyFacts: "Виправдовується, що в темряві переплутав пролом від бити на маківці з ударом об стійку авто. Темні смуги від тарана на бампері назвав «брудом».",
+    howToAnalyze: "Фахівець із 15-річним стажем не міг так помилитися. Він свідомо приховував сліди вбивства. Шукаємо, хто йому заплатив — підрядники чи керівництво Водоканалу.",
+  },
+  {
+    documentName: "Допит бухгалтерки Світличної І. О.",
+    whatIsIt: "Показання колеги потерпілого, з якою він тісно спілкувався.",
+    keyFacts: "Вона блондинка (збіг із волосиною в авто). Її чоловік Вадим носить 44-45 розмір взуття, дуже ревнивий, і в ніч вбивства виїхав з дому без алібі.",
+    howToAnalyze: "Її чоловік — підозрюваний №1 у фізичному нанесенні удару. Зіставляємо його розмір ноги зі слідом на дачі та перевіряємо його білінг.",
+  },
+  {
+    documentName: "Допит Захарова Г. В.",
+    whatIsIt: "Показання директора «Міськводоканалу».",
+    keyFacts: "Поводиться холодно і переводить стрілки на підрядників.",
+    howToAnalyze: "Класична поведінка замовника. Йому був вигідний мертвий аудитор. Перевіряємо його службові позашляховики на сліди білої фарби потерпілого та вимагаємо точні маршрути руху.",
+  },
+  {
+    documentName: "Допит Кравченка Д. Д.",
+    whatIsIt: "Показання охоронця директора «Міськводоканалу».",
+    keyFacts: "Дзвонив потерпілому у вихідний (неділю) нібито про «гальмівні колодки». На питання про маршрути різко замовк і почав нервувати.",
+    howToAnalyze: "Підозріла поведінка. Перевіряємо його маршрути, телефонні з’єднання та можливу участь у супроводі або прикритті.",
+  },
+  {
+    documentName: "Вигрузка «Відеоконтроль» V3",
+    whatIsIt: "Дані з дорожніх камер біля дач.",
+    keyFacts: "Камера №3 зафіксувала чорний Toyota Land Cruiser Prado (PE 2399 EH), який поїхав до дач о 22:20 і повернувся о 23:15. Це ідеально збігається з часом вбивства.",
+    howToAnalyze: "Маємо часові рамки появи та зникнення підозрілого авто біля місця злочину. Далі зіставляємо з витягом з НАІС.",
+  },
+  {
+    documentName: "Витяг з НАІС",
+    whatIsIt: "База власників авто.",
+    keyFacts: "Номер PE 2399 EH (чорний Toyota Land Cruiser Prado).",
+    howToAnalyze: "Потрібно пробити номер по базі. Якщо авто належить Водоканалу, підрядникам або охоронцю — ми маємо машину, якою таранили Passat потерпілого у прірву.",
+  },
+  {
+    documentName: "Протокол телефонної розмови з турагентством",
+    whatIsIt: "Опитування менеджера агенції «Парадайз Тревел».",
+    keyFacts: "5 липня потерпілий перерахував 116 437 грн готівкою за тур на Мальдіви.",
+    howToAnalyze: "Цей документ повністю руйнує алібі дружини, яка клялася, що грошей у них не було. Тиснемо на неї цим фактом на повторному допиті: звідки взялася готівка і чому вона це приховала?",
+  },
+  {
+    documentName: "Протоколи телефонних розмов з підрядниками",
+    whatIsIt: "Опитування Драпчука та Кононенка (ТОВ «ДніпроСпецБуд»).",
+    keyFacts: "Кононенко зізнався у конфлікті з Ковальчуком щодо завищених кошторисів. Вони мають у власності масивну вантажну техніку.",
+    howToAnalyze: "Прямий фінансовий мотив. Ковальчук блокував їм акти виконаних робіт. Треба оглянути їхні вантажівки та техніку на предмет свіжого ремонту бампера або залишків фарби.",
+  },
+]
+
 const PROCEDURAL_ACTIONS: ProceduralAction[] = [
   {
     id: "olena-interrogation",
@@ -62,6 +125,7 @@ function preloadDialogue(path: string) {
 export default function FourthEnvelope() {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
+  const [showDocumentsModal, setShowDocumentsModal] = useState(false)
   const [selectedActions, setSelectedActions] = useState<string[]>([])
   const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])
   const [showSubmissionConfirmation, setShowSubmissionConfirmation] =
@@ -108,9 +172,13 @@ export default function FourthEnvelope() {
 
   function openMaterialsModal() {
     stopDialogue()
-    stopInvestigationTheme()
     setShowSubmissionConfirmation(false)
     setShowMaterialsModal(true)
+  }
+
+  function openDocumentsModal() {
+    stopDialogue()
+    setShowDocumentsModal(true)
   }
 
   function toggleProceduralAction(id: string) {
@@ -275,7 +343,7 @@ export default function FourthEnvelope() {
             <button
               className="stage-one-primary"
               type="button"
-              onClick={() => {}}
+              onClick={openDocumentsModal}
             >
               Допоможеш розібратись, напарнику
             </button>
@@ -444,6 +512,111 @@ export default function FourthEnvelope() {
                     onClick={() => setShowMaterialsModal(false)}
                   >
                     Назад
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
+
+        {showDocumentsModal && (
+          <div
+            className="fourth-envelope__modal-backdrop"
+            role="presentation"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                setShowDocumentsModal(false)
+              }
+            }}
+          >
+            <section
+              className="fourth-envelope__modal fourth-envelope__documents-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="fourth-envelope-documents-title"
+            >
+              <div className="fourth-envelope__modal-topline">
+                <span>
+                  <i />
+                  АНАЛІЗ ДОКУМЕНТІВ · КОНВЕРТ 04
+                </span>
+                <button
+                  type="button"
+                  className="fourth-envelope__modal-close"
+                  aria-label="Закрити"
+                  onClick={() => setShowDocumentsModal(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="fourth-envelope__modal-content">
+                <div className="fourth-envelope__modal-assistant">
+                  <img
+                    className="assistant-mark"
+                    aria-hidden="true"
+                    src="/assistant-mark.png"
+                  />
+                  <div>
+                    <div className="fourth-envelope__eyebrow">
+                      напарник Андрій
+                    </div>
+                    <div className="fourth-envelope__subtitle">
+                      ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="fourth-envelope__documents-intro"
+                  id="fourth-envelope-documents-title"
+                >
+                  <h2>Що маємо у четвертому конверті</h2>
+                  <p>
+                    Тут зібрані документи, які вже можна розкласти по версіях,
+                    мотивах та наступних кроках розслідування.
+                  </p>
+                </div>
+
+                <div className="fourth-envelope__documents-list">
+                  {envelope4DocsAnalysis.map((document, index) => (
+                    <article
+                      key={document.documentName}
+                      className="fourth-envelope__document-card"
+                    >
+                      <div className="fourth-envelope__document-number">
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
+                      <div className="fourth-envelope__document-body">
+                        <h3>{document.documentName}</h3>
+
+                        <div className="fourth-envelope__document-section">
+                          <span>ЩО ЦЕ</span>
+                          <p>{document.whatIsIt}</p>
+                        </div>
+
+                        <div className="fourth-envelope__document-section">
+                          <span>КЛЮЧОВІ ФАКТИ</span>
+                          <p>{document.keyFacts}</p>
+                        </div>
+
+                        <div className="fourth-envelope__document-section fourth-envelope__document-section--analysis">
+                          <span>ЯК АНАЛІЗУВАТИ</span>
+                          <p>{document.howToAnalyze}</p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="fourth-envelope__modal-actions fourth-envelope__documents-actions">
+                  <button
+                    type="button"
+                    className="stage-one-secondary"
+                    onClick={() => setShowDocumentsModal(false)}
+                  >
+                    Назад до конверта
                   </button>
                 </div>
               </div>
