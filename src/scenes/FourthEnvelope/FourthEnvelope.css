@@ -436,7 +436,7 @@
 
 .fourth-envelope__procedural-option {
   display: grid;
-  grid-template-columns: 20px 18px minmax(0, 1fr);
+  /* grid-template-columns: 20px 18px minmax(0, 1fr); */
   align-items: start;
   gap: 10px;
   padding: 14px;
@@ -500,7 +500,7 @@
 
 .fourth-envelope__modal-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
+  /* grid-template-columns: minmax(0, 1fr) 180px; */
   gap: 10px;
   margin-top: 18px;
 }
@@ -614,26 +614,26 @@
   }
 
   .fourth-envelope__modal-text p {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.72;
   }
 
   .fourth-envelope__modal-question {
     margin-top: 22px;
-    font-size: 9px;
+    font-size: 19px;
   }
 
   .fourth-envelope__procedural-option {
-    grid-template-columns: 20px 18px minmax(0, 1fr);
+    /* grid-template-columns: 20px 18px minmax(0, 1fr); */
     padding: 12px;
   }
 
   .fourth-envelope__procedural-copy strong {
-    font-size: 10px;
+    font-size: 15px;
   }
 
   .fourth-envelope__procedural-copy small {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .fourth-envelope__modal-actions {
