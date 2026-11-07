@@ -138,13 +138,11 @@ export default function FourthEnvelope() {
 
               <div className="fourth-envelope__text">
                 <p>
-                  Ну що, капітане, я приніс більшу частину документів, які ти
-                  просив.
+                  Ну що, капітане, зібрав майже все, що ти замовляв. Тримай
+                  четвертий конверт — тут ціла купа матеріалів: протоколи
+                  допитів, витяги, ухвали...
                 </p>
-                <p>
-                  Відкривай 4 конверт. Тут дуже багато допитів тощо. Перевіряй
-                  все.
-                </p>
+                <p>Коротше, є над чим поламати голову. Розбирайся!</p>
               </div>
 
               <button
@@ -161,10 +159,18 @@ export default function FourthEnvelope() {
           </section>
 
           <div className="fourth-envelope__actions">
-            <button className="stage-one-secondary" type="button" onClick={() => {}}>
+            <button
+              className="stage-one-secondary"
+              type="button"
+              onClick={() => {}}
+            >
               Запросити інші матеріали
             </button>
-            <button className="stage-one-primary" type="button" onClick={() => {}}>
+            <button
+              className="stage-one-primary"
+              type="button"
+              onClick={() => {}}
+            >
               Допоможеш розібратись, напарнику
             </button>
           </div>
