@@ -151,7 +151,8 @@ export default function FourthEnvelope() {
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [showDocumentsModal, setShowDocumentsModal] = useState(false)
   const [selectedActions, setSelectedActions] = useState<string[]>([])
-  const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])\n  const [expandedDocumentIds, setExpandedDocumentIds] = useState<string[]>([])
+  const [submittedActionIds, setSubmittedActionIds] = useState<string[]>([])
+  const [expandedDocumentIds, setExpandedDocumentIds] = useState<string[]>([])
   const [showSubmissionConfirmation, setShowSubmissionConfirmation] =
     useState(false)
   const { notes, addNote } = useInvestigatorNotebook()
