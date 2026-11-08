@@ -148,7 +148,11 @@ function preloadDialogue(path: string) {
   audio.load()
 }
 
-type FourthEnvelopeProps = {\n  onContinue: () => void\n}\n\nexport default function FourthEnvelope({ onContinue }: FourthEnvelopeProps) {
+type FourthEnvelopeProps = {
+  onContinue: () => void
+}
+
+export default function FourthEnvelope({ onContinue }: FourthEnvelopeProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [showDocumentsModal, setShowDocumentsModal] = useState(false)
