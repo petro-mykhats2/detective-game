@@ -326,7 +326,11 @@ export default function App() {
       )}
 
       {screen === "fourth-envelope" && (
-        <FourthEnvelope />
+        <FourthEnvelope onContinue={() => setScreen("stage-four-questions")} />
+      )}
+
+      {screen === "stage-four-questions" && (
+        <StageFourQuestions onBack={() => setScreen("fourth-envelope")} />
       )}
 
       {screen === "terminal" && (
