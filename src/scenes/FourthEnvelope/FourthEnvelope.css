@@ -976,3 +976,102 @@
     padding: 13px;
   }
 }
+
+
+.fourth-envelope__continue {
+  margin-top: 22px;
+}
+
+.fourth-envelope__continue-button {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px;
+  align-items: center;
+  width: 100%;
+  min-height: 74px;
+  padding: 14px 18px 14px 22px;
+  border: 1px solid rgba(198, 164, 106, .78);
+  border-radius: 7px;
+  background: linear-gradient(120deg, rgba(111, 72, 31, .92), rgba(71, 48, 25, .9));
+  color: #fff8ec;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(198, 164, 106, .08),
+    0 0 28px rgba(198, 164, 106, .12);
+  animation: fourth-envelope-cta-pulse 3s ease-in-out infinite;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.fourth-envelope__continue-button:hover {
+  transform: translateY(-1px);
+  border-color: #e6c28c;
+  box-shadow:
+    0 0 0 1px rgba(230, 194, 140, .18),
+    0 0 34px rgba(198, 164, 106, .22);
+}
+
+.fourth-envelope__continue-button span,
+.fourth-envelope__continue-button small {
+  grid-column: 1;
+}
+
+.fourth-envelope__continue-button span {
+  font: 600 16px/1.35 "DM Mono", monospace;
+  letter-spacing: .02em;
+}
+
+.fourth-envelope__continue-button small {
+  margin-top: 4px;
+  color: rgba(255, 248, 236, .72);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fourth-envelope__continue-button svg {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #f0dfc5;
+  stroke-width: 1.6;
+}
+
+@keyframes fourth-envelope-cta-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(198, 164, 106, .08),
+      0 0 24px rgba(198, 164, 106, .1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(230, 194, 140, .16),
+      0 0 32px rgba(198, 164, 106, .18);
+  }
+}
+
+@media (max-width: 600px) {
+  .fourth-envelope__continue {
+    margin-top: 16px;
+  }
+
+  .fourth-envelope__continue-button {
+    min-height: 70px;
+    padding: 13px 15px 13px 18px;
+  }
+
+  .fourth-envelope__continue-button span {
+    font-size: 14px;
+  }
+
+  .fourth-envelope__continue-button small {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fourth-envelope__continue-button {
+    animation: none !important;
+  }
+}
