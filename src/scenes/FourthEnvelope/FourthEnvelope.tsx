@@ -148,7 +148,7 @@ function preloadDialogue(path: string) {
   audio.load()
 }
 
-export default function FourthEnvelope() {
+type FourthEnvelopeProps = {\n  onContinue: () => void\n}\n\nexport default function FourthEnvelope({ onContinue }: FourthEnvelopeProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [showMaterialsModal, setShowMaterialsModal] = useState(false)
   const [showDocumentsModal, setShowDocumentsModal] = useState(false)
@@ -372,6 +372,20 @@ export default function FourthEnvelope() {
               onClick={openDocumentsModal}
             >
               Допоможеш розібратись з цими документами, напарнику?
+            </button>
+          </div>
+
+          <div className="fourth-envelope__continue">
+            <button
+              className="fourth-envelope__continue-button"
+              type="button"
+              onClick={onContinue}
+            >
+              <span>Продовжити розслідування</span>
+              <small>Сформувати версію</small>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
             </button>
           </div>
         </div>
