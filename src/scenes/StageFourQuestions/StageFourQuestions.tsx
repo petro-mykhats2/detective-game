@@ -25,6 +25,8 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
   const [databaseOpen, setDatabaseOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [submittedQuery, setSubmittedQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimerRef = useRef<number | null>(null)
   const [searchError, setSearchError] = useState("")
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const previousMusicVolumeRef = useRef<number | null>(null)
@@ -127,7 +129,14 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
       return
     }
     setSearchError("")
-    setSubmittedQuery(value)
+    setIsSearching(true)
+    setSubmittedQuery("")
+    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = window.setTimeout(() => {
+      setSubmittedQuery(value)
+      setIsSearching(false)
+      searchTimerRef.current = null
+    }, 2000)
   }
 
   function closeDatabase() {
@@ -135,6 +144,9 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
     setQuery("")
     setSubmittedQuery("")
     setSearchError("")
+    setIsSearching(false)
+    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = null
   }
 
   return (
@@ -207,14 +219,22 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
               <label htmlFor="vehicle-query">НОМЕРНИЙ ЗНАК / МАРКА / МОДЕЛЬ / ПРІЗВИЩЕ</label>
               <div className="vehicle-search__controls">
                 <input ref={searchInputRef} id="vehicle-query" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Напр. ВІ 3412 ВА або Renault…" autoComplete="off" />
-                <button type="submit">Перевірити</button>
+                <button type="submit" disabled={isSearching}>{isSearching ? "Пошук…" : "Перевірити"}</button>
               </div>
               {searchError && <p className="vehicle-search__error" role="alert">{searchError}</p>}
               <span className="vehicle-search__hint">Пошук не чутливий до регістру та пробілів.</span>
             </form>
 
             <div className="vehicle-results" aria-live="polite">
-              {!submittedQuery ? (
+              {isSearching ? (
+                <div className="vehicle-searching" role="status" aria-live="polite">
+                  <div className="vehicle-searching__scanner"><span /></div>
+                  <strong>Виконується запит до реєстру</strong>
+                  <p>Перевіряємо реєстраційні дані та історію транспортного засобу…</p>
+                  <div className="vehicle-searching__track"><i /></div>
+                  <span className="vehicle-searching__timer">ЗАХИЩЕНИЙ КАНАЛ · ЗАПИТ ОБРОБЛЯЄТЬСЯ</span>
+                </div>
+              ) : !submittedQuery ? (
                 <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
               ) : matches.length ? (
                 <>
