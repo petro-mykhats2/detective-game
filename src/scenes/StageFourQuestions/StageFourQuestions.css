@@ -337,7 +337,8 @@
 .vehicle-search { padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
 .vehicle-search label { display: block; margin-bottom: 10px; color: #c39a5d; font: 9px "DM Mono", monospace; letter-spacing: .1em; }
 .vehicle-search__controls { display: flex; gap: 9px; }
-.vehicle-search__controls input { min-width: 0; flex: 1; height: 46px; padding: 0 13px; border: 1px solid #39434b; border-radius: 4px; outline: none; color: #f2f4f5; background: #0b1015; font: 13px inherit; }
+.vehicle-search__controls input { min-width: 0; flex: 1; height: 46px; padding: 0 13px; border: 1px solid #39434b; border-radius: 4px; outline: none; color: #f2f4f5; background: #0b1015; font: inherit;
+  font-size: 13px; }
 .vehicle-search__controls input:focus { border-color: #bd965e; box-shadow: 0 0 0 3px rgba(189,150,94,.12); }
 .vehicle-search__hint { display: block; margin-top: 9px; color: #78848e; font-size: 10px; }
 .vehicle-search__error { margin: 9px 0 0; color: #e6a09a; font-size: 11px; }
