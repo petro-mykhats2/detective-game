@@ -219,7 +219,7 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
               ) : matches.length ? (
                 <>
                   <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
-                  {matches.map((vehicle, index) => (
+                  {matches.map((vehicle) => (
                     <article className="vehicle-record" key={vehicle.plate}>
                       <div className="vehicle-record__top">
                         <div><span className="vehicle-record__eyebrow">РЕЄСТРАЦІЙНИЙ НОМЕР</span><h3>{vehicle.plate}</h3></div>
