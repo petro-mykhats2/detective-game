@@ -1,40 +1,43 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
+import vehicles from "../../storage/baza_danych_avto.json"
 import "./StageFourQuestions.css"
 
-type StageFourQuestionsProps = {
-  onBack: () => void
-}
+type StageFourQuestionsProps = { onBack: () => void }
+type Vehicle = (typeof vehicles)[number]
 
-// Для озвучення потрібен окремий запис репліки Андрія.
-// Після додавання файлу в public/audio/ замініть шлях нижче.
 const ANDRII_AUDIO = "/audio/assistant-stage-four.mp3"
-
-const DIALOGUE_PARAGRAPHS = [
-  "Капітане, поки ми чекаємо на результати експертиз та готуємо додаткові допити, є сенс детально опрацювати матеріали з камер «Відеоконтролю».",
-  "Звісно, не факт, що вбивця взагалі засвітився на цих камерах — він міг виїхати через сліпу зону або дачними провулками. Але перевірити ми зобов'язані.",
-  "Подивись на всі автомобілі, які перебували в районі дачного масиву у критичний проміжок часу. Проаналізуй їхні маршрути: як вони туди потрапили й як виїжджали, зістав державні номери, колір та тип кузова.",
-  "Якщо захочеш дізнатися більше про конкретний автомобіль — у тебе є доступ до Національної інформаційної системи (НАІС МВС). Вводь номерний знак будь-якого авто й перевіряй інформацію з бази даних поліції.",
-]
-
 const DESKTOP_AUDIO_DELAY_MS = 2500
 const MOBILE_AUDIO_DELAY_MS = 200
 const VOICE_VOLUME = 1
 const MUSIC_VOLUME_DURING_VOICE = 0.1
 
 function getMusicElement() {
-  return document.querySelector(
-    'audio[src="/investigation-theme.mp3"]',
-  ) as HTMLAudioElement | null
+  return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
 }
 
-export default function StageFourQuestions({
-  onBack,
-}: StageFourQuestionsProps) {
+function normalize(value: string) {
+  return value.toLocaleLowerCase("uk-UA").replace(/[\s\-_.]/g, "").trim()
+}
+
+export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [audioUnavailable, setAudioUnavailable] = useState(false)
+  const [databaseOpen, setDatabaseOpen] = useState(false)
+  const [query, setQuery] = useState("")
+  const [submittedQuery, setSubmittedQuery] = useState("")
+  const [searchError, setSearchError] = useState("")
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const previousMusicVolumeRef = useRef<number | null>(null)
-  const screenRef = useRef<HTMLElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  const matches = submittedQuery
+    ? (vehicles as Vehicle[]).filter((vehicle) => {
+        const needle = normalize(submittedQuery)
+        return [vehicle.plate, vehicle.brand, vehicle.owner].some((value) =>
+          normalize(value).includes(needle),
+        )
+      }).slice(0, 12)
+    : []
 
   function restoreMusicVolume() {
     const music = getMusicElement()
@@ -58,28 +61,23 @@ export default function StageFourQuestions({
   }
 
   function playDialogue() {
-    const current = audioRef.current
-    if (current && !current.paused && !current.ended) return
-
+    if (audioRef.current && !audioRef.current.paused && !audioRef.current.ended) return
     stopDialogue()
     const audio = new Audio(ANDRII_AUDIO)
     audio.preload = "auto"
     audio.volume = VOICE_VOLUME
     audioRef.current = audio
-
     const music = getMusicElement()
     if (music) {
       previousMusicVolumeRef.current = music.volume
       music.volume = MUSIC_VOLUME_DURING_VOICE
     }
-
     const finish = () => {
       if (audioRef.current !== audio) return
       audioRef.current = null
       setPlayingDialogue(false)
       restoreMusicVolume()
     }
-
     audio.onended = finish
     audio.onerror = () => {
       finish()
@@ -98,23 +96,51 @@ export default function StageFourQuestions({
       ? MOBILE_AUDIO_DELAY_MS
       : DESKTOP_AUDIO_DELAY_MS
     const timer = window.setTimeout(playDialogue, delay)
-
     return () => {
       window.clearTimeout(timer)
       stopDialogue()
     }
   }, [])
 
+  useEffect(() => {
+    if (!databaseOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const timer = window.setTimeout(() => searchInputRef.current?.focus(), 80)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setDatabaseOpen(false)
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.clearTimeout(timer)
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [databaseOpen])
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const value = query.trim()
+    if (!value) {
+      setSearchError("Введіть номерний знак, марку, модель або прізвище власника.")
+      setSubmittedQuery("")
+      return
+    }
+    setSearchError("")
+    setSubmittedQuery(value)
+  }
+
+  function closeDatabase() {
+    setDatabaseOpen(false)
+    setQuery("")
+    setSubmittedQuery("")
+    setSearchError("")
+  }
+
   return (
-    <main
-      ref={screenRef}
-      className="stage-four-questions"
-      aria-label="Повідомлення напарника про відеоконтроль"
-    >
+    <main className="stage-four-questions" aria-label="Повідомлення напарника про відеоконтроль">
       <header className="stage-four-questions__topline">
-        <span>
-          <i /> ПОВІДОМЛЕННЯ ВІД НАПАРНИКА
-        </span>
+        <span><i /> ПОВІДОМЛЕННЯ ВІД НАПАРНИКА</span>
         <span>ЕТАП 04 · СПРАВА № 12026170010000456</span>
       </header>
 
@@ -125,74 +151,102 @@ export default function StageFourQuestions({
         </div>
 
         <section className="stage-four-questions__card" aria-label="Репліка Андрія">
-          <img
-            className="stage-four-questions__avatar"
-            src="/assistant-mark.png"
-            alt=""
-            aria-hidden="true"
-          />
-
+          <img className="stage-four-questions__avatar" src="/assistant-mark.png" alt="" aria-hidden="true" />
           <div className="stage-four-questions__content">
             <div className="stage-four-questions__identity">
               <span className="stage-four-questions__eyebrow">НАПАРНИК АНДРІЙ</span>
-              <span className="stage-four-questions__subtitle">
-                ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ
-              </span>
+              <span className="stage-four-questions__subtitle">ВАШ ПОМІЧНИК У РОЗСЛІДУВАННІ</span>
             </div>
-
             <h1>Відеоконтроль: перевіряємо автомобілі</h1>
-
             <div className="stage-four-questions__dialogue">
-              {DIALOGUE_PARAGRAPHS.map((paragraph, index) => (
-                <p key={paragraph} style={{ animationDelay: `${index * 180}ms` }}>
-                  {index === 3 ? (
-                    <>
-                      Якщо захочеш дізнатися більше про конкретний автомобіль — у
-                      тебе є доступ до{" "}
-                      <strong>Національної інформаційної системи (НАІС МВС)</strong>.
-                      Вводь номерний знак будь-якого авто й перевіряй інформацію з
-                      бази даних поліції.
-                    </>
-                  ) : paragraph}
-                </p>
-              ))}
+              <p>Капітане, поки ми чекаємо на результати експертиз та готуємо додаткові допити, є сенс детально опрацювати матеріали з камер «Відеоконтролю».</p>
+              <p>Звісно, не факт, що вбивця взагалі засвітився на цих камерах — він міг виїхати через сліпу зону або дачними провулками. Але перевірити ми зобов'язані.</p>
+              <p>Подивись на всі автомобілі, які перебували в районі дачного масиву у критичний проміжок часу. Проаналізуй їхні маршрути: як вони туди потрапили й як виїжджали, зістав державні номери, колір та тип кузова.</p>
+              <p>Якщо захочеш дізнатися більше про конкретний автомобіль — у тебе є доступ до <strong>Національної інформаційної системи (НАІС МВС)</strong>. Вводь номерний знак будь-якого авто й перевіряй інформацію з бази даних поліції.</p>
             </div>
 
             <div className="stage-four-questions__audio-row">
-              <button
-                className="stage-one-secondary stage-four-questions__audio"
-                type="button"
-                onClick={playDialogue}
-                disabled={playingDialogue || audioUnavailable}
-              >
-                {playingDialogue
-                  ? "▶ Репліка відтворюється…"
-                  : audioUnavailable
-                    ? "Аудіозапис ще не додано"
-                    : "▶ Прослухати репліку"}
+              <button className="stage-one-secondary stage-four-questions__audio" type="button" onClick={playDialogue} disabled={playingDialogue || audioUnavailable}>
+                {playingDialogue ? "▶ Репліка відтворюється…" : audioUnavailable ? "Аудіозапис ще не додано" : "▶ Прослухати репліку"}
               </button>
-              {audioUnavailable && (
-                <span className="stage-four-questions__audio-note">
-                  Додайте файл assistant-stage-four.mp3 до public/audio/.
-                </span>
-              )}
+              {audioUnavailable && <span className="stage-four-questions__audio-note">Додайте файл assistant-stage-four.mp3 до public/audio/.</span>}
+            </div>
+
+            <div className="stage-four-questions__database-cta">
+              <div>
+                <span className="stage-four-questions__database-label">ДОСТУП ДО БАЗИ НАІС МВС</span>
+                <p>Перевірте реєстраційні дані автомобіля або його власника.</p>
+              </div>
+              <button type="button" className="stage-four-questions__lookup-button" onClick={() => setDatabaseOpen(true)}>
+                <span aria-hidden="true">⌕</span> Відкрити базу транспортних засобів
+              </button>
             </div>
 
             <div className="stage-four-questions__actions">
-              <button
-                className="stage-one-secondary"
-                type="button"
-                onClick={() => {
-                  stopDialogue()
-                  onBack()
-                }}
-              >
+              <button className="stage-one-secondary" type="button" onClick={() => { stopDialogue(); onBack() }}>
                 ← Повернутися до конверта № 4
               </button>
             </div>
           </div>
         </section>
       </div>
+
+      {databaseOpen && (
+        <div className="vehicle-modal" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDatabase() }}>
+          <section className="vehicle-modal__panel" role="dialog" aria-modal="true" aria-labelledby="vehicle-modal-title">
+            <header className="vehicle-modal__header">
+              <div>
+                <span className="vehicle-modal__eyebrow">НАІС МВС · ЗАХИЩЕНИЙ КАНАЛ</span>
+                <h2 id="vehicle-modal-title">Пошук транспортного засобу</h2>
+                <p>Введіть відомі дані, щоб отримати відповідний запис із бази.</p>
+              </div>
+              <button className="vehicle-modal__close" type="button" onClick={closeDatabase} aria-label="Закрити вікно">×</button>
+            </header>
+
+            <form className="vehicle-search" onSubmit={submitSearch}>
+              <label htmlFor="vehicle-query">НОМЕРНИЙ ЗНАК / МАРКА / МОДЕЛЬ / ПРІЗВИЩЕ</label>
+              <div className="vehicle-search__controls">
+                <input ref={searchInputRef} id="vehicle-query" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Напр. ВІ 3412 ВА або Renault…" autoComplete="off" />
+                <button type="submit">Перевірити</button>
+              </div>
+              {searchError && <p className="vehicle-search__error" role="alert">{searchError}</p>}
+              <span className="vehicle-search__hint">Пошук не чутливий до регістру та пробілів.</span>
+            </form>
+
+            <div className="vehicle-results" aria-live="polite">
+              {!submittedQuery ? (
+                <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
+              ) : matches.length ? (
+                <>
+                  <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
+                  {matches.map((vehicle, index) => (
+                    <article className="vehicle-record" key={vehicle.plate}>
+                      <div className="vehicle-record__top">
+                        <div><span className="vehicle-record__eyebrow">РЕЄСТРАЦІЙНИЙ НОМЕР</span><h3>{vehicle.plate}</h3></div>
+                        <span className="vehicle-record__status"><i /> ЗАПИС ЗНАЙДЕНО</span>
+                      </div>
+                      <div className="vehicle-record__vehicle">
+                        <div className="vehicle-record__icon" aria-hidden="true">▰</div>
+                        <div><strong>{vehicle.brand}</strong><span>{vehicle.type}</span></div>
+                        <div className="vehicle-record__color"><span>КОЛІР</span><strong>{vehicle.color}</strong></div>
+                      </div>
+                      <div className="vehicle-record__grid">
+                        <div><span>ВЛАСНИК</span><strong>{vehicle.owner}</strong></div>
+                        <div><span>ТИП ВЛАСНИКА</span><strong>{vehicle.ownerType}</strong></div>
+                        <div className="vehicle-record__address"><span>АДРЕСА РЕЄСТРАЦІЇ</span><strong>{vehicle.address}</strong></div>
+                      </div>
+                      <div className="vehicle-record__info"><span>ДОВІДКА З РЕЄСТРУ</span><p>{vehicle.info}</p></div>
+                    </article>
+                  ))}
+                </>
+              ) : (
+                <div className="vehicle-results__empty vehicle-results__empty--not-found"><span>!</span><strong>Збігів не знайдено</strong><p>Перевірте написання номера, марки, моделі або прізвища та повторіть пошук.</p></div>
+              )}
+            </div>
+            <footer className="vehicle-modal__footer"><span>НАВЧАЛЬНА БАЗА ДАНИХ · СПРАВА № 001</span><button type="button" onClick={closeDatabase}>Закрити</button></footer>
+          </section>
+        </div>
+      )}
     </main>
   )
 }
