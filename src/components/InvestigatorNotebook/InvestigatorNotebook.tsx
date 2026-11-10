@@ -82,7 +82,7 @@ function NoteCard({
 }
 
 export default function InvestigatorNotebook() {
-  const { notes, removeNote, clearNotes, isOpen, openNotebook, closeNotebook } = useInvestigatorNotebook()
+  const { notes, removeNote, clearNotes, isOpen, closeNotebook } = useInvestigatorNotebook()
   const [filter, setFilter] = useState<"all" | NotebookStatus>("all")
 
   const visibleNotes =
