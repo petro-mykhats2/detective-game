@@ -1,4 +1,3 @@
-import { useState } from "react"
 import {
   useInvestigatorNotebook,
   type InvestigationNote,
@@ -83,8 +82,7 @@ function NoteCard({
 }
 
 export default function InvestigatorNotebook() {
-  const { notes, removeNote, clearNotes } = useInvestigatorNotebook()
-  const [isOpen, setIsOpen] = useState(false)
+  const { notes, removeNote, clearNotes, isOpen, openNotebook, closeNotebook } = useInvestigatorNotebook()
   const [filter, setFilter] = useState<"all" | NotebookStatus>("all")
 
   const visibleNotes =
@@ -92,20 +90,6 @@ export default function InvestigatorNotebook() {
 
   return (
     <>
-      <button
-        type="button"
-        className="investigator-notebook-trigger"
-        onClick={() => setIsOpen(true)}
-        aria-label="Відкрити блокнот слідчої групи"
-        title="Блокнот слідчої групи"
-      >
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M9 4.5h13a2 2 0 0 1 2 2v19a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-19a2 2 0 0 1 2-2Z" />
-          <path d="M11.5 4.5v23M14.5 10h6M14.5 14h6M14.5 18h4.5" />
-          <path d="M5 9h2M5 13h2M5 17h2M5 21h2" />
-        </svg>
-      </button>
-
       {isOpen && (
         <div
           className="investigator-notebook__backdrop"
@@ -134,7 +118,7 @@ export default function InvestigatorNotebook() {
               <button
                 type="button"
                 className="investigator-notebook__close"
-                onClick={() => setIsOpen(false)}
+                onClick={closeNotebook}
                 aria-label="Закрити блокнот"
               >
                 ×
