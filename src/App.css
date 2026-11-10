@@ -560,12 +560,6 @@ button { font: inherit; }
   right: auto;
 }
 
-.experience__utilities .investigator-notebook-trigger {
-  position: relative;
-  top: auto;
-  right: auto;
-  bottom: auto;
-}
 
 @media (max-width: 600px) {
   .experience__utilities {
