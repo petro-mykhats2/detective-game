@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, type FormEvent } from "react"
-import vehicles from "../../storage/baza_danych_avto.json"
+import { useEffect, useRef, useState } from "react"
+import { useVehicleSearch } from "../../components/VehicleSearch/VehicleSearchContext"
 import "./StageFourQuestions.css"
 
 type StageFourQuestionsProps = { onBack: () => void }
-type Vehicle = (typeof vehicles)[number]
 
 const ANDRII_AUDIO = "/audio/assistant-stage-four.mp3"
 const DESKTOP_AUDIO_DELAY_MS = 2500
@@ -22,24 +21,10 @@ function normalize(value: string) {
 export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [audioUnavailable, setAudioUnavailable] = useState(false)
-  const [databaseOpen, setDatabaseOpen] = useState(false)
-  const [query, setQuery] = useState("")
-  const [submittedQuery, setSubmittedQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const searchTimerRef = useRef<number | null>(null)
-  const [searchError, setSearchError] = useState("")
+  const { openVehicleSearch } = useVehicleSearch()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const previousMusicVolumeRef = useRef<number | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
-
-  const matches = submittedQuery
-    ? (vehicles as Vehicle[]).filter((vehicle) => {
-        const needle = normalize(submittedQuery)
-        return [vehicle.plate, vehicle.brand, vehicle.owner].some((value) =>
-          normalize(value).includes(needle),
-        )
-      }).slice(0, 12)
-    : []
 
   function restoreMusicVolume() {
     const music = getMusicElement()
@@ -120,35 +105,6 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
     }
   }, [databaseOpen])
 
-  function submitSearch(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const value = query.trim()
-    if (!value) {
-      setSearchError("Введіть номерний знак, марку, модель або прізвище власника.")
-      setSubmittedQuery("")
-      return
-    }
-    setSearchError("")
-    setIsSearching(true)
-    setSubmittedQuery("")
-    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
-    searchTimerRef.current = window.setTimeout(() => {
-      setSubmittedQuery(value)
-      setIsSearching(false)
-      searchTimerRef.current = null
-    }, 2000)
-  }
-
-  function closeDatabase() {
-    setDatabaseOpen(false)
-    setQuery("")
-    setSubmittedQuery("")
-    setSearchError("")
-    setIsSearching(false)
-    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
-    searchTimerRef.current = null
-  }
-
   return (
     <main className="stage-four-questions" aria-label="Повідомлення напарника про відеоконтроль">
       <header className="stage-four-questions__topline">
@@ -189,7 +145,7 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
                 <span className="stage-four-questions__database-label">ДОСТУП ДО БАЗИ НАІС МВС</span>
                 <p>Перевірте реєстраційні дані автомобіля або його власника.</p>
               </div>
-              <button type="button" className="stage-four-questions__lookup-button" onClick={() => setDatabaseOpen(true)}>
+              <button type="button" className="stage-four-questions__lookup-button" onClick={openVehicleSearch}>
                 <span aria-hidden="true">⌕</span> Відкрити базу транспортних засобів
               </button>
             </div>
@@ -203,70 +159,6 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
         </section>
       </div>
 
-      {databaseOpen && (
-        <div className="vehicle-modal" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDatabase() }}>
-          <section className="vehicle-modal__panel" role="dialog" aria-modal="true" aria-labelledby="vehicle-modal-title">
-            <header className="vehicle-modal__header">
-              <div>
-                <span className="vehicle-modal__eyebrow">НАІС МВС · ЗАХИЩЕНИЙ КАНАЛ</span>
-                <h2 id="vehicle-modal-title">Пошук транспортного засобу</h2>
-                <p>Введіть відомі дані, щоб отримати відповідний запис із бази.</p>
-              </div>
-              <button className="vehicle-modal__close" type="button" onClick={closeDatabase} aria-label="Закрити вікно">×</button>
-            </header>
-
-            <form className="vehicle-search" onSubmit={submitSearch}>
-              <label htmlFor="vehicle-query">НОМЕРНИЙ ЗНАК / МАРКА / МОДЕЛЬ / ПРІЗВИЩЕ</label>
-              <div className="vehicle-search__controls">
-                <input ref={searchInputRef} id="vehicle-query" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Напр. ВІ 3412 ВА або Renault…" autoComplete="off" />
-                <button type="submit" disabled={isSearching}>{isSearching ? "Пошук…" : "Перевірити"}</button>
-              </div>
-              {searchError && <p className="vehicle-search__error" role="alert">{searchError}</p>}
-              <span className="vehicle-search__hint">Пошук не чутливий до регістру та пробілів.</span>
-            </form>
-
-            <div className="vehicle-results" aria-live="polite">
-              {isSearching ? (
-                <div className="vehicle-searching" role="status" aria-live="polite">
-                  <div className="vehicle-searching__scanner"><span /></div>
-                  <strong>Виконується запит до реєстру</strong>
-                  <p>Перевіряємо реєстраційні дані та історію транспортного засобу…</p>
-                  <div className="vehicle-searching__track"><i /></div>
-                  <span className="vehicle-searching__timer">ЗАХИЩЕНИЙ КАНАЛ · ЗАПИТ ОБРОБЛЯЄТЬСЯ</span>
-                </div>
-              ) : !submittedQuery ? (
-                <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
-              ) : matches.length ? (
-                <>
-                  <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
-                  {matches.map((vehicle) => (
-                    <article className="vehicle-record" key={vehicle.plate}>
-                      <div className="vehicle-record__top">
-                        <div><span className="vehicle-record__eyebrow">РЕЄСТРАЦІЙНИЙ НОМЕР</span><h3>{vehicle.plate}</h3></div>
-                        <span className="vehicle-record__status"><i /> ЗАПИС ЗНАЙДЕНО</span>
-                      </div>
-                      <div className="vehicle-record__vehicle">
-                        <div className="vehicle-record__icon" aria-hidden="true">▰</div>
-                        <div><strong>{vehicle.brand}</strong><span>{vehicle.type}</span></div>
-                        <div className="vehicle-record__color"><span>КОЛІР</span><strong>{vehicle.color}</strong></div>
-                      </div>
-                      <div className="vehicle-record__grid">
-                        <div><span>ВЛАСНИК</span><strong>{vehicle.owner}</strong></div>
-                        <div><span>ТИП ВЛАСНИКА</span><strong>{vehicle.ownerType}</strong></div>
-                        <div className="vehicle-record__address"><span>АДРЕСА РЕЄСТРАЦІЇ</span><strong>{vehicle.address}</strong></div>
-                      </div>
-                      <div className="vehicle-record__info"><span>ДОВІДКА З РЕЄСТРУ</span><p>{vehicle.info}</p></div>
-                    </article>
-                  ))}
-                </>
-              ) : (
-                <div className="vehicle-results__empty vehicle-results__empty--not-found"><span>!</span><strong>Збігів не знайдено</strong><p>Перевірте написання номера, марки, моделі або прізвища та повторіть пошук.</p></div>
-              )}
-            </div>
-            <footer className="vehicle-modal__footer"><span>НАВЧАЛЬНА БАЗА ДАНИХ · СПРАВА № 001</span><button type="button" onClick={closeDatabase}>Закрити</button></footer>
-          </section>
-        </div>
-      )}
     </main>
   )
 }
