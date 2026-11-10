@@ -77,6 +77,8 @@ export default function VehicleSearchModal() {
       action,
     })
 
+    window.setTimeout(() => pendingActionKeysRef.current.delete(key), 0)
+
     setActionMessageByPlate((current) => ({
       ...current,
       [vehicle.plate]: getActionMessage(vehicle, action),
