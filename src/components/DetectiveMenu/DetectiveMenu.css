@@ -241,13 +241,20 @@
   .detective-menu__trigger {
     top: max(10px, env(safe-area-inset-top));
     left: 12px;
-    min-width: 42px;
-    width: 42px;
-    min-height: 38px;
+    min-width: 34px;
+    width: 34px;
+    min-height: 32px;
     padding: 0;
     justify-content: center;
   }
   .detective-menu__trigger-label { display: none; }
+  .detective-menu__trigger-lines {
+    width: 18px;
+    gap: 3px;
+  }
+  .detective-menu__trigger-lines i {
+    height: 1.5px;
+  }
   .detective-menu {
     width: min(350px, calc(100vw - 18px));
   }
