@@ -33,6 +33,9 @@ type InvestigatorNotebookContextValue = {
   updateNote: (id: string, patch: Partial<Omit<InvestigationNote, "id" | "createdAt">>) => void
   removeNote: (id: string) => void
   clearNotes: () => void
+  isOpen: boolean
+  openNotebook: () => void
+  closeNotebook: () => void
 }
 
 const STORAGE_KEY = "detective-investigation-notebook-v1"
@@ -65,6 +68,7 @@ function readNotes(): InvestigationNote[] {
 
 export function InvestigatorNotebookProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<InvestigationNote[]>(readNotes)
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     try {
@@ -113,8 +117,11 @@ export function InvestigatorNotebookProvider({ children }: { children: ReactNode
       clearNotes: () => {
         setNotes([])
       },
+      isOpen,
+      openNotebook: () => setIsOpen(true),
+      closeNotebook: () => setIsOpen(false),
     }),
-    [notes],
+    [notes, isOpen],
   )
 
   return <NotebookContext.Provider value={value}>{children}</NotebookContext.Provider>
