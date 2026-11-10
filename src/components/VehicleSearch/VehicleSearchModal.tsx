@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
-import vehicles from "../../storage/baza_danych_avto.json"
+import vehicles from "../../baza_danych_avto.json"
 import { useVehicleSearch } from "./VehicleSearchContext"
 import "./VehicleSearchModal.css"
 
@@ -138,15 +138,30 @@ export default function VehicleSearchModal() {
                   </div>
                   <div className="vehicle-record__vehicle">
                     <div className="vehicle-record__icon" aria-hidden="true">▰</div>
-                    <div><strong>{vehicle.brand}</strong><span>{vehicle.type}</span></div>
+                    <div><strong>{vehicle.brand}</strong><span>{vehicle.type} · {vehicle.year} р.в.</span></div>
                     <div className="vehicle-record__color"><span>КОЛІР</span><strong>{vehicle.color}</strong></div>
                   </div>
                   <div className="vehicle-record__grid">
                     <div><span>ВЛАСНИК</span><strong>{vehicle.owner}</strong></div>
                     <div><span>ТИП ВЛАСНИКА</span><strong>{vehicle.ownerType}</strong></div>
                     <div className="vehicle-record__address"><span>АДРЕСА РЕЄСТРАЦІЇ</span><strong>{vehicle.address}</strong></div>
+                    <div><span>VIN-КОД</span><strong>{vehicle.vin}</strong></div>
+                    <div><span>СТАТУС РЕЄСТРАЦІЇ</span><strong>{vehicle.registration?.status} ({vehicle.registration?.date})</strong></div>
+                    <div><span>СТРАХУВАННЯ</span><strong>{vehicle.insurance?.company} ({vehicle.insurance?.status} до {vehicle.insurance?.validUntil})</strong></div>
+                    <div><span>ТЕХОГЛЯД</span><strong>{vehicle.techInspection?.status} до {vehicle.techInspection?.validUntil}</strong></div>
                   </div>
-                  <div className="vehicle-record__info"><span>ДОВІДКА З РЕЄСТРУ</span><p>{vehicle.info}</p></div>
+                  {vehicle.fines && vehicle.fines.length > 0 && (
+                    <div className="vehicle-record__info">
+                      <span>ШТРАФИ ТА ПОРУШЕННЯ ({vehicle.fines.length})</span>
+                      <ul style={{ marginTop: "4px", paddingLeft: "16px", fontSize: "8.5pt" }}>
+                        {(vehicle.fines as Array<{ date: string; violation: string; article: string; amount: number; status: string }>).map((fine, idx: number) => (
+                          <li key={idx}>
+                            {fine.date} — {fine.violation} ({fine.article}, {fine.amount} грн) — <b>{fine.status}</b>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </article>
               ))}
             </>

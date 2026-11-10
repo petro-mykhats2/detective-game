@@ -1,0 +1,2330 @@
+[
+  {
+    "plate": "ВІ 3412 ВА",
+    "brand": "Renault Kangoo",
+    "color": "Білий",
+    "year": 2014,
+    "type": "Вантажопасажирський",
+    "vin": "VF1W3A3L6EG408366",
+    "owner": "Ткачук Василь Іванович (12.05.1980)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Лісова, 10",
+    "registration": {
+      "date": "04.06.2016",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/110270908",
+      "validUntil": "16.09.2024",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "27.06.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "АХ 8821 СВ",
+    "brand": "Ford Transit",
+    "color": "Сірий",
+    "year": 2017,
+    "type": "Вантажопасажирський",
+    "vin": "WF0431EZ5HJ529352",
+    "owner": "ФОП Мельник Сергій Петрович (09.11.1975)",
+    "ownerType": "ФОП",
+    "address": "смт Загайне, вул. Центральна, 4",
+    "registration": {
+      "date": "26.10.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/465527437",
+      "validUntil": "30.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "02.03.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "24.03.2026",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 25 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "21.03.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 11 км/год",
+        "amount": 340,
+        "status": "Не сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АХ 5678 КЕ",
+    "brand": "Volvo FH",
+    "color": "Білий",
+    "year": 2020,
+    "type": "Вантажний автомобіль",
+    "vin": "YV2WGBB77LJ391549",
+    "owner": "ТОВ «Логістик-Транс-Плюс» (ЄДРПОУ 34567890)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Промислова, 112",
+    "registration": {
+      "date": "24.04.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/070473438",
+      "validUntil": "04.01.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "28.10.2025",
+      "status": "Прострочений"
+    },
+    "fines": [
+      {
+        "date": "06.12.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 15 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 9043 ВТ",
+    "brand": "ВАЗ-2109",
+    "color": "Вишневий",
+    "year": 1998,
+    "type": "Легковий автомобіль",
+    "vin": "XTAX6EK05WH908939",
+    "owner": "Костенко Іван Федорович (22.04.1963)",
+    "ownerType": "ФІЗ",
+    "address": "смт Загайне, пров. Тихий, 3",
+    "registration": {
+      "date": "13.11.1998",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/195528497",
+      "validUntil": "06.08.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "29.02.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "29.11.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 16 км/год",
+        "amount": 340,
+        "status": "Не сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 5510 АЕ",
+    "brand": "VW Transporter",
+    "color": "Синій",
+    "year": 2020,
+    "type": "Вантажопасажирський",
+    "vin": "WV14X1WX2LH949564",
+    "owner": "Мороз Андрій Вікторович (15.08.1988)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Шевченка, 45, кв. 12",
+    "registration": {
+      "date": "01.07.2022",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/517380298",
+      "validUntil": "31.01.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "04.12.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "05.02.2026",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 3099 МР",
+    "brand": "Scania R450",
+    "color": "Синій",
+    "year": 2010,
+    "type": "Сідловий тягач",
+    "vin": "YS240LVV2AW468091",
+    "owner": "ТОВ «Дніпро-Карго» (ЄДРПОУ 41230987)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Заводська, 5",
+    "registration": {
+      "date": "26.09.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/613060790",
+      "validUntil": "13.01.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "10.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "15.05.2026",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "08.10.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АА 1234 ПЕ",
+    "brand": "Skoda Octavia",
+    "color": "Чорний",
+    "year": 2018,
+    "type": "Легковий автомобіль",
+    "vin": "TMBJB2C5XJT138023",
+    "owner": "Павленко Віктор Сергійович (03.02.1990)",
+    "ownerType": "ФІЗ",
+    "address": "м. Київ, пр. Перемоги, 15, кв. 88",
+    "registration": {
+      "date": "26.05.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/498933331",
+      "validUntil": "15.11.2025",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "09.02.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 7701 СМ",
+    "brand": "M-B Sprinter",
+    "color": "Білий",
+    "year": 2018,
+    "type": "Вантажопасажирський",
+    "vin": "WD323PNK0JP041208",
+    "owner": "ФОП Лисенко Олег Ігорович (17.07.1982)",
+    "ownerType": "ФОП",
+    "address": "с. Бужківка, вул. Степова, 19",
+    "registration": {
+      "date": "13.01.2019",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/197968239",
+      "validUntil": "11.02.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "21.02.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "АА 4433 НО",
+    "brand": "MAN TGL",
+    "color": "Жовтий",
+    "year": 2020,
+    "type": "Вантажний автомобіль",
+    "vin": "WMAEXMPJ2LG989159",
+    "owner": "ПрАТ «Енергокомплект» (ЄДРПОУ 22334455)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Будівельників, 1",
+    "registration": {
+      "date": "21.02.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/003275055",
+      "validUntil": "13.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "01.07.2025",
+      "status": "Прострочений"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 4390 СВ",
+    "brand": "Opel Astra",
+    "color": "Сріблястий",
+    "year": 2010,
+    "type": "Легковий автомобіль",
+    "vin": "W0LCR6BM6AX611524",
+    "owner": "Бойко Олена Миколаївна (29.09.1995)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Квітнева, 8, кв. 5",
+    "registration": {
+      "date": "12.03.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/718930653",
+      "validUntil": "13.08.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "14.03.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 1120 АХ",
+    "brand": "Peugeot Partner",
+    "color": "Жовтий",
+    "year": 2009,
+    "type": "Вантажопасажирський",
+    "vin": "VF318AVA39S773537",
+    "owner": "Кур'єрська служба доставки «Експрес» (ЄДРПОУ 33445566)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Гагаріна, 22",
+    "registration": {
+      "date": "29.11.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/384867067",
+      "validUntil": "06.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "22.04.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "30.09.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 12 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АХ 1102 СХ",
+    "brand": "DAF XF",
+    "color": "Червоний",
+    "year": 2015,
+    "type": "Вантажний автомобіль",
+    "vin": "XLR3Y9T19FF477535",
+    "owner": "ТОВ «Євро-Фрахт» (ЄДРПОУ 39012345)",
+    "ownerType": "ЮР",
+    "address": "м. Харків, вул. Морозова, 18",
+    "registration": {
+      "date": "22.06.2017",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/382485058",
+      "validUntil": "12.01.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "28.11.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "23.06.2025",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 31 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 9981 СС",
+    "brand": "Nissan X-Trail",
+    "color": "Темно-сірий",
+    "year": 2016,
+    "type": "Легковий автомобіль",
+    "vin": "SJN70TPS1GB311161",
+    "owner": "Григор'єв Станіслав Юрійович (11.11.1979)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Зарічна, 15",
+    "registration": {
+      "date": "21.06.2016",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/392839159",
+      "validUntil": "01.06.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "28.04.2026",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 33 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "03.06.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "16.05.2024",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 3342 ВМ",
+    "brand": "Ford Focus",
+    "color": "Синій",
+    "year": 2009,
+    "type": "Легковий автомобіль",
+    "vin": "WF0ABJWC89L660393",
+    "owner": "Романенко Юлія Олегівна (05.05.1992)",
+    "ownerType": "ФІЗ",
+    "address": "смт Загайне, вул. Шкільна, 2",
+    "registration": {
+      "date": "08.07.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/269387868",
+      "validUntil": "23.08.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "03.06.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 7811 СХ",
+    "brand": "Iveco Stralis",
+    "color": "Білий",
+    "year": 2012,
+    "type": "Сідловий тягач",
+    "vin": "ZCFPA15C5CS827314",
+    "owner": "Агрохолдинг «Дністровський» (ЄДРПОУ 31224488)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Елеваторна, 4",
+    "registration": {
+      "date": "07.03.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/089025946",
+      "validUntil": "07.05.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "20.03.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "18.01.2025",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "20.09.2024",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АХ 4772 ВХ",
+    "brand": "Ford Focus",
+    "color": "Сірий",
+    "year": 2007,
+    "type": "Легковий автомобіль",
+    "vin": "WF0XXXGCDX7Y81902",
+    "owner": "Макаренко Олег Сергійович (14.10.1981)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Залізнична, буд. 18, кв. 34",
+    "registration": {
+      "date": "20.03.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/118734205",
+      "validUntil": "14.04.2023",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "11.05.2022",
+      "status": "Прострочений"
+    },
+    "fines": [
+      {
+        "date": "18.09.2022",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 17 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 7410 ВВ",
+    "brand": "Renault Megane",
+    "color": "Сріблястий",
+    "year": 2015,
+    "type": "Легковий автомобіль",
+    "vin": "VF1JU4BY5FU605056",
+    "owner": "Козак Володимир Степанович (30.01.1971)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Вишнева, 14",
+    "registration": {
+      "date": "29.04.2015",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/693280638",
+      "validUntil": "23.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "21.01.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 6123 СТ",
+    "brand": "Hyundai Tucson",
+    "color": "Темно-синій",
+    "year": 2021,
+    "type": "Легковий автомобіль",
+    "vin": "TMASEKCD7MU377395",
+    "owner": "Савченко Максим Олегович (19.06.1985)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, пр. Миру, 33, кв. 41",
+    "registration": {
+      "date": "21.07.2022",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/963469601",
+      "validUntil": "01.11.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "02.12.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "06.06.2025",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АХ 5511 ВІ",
+    "brand": "Audi A4",
+    "color": "Чорний",
+    "year": 2017,
+    "type": "Легковий автомобіль",
+    "vin": "WAUXKWYJ2HG333747",
+    "owner": "Литвин Олександр Борисович (07.12.1989)",
+    "ownerType": "ФІЗ",
+    "address": "м. Харків, пр. Науки, 12, кв. 9",
+    "registration": {
+      "date": "18.11.2017",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/039250570",
+      "validUntil": "14.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "18.09.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "03.11.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "11.04.2024",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 8831 АІ",
+    "brand": "Chevrolet Lacetti",
+    "color": "Зелений",
+    "year": 2007,
+    "type": "Легковий автомобіль",
+    "vin": "KL1XFEXZ67H535108",
+    "owner": "Гончаренко Петро Ілліч (25.08.1965)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Сонячна, 7",
+    "registration": {
+      "date": "17.10.2010",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/062514959",
+      "validUntil": "18.09.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "28.04.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "01.02.2026",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "27.07.2024",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 2099 СР",
+    "brand": "ЗАЗ Lanos",
+    "color": "Сірий",
+    "year": 2008,
+    "type": "Легковий автомобіль",
+    "vin": "Y6DEH89S48L551939",
+    "owner": "Семенюк Василь Дмитрович (14.03.1977)",
+    "ownerType": "ФІЗ",
+    "address": "смт Загайне, пров. Луговий, 5",
+    "registration": {
+      "date": "13.12.2010",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/555201414",
+      "validUntil": "04.05.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "22.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "06.03.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 35 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 1029 СТ",
+    "brand": "VW Caddy",
+    "color": "Білий",
+    "year": 2010,
+    "type": "Вантажопасажирський",
+    "vin": "WV2DLMM48AX726542",
+    "owner": "ФОП Даниленко І. С. (02.04.1981)",
+    "ownerType": "ФОП",
+    "address": "м. Дністровськ, вул. Дачна, 10",
+    "registration": {
+      "date": "01.11.2013",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/218535864",
+      "validUntil": "25.08.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "03.04.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "24.10.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "06.02.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 17 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 5012 ВВ",
+    "brand": "Нива Шевроле",
+    "color": "Темно-зелений",
+    "year": 2012,
+    "type": "Легковий автомобіль",
+    "vin": "X9L3DKVC7CC467802",
+    "owner": "Кравчук Микола Петрович (18.10.1959)",
+    "ownerType": "ФІЗ",
+    "address": "Дачний кооператив «Зелений Гай», діл. 88",
+    "registration": {
+      "date": "15.03.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/991519508",
+      "validUntil": "12.07.2025",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "07.09.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "27.05.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 39 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 8001 ЕА",
+    "brand": "ГАЗ-3309",
+    "color": "Синій",
+    "year": 2005,
+    "type": "Вантажний автомобіль",
+    "vin": "X9696JV995U540643",
+    "owner": "КП «Дністровськ-Благоустрій» (ЄДРПОУ 20394857)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Комунальна, 2",
+    "registration": {
+      "date": "02.10.2008",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/509149150",
+      "validUntil": "05.06.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.03.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "24.05.2026",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Не сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 8812 АМ",
+    "brand": "Kia Ceed",
+    "color": "Сріблястий",
+    "year": 2009,
+    "type": "Легковий автомобіль",
+    "vin": "U5YLBWC409Y090818",
+    "owner": "Антоненко Світлана Юріївна (21.05.1990)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Лесі Українки, 15, кв. 3",
+    "registration": {
+      "date": "16.07.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/896898675",
+      "validUntil": "26.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "03.08.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "04.03.2026",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "09.06.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 9920 СХ",
+    "brand": "Mitsubishi L200",
+    "color": "Сріблястий",
+    "year": 2018,
+    "type": "Пікап",
+    "vin": "MMCTZC9K2JE307884",
+    "owner": "Сидоренко Олексій Павлович (10.12.1976)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Паркова, 7",
+    "registration": {
+      "date": "22.08.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/579688219",
+      "validUntil": "18.10.2024",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "15.01.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "17.03.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 19 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 4001 СВ",
+    "brand": "Toyota RAV4",
+    "color": "Червоний",
+    "year": 2010,
+    "type": "Легковий автомобіль",
+    "vin": "JTM6D3KP8AN096914",
+    "owner": "Руденко Наталія Ігорівна (04.09.1984)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Квітнева, 22, кв. 14",
+    "registration": {
+      "date": "05.03.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/680589534",
+      "validUntil": "20.10.2025",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "06.02.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "30.09.2024",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 2314 СВ",
+    "brand": "M-B Atego",
+    "color": "Білий",
+    "year": 2018,
+    "type": "Вантажний автомобіль",
+    "vin": "WDBHHZX70JM783963",
+    "owner": "ТОВ «БудПостач-Сервіс» (ЄДРПОУ 38475629)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Промислова, 30",
+    "registration": {
+      "date": "02.02.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/147758587",
+      "validUntil": "24.05.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "04.05.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "09.11.2024",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 6320 АЕ",
+    "brand": "Suzuki Grand Vitara",
+    "color": "Чорний",
+    "year": 2008,
+    "type": "Легковий автомобіль",
+    "vin": "TSMUZS9XX8J227297",
+    "owner": "Власов Дмитро Андрійович (27.02.1980)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Гоголя, 11, кв. 5",
+    "registration": {
+      "date": "01.11.2010",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/655171051",
+      "validUntil": "05.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "24.10.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 2290 ВС",
+    "brand": "Skoda Fabia",
+    "color": "Синій",
+    "year": 2014,
+    "type": "Легковий автомобіль",
+    "vin": "TMB0WPAG9EJ641730",
+    "owner": "Демченко Ірина Олегівна (15.11.1993)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, пр. Свободи, 44, кв. 21",
+    "registration": {
+      "date": "04.01.2015",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/500928351",
+      "validUntil": "03.02.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.09.2024",
+      "status": "Прострочений"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 3341 СВ",
+    "brand": "Renault Duster",
+    "color": "Коричневий",
+    "year": 2019,
+    "type": "Легковий автомобіль",
+    "vin": "X7LY6FM48KE515811",
+    "owner": "Мартинюк Анатолій Степанович (08.06.1968)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Набережна, 3",
+    "registration": {
+      "date": "24.09.2020",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/008278020",
+      "validUntil": "22.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "08.01.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "19.05.2026",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 13 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "25.08.2024",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 1001 ВР",
+    "brand": "Toyota Camry",
+    "color": "Чорний",
+    "year": 2017,
+    "type": "Легковий автомобіль",
+    "vin": "JTNN9FA31HX189097",
+    "owner": "Денисенко Артем Валерійович (19.01.1986)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Центральна, 5, кв. 10",
+    "registration": {
+      "date": "15.12.2019",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/792672018",
+      "validUntil": "01.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "27.06.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "20.01.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 13 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АА 7777 ВХ",
+    "brand": "BMW X5",
+    "color": "Білий",
+    "year": 2012,
+    "type": "Легковий автомобіль",
+    "vin": "WBAUEM8W3CW842259",
+    "owner": "ТОВ «Інвест-Груп» (ЄДРПОУ 41556677)",
+    "ownerType": "ЮР",
+    "address": "м. Київ, Печерський узвіз, 3",
+    "registration": {
+      "date": "15.09.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/286617515",
+      "validUntil": "25.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "12.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 5566 ОЕ",
+    "brand": "DAF CF",
+    "color": "Червоний",
+    "year": 2020,
+    "type": "Сідловий тягач",
+    "vin": "XLR02UYD7LP504053",
+    "owner": "ТОВ «СпецАвтоТранс» (ЄДРПОУ 37281920)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, Об'їзна дорога, 12",
+    "registration": {
+      "date": "07.06.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/515036633",
+      "validUntil": "31.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "02.08.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 4511 СМ",
+    "brand": "Kia Sportage",
+    "color": "Червоний",
+    "year": 2014,
+    "type": "Легковий автомобіль",
+    "vin": "U5YCVYR13EJ484840",
+    "owner": "Зайцева Олена Вікторівна (12.07.1991)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Садова, 20, кв. 5",
+    "registration": {
+      "date": "15.06.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/153484301",
+      "validUntil": "11.02.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "06.04.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 5022 СТ",
+    "brand": "Opel Zafira",
+    "color": "Сірий",
+    "year": 2009,
+    "type": "Легковий автомобіль",
+    "vin": "W0L7V9VZ99H605019",
+    "owner": "Прокопенко Михайло Іванович (03.04.1975)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Миру, 11",
+    "registration": {
+      "date": "07.11.2009",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/520448836",
+      "validUntil": "26.09.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.05.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "АХ 9012 ЄЕ",
+    "brand": "MAN TGX",
+    "color": "Білий",
+    "year": 2012,
+    "type": "Сідловий тягач",
+    "vin": "WMA6L14M4CK293603",
+    "owner": "ПП «Харків-Логістика» (ЄДРПОУ 31002299)",
+    "ownerType": "ЮР",
+    "address": "м. Харків, вул. Плеханівська, 45",
+    "registration": {
+      "date": "17.06.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/235743469",
+      "validUntil": "19.06.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "17.08.2024",
+      "status": "Прострочений"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 0092 СВ",
+    "brand": "Skoda Superb",
+    "color": "Темно-сірий",
+    "year": 2015,
+    "type": "Легковий автомобіль",
+    "vin": "TMBRLSBC8FR032921",
+    "owner": "Олійник Тарас Володимирович (25.10.1983)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Франка, 9, кв. 2",
+    "registration": {
+      "date": "28.08.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/256036015",
+      "validUntil": "30.09.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "29.04.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 3109 АС",
+    "brand": "Ford Kuga",
+    "color": "Сріблястий",
+    "year": 2010,
+    "type": "Легковий автомобіль",
+    "vin": "WF02CV468AU327779",
+    "owner": "Яковенко Анастасія Сергіївна (14.02.1989)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Лісова, 5",
+    "registration": {
+      "date": "22.01.2013",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/691822473",
+      "validUntil": "23.09.2025",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "26.09.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "02.03.2026",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 19 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "26.02.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 16 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 3300 АР",
+    "brand": "Audi A6",
+    "color": "Чорний",
+    "year": 2013,
+    "type": "Легковий автомобіль",
+    "vin": "WAUBTSXV9DX378223",
+    "owner": "Кушнір Євген Анатолійович (10.05.1978)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Елітна, 14",
+    "registration": {
+      "date": "26.03.2016",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/570028718",
+      "validUntil": "12.04.2025",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "10.09.2025",
+      "status": "Прострочений"
+    },
+    "fines": [
+      {
+        "date": "02.07.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 19 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АХ 9911 МА",
+    "brand": "Renault Magnum",
+    "color": "Білий",
+    "year": 2019,
+    "type": "Сідловий тягач",
+    "vin": "VF6BYGB71KA054230",
+    "owner": "ТОВ «Транс-Альянс» (ЄДРПОУ 39988776)",
+    "ownerType": "ЮР",
+    "address": "м. Харків, пр. Гагаріна, 120",
+    "registration": {
+      "date": "21.01.2020",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/289994483",
+      "validUntil": "19.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "14.02.2025",
+      "status": "Прострочений"
+    },
+    "fines": [
+      {
+        "date": "08.06.2026",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 26 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 6721 СР",
+    "brand": "Nissan Qashqai",
+    "color": "Бронзовий",
+    "year": 2010,
+    "type": "Легковий автомобіль",
+    "vin": "SJN568YH3AE195292",
+    "owner": "Мазур Юрій Миколайович (09.09.1981)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Гагаріна, 2",
+    "registration": {
+      "date": "28.07.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/969234712",
+      "validUntil": "22.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "18.09.2026",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 7812 ВН",
+    "brand": "VW Passat B6",
+    "color": "Коричневий",
+    "year": 2014,
+    "type": "Легковий автомобіль",
+    "vin": "WVW34L1W5EU131392",
+    "owner": "Клименко Андрій Олегович (16.12.1985)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Степова, 10",
+    "registration": {
+      "date": "03.11.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/668666514",
+      "validUntil": "19.11.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "18.02.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "АІ 5544 СТ",
+    "brand": "M-B E-Class",
+    "color": "Сріблястий",
+    "year": 2016,
+    "type": "Легковий автомобіль",
+    "vin": "WDB83JMT7GK228802",
+    "owner": "ТОВ «Консалтинг-ЮА» (ЄДРПОУ 40112233)",
+    "ownerType": "ЮР",
+    "address": "м. Біла Церква, вул. Київська, 40",
+    "registration": {
+      "date": "11.05.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/007194605",
+      "validUntil": "13.01.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "13.08.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 1289 ВТ",
+    "brand": "Ford Focus",
+    "color": "Синій",
+    "year": 2017,
+    "type": "Легковий автомобіль",
+    "vin": "WF05EFXF8HY594584",
+    "owner": "Левченко Денис Вікторович (01.08.1994)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Миру, 18, кв. 31",
+    "registration": {
+      "date": "01.08.2017",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/185965950",
+      "validUntil": "29.11.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "02.03.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 4422 НК",
+    "brand": "Volvo FM",
+    "color": "Сірий",
+    "year": 2018,
+    "type": "Вантажний автомобіль",
+    "vin": "YV2RC0K62JK209569",
+    "owner": "ПП «Агро-Бужківка» (ЄДРПОУ 33221100)",
+    "ownerType": "ЮР",
+    "address": "с. Бужківка, вул. Польова, 1",
+    "registration": {
+      "date": "21.02.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/144699342",
+      "validUntil": "17.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "01.01.2028",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "16.08.2025",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 33 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 9081 СА",
+    "brand": "Renault Megane",
+    "color": "Сірий",
+    "year": 2013,
+    "type": "Легковий автомобіль",
+    "vin": "VF17BEX76DS753848",
+    "owner": "Гончар Марія Іванівна (20.03.1973)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Шевченка, 2, кв. 9",
+    "registration": {
+      "date": "15.12.2015",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/850096555",
+      "validUntil": "23.06.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "25.08.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "13.10.2024",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 0010 АА",
+    "brand": "Toyota Land Cruiser 200",
+    "color": "Чорний",
+    "year": 2014,
+    "type": "Легковий автомобіль",
+    "vin": "JT111UJ200048291",
+    "owner": "Бурий Іван Дмитрович (12.09.1984)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Промислова, буд. 45",
+    "registration": {
+      "date": "10.06.2019",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/224518803",
+      "validUntil": "14.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "20.05.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "03.11.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 15 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 4432 СВ",
+    "brand": "VW Tiguan",
+    "color": "Білий",
+    "year": 2008,
+    "type": "Легковий автомобіль",
+    "vin": "WVG22DS8X8N329616",
+    "owner": "Федоренко Сергій Павлович (28.05.1987)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Зелена, 12",
+    "registration": {
+      "date": "26.03.2008",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/705341469",
+      "validUntil": "31.05.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "03.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "21.02.2026",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "РЕ 2399 ЕН",
+    "brand": "Toyota L.C. Prado",
+    "color": "Чорний",
+    "year": 2012,
+    "type": "Легковий автомобіль",
+    "vin": "JTEDHMY52CT963061",
+    "owner": "Малишев Дмитро Олегович (05.08.1979)",
+    "ownerType": "ФІЗ",
+    "address": "с. Городище, вул. Лісова, 7",
+    "registration": {
+      "date": "28.02.2014",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/190670492",
+      "validUntil": "09.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "01.06.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "06.02.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 1122 ТА",
+    "brand": "Scania G400",
+    "color": "Зелений",
+    "year": 2019,
+    "type": "Вантажний автомобіль",
+    "vin": "YS257FJU1KK730246",
+    "owner": "ТОВ «Ліс-Експорт» (ЄДРПОУ 38877665)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Деревообробна, 9",
+    "registration": {
+      "date": "18.09.2022",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/573377753",
+      "validUntil": "12.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "14.08.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "23.03.2024",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 6670 ВМ",
+    "brand": "Seat Leon",
+    "color": "Червоний",
+    "year": 2016,
+    "type": "Легковий автомобіль",
+    "vin": "VSS2PM239GE687578",
+    "owner": "Гнатюк Олексій Юрійович (14.10.1996)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Шкільна, 8",
+    "registration": {
+      "date": "09.07.2016",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/509129959",
+      "validUntil": "23.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "09.01.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 2291 СТ",
+    "brand": "Peugeot 301",
+    "color": "Білий",
+    "year": 2015,
+    "type": "Легковий автомобіль",
+    "vin": "VF3NPDTJ5FU421499",
+    "owner": "Шило Галина Вікторівна (03.11.1969)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, пров. Тихий, 4",
+    "registration": {
+      "date": "16.01.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/079703064",
+      "validUntil": "13.02.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "22.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "14.04.2025",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 28 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "АА 0099 РС",
+    "brand": "MAN TGX",
+    "color": "Синій",
+    "year": 2014,
+    "type": "Сідловий тягач",
+    "vin": "WMAGDW299EB562813",
+    "owner": "ТОВ «УкрБуд-Авто» (ЄДРПОУ 36655443)",
+    "ownerType": "ЮР",
+    "address": "м. Київ, вул. Промислова, 22",
+    "registration": {
+      "date": "09.01.2016",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/444688348",
+      "validUntil": "19.11.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "26.11.2026",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "АА 0088 СМ",
+    "brand": "Volvo XC90",
+    "color": "Темно-синій",
+    "year": 2017,
+    "type": "Легковий автомобіль",
+    "vin": "YV18ZDPW4HC002664",
+    "owner": "ТОВ «Юр-Гарант» (ЄДРПОУ 42233445)",
+    "ownerType": "ЮР",
+    "address": "м. Київ, пр. Бажана, 14",
+    "registration": {
+      "date": "28.03.2020",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/801734623",
+      "validUntil": "24.07.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "31.07.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "22.08.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 3044 ВХ",
+    "brand": "Mazda CX-5",
+    "color": "Сріблястий",
+    "year": 2020,
+    "type": "Легковий автомобіль",
+    "vin": "JMZGLSK07LS861818",
+    "owner": "Карпенко Віталій Олександрович (11.02.1982)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Озерна, 3",
+    "registration": {
+      "date": "03.08.2022",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/449589741",
+      "validUntil": "17.08.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "05.05.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 5115 СВ",
+    "brand": "Mazda 6",
+    "color": "Червоний",
+    "year": 2009,
+    "type": "Легковий автомобіль",
+    "vin": "JMZ9RYPN39T736442",
+    "owner": "Самойлов Ігор Сергійович (24.08.1990)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Центральна, 30, кв. 11",
+    "registration": {
+      "date": "14.06.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/146527939",
+      "validUntil": "20.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "07.09.2026",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 8090 АЕ",
+    "brand": "Honda CR-V",
+    "color": "Сірий",
+    "year": 2012,
+    "type": "Легковий автомобіль",
+    "vin": "SHHR32S6XCM868320",
+    "owner": "Власенко Тетяна Миколаївна (07.01.1984)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Квіткова, 15",
+    "registration": {
+      "date": "07.05.2013",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«УкрСтрах»",
+      "policy": "ЕР/317442380",
+      "validUntil": "05.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "08.03.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "07.07.2025",
+        "article": "ч. 5 ст. 121 КУпАП",
+        "violation": "Не пристебнутий ремінь безпеки",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "25.02.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 29 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 7755 ЕН",
+    "brand": "M-B Actros",
+    "color": "Білий",
+    "year": 2020,
+    "type": "Сідловий тягач",
+    "vin": "WDBDHEDY2LF416837",
+    "owner": "ТОВ «ЄвроТранс-Постач» (ЄДРПОУ 31122334)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Магістральна, 55",
+    "registration": {
+      "date": "21.11.2021",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/210532596",
+      "validUntil": "25.11.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "09.02.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "12.04.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 16 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 0007 СР",
+    "brand": "Lexus RX",
+    "color": "Чорний",
+    "year": 2016,
+    "type": "Легковий автомобіль",
+    "vin": "JTHE9PWZ4GM042961",
+    "owner": "Поліщук Вадим Борисович (18.06.1977)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Елітна, 2",
+    "registration": {
+      "date": "06.06.2019",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/185755065",
+      "validUntil": "27.09.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "24.12.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "02.12.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 14 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 9901 СХ",
+    "brand": "BMW 3 Series",
+    "color": "Синій",
+    "year": 2017,
+    "type": "Легковий автомобіль",
+    "vin": "WBA3KUGB9HC911113",
+    "owner": "Гриценко Олег Віталійович (29.12.1993)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Перемоги, 10, кв. 44",
+    "registration": {
+      "date": "09.10.2018",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/909387173",
+      "validUntil": "23.10.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "13.08.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "16.09.2024",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 18 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 6620 ВТ",
+    "brand": "Toyota Corolla",
+    "color": "Сріблястий",
+    "year": 2014,
+    "type": "Легковий автомобіль",
+    "vin": "SB17NS0GXEZ417459",
+    "owner": "Зайчук Микола Петрович (05.04.1966)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Лесі Українки, 21",
+    "registration": {
+      "date": "31.01.2017",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/405289204",
+      "validUntil": "10.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "12.09.2026",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 1928 СВ",
+    "brand": "Subaru Forester",
+    "color": "Темно-зелений",
+    "year": 2011,
+    "type": "Легковий автомобіль",
+    "vin": "JF176NXJ4BY954070",
+    "owner": "Нестеренко Руслан Іванович (13.09.1980)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Садова, 7",
+    "registration": {
+      "date": "19.04.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/274611556",
+      "validUntil": "24.09.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "19.06.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "19.05.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 13 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "02.04.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 18 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      },
+      {
+        "date": "14.02.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 23 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 1455 АА",
+    "brand": "ГАЗ-3302 «Газель»",
+    "color": "Білий",
+    "year": 2009,
+    "type": "Вантажопасажирський",
+    "vin": "X96UZWP909Y987733",
+    "owner": "ФОП Тарасенко Ілля Юрійович (01.10.1985)",
+    "ownerType": "ФОП",
+    "address": "с. Малорічне, вул. Заводська, 14",
+    "registration": {
+      "date": "25.07.2009",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/217844021",
+      "validUntil": "13.11.2024",
+      "status": "Прострочений"
+    },
+    "techInspection": {
+      "validUntil": "01.10.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 8802 СТ",
+    "brand": "Renault Master",
+    "color": "Сірий",
+    "year": 2019,
+    "type": "Вантажопасажирський",
+    "vin": "VF14JTD05KM469320",
+    "owner": "Ковтун Андрій Сергійович (16.03.1979)",
+    "ownerType": "ФІЗ",
+    "address": "с. Бужківка, вул. Миру, 22",
+    "registration": {
+      "date": "14.10.2019",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«АСКО-Південь»",
+      "policy": "ЕР/926732213",
+      "validUntil": "17.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "24.04.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 0192 МІ",
+    "brand": "ЗІЛ-130",
+    "color": "Синій",
+    "year": 1989,
+    "type": "Вантажний автомобіль",
+    "vin": "XTZULZLV3KV739075",
+    "owner": "ПрАТ «Дністровський машзавод» (ЄДРПОУ 14325678)",
+    "ownerType": "ЮР",
+    "address": "м. Дністровськ, вул. Промислова, 10",
+    "registration": {
+      "date": "04.05.1990",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/075314420",
+      "validUntil": "24.02.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "13.12.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "24.11.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 25 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 8901 СТ",
+    "brand": "VW Golf",
+    "color": "Синій",
+    "year": 2018,
+    "type": "Легковий автомобіль",
+    "vin": "WVWG6WJD3JF699550",
+    "owner": "Литвиненко Ольга Василівна (23.07.1994)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Вишнева, 5",
+    "registration": {
+      "date": "13.10.2020",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Гарант-Захист»",
+      "policy": "ЕР/171244716",
+      "validUntil": "27.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "26.12.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 4110 АІ",
+    "brand": "Chevrolet Niva",
+    "color": "Зелений",
+    "year": 2011,
+    "type": "Легковий автомобіль",
+    "vin": "X9LP82BB1BC014370",
+    "owner": "Степаненко Михайло Георгійович (08.12.1962)",
+    "ownerType": "ФІЗ",
+    "address": "м. Дністровськ, вул. Дачна, 40",
+    "registration": {
+      "date": "27.07.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/079040987",
+      "validUntil": "04.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.09.2027",
+      "status": "Дійсний"
+    },
+    "fines": []
+  },
+  {
+    "plate": "ВІ 3211 АІ",
+    "brand": "ЗАЗ СЕНС",
+    "color": "Сріблястий",
+    "year": 2010,
+    "type": "Легковий автомобіль",
+    "vin": "Y6DP0W9H9AC364242",
+    "owner": "Бойчук Павло Ігорович (19.04.1988)",
+    "ownerType": "ФІЗ",
+    "address": "Дачний кооператив «Зелений Гай», діл. 15",
+    "registration": {
+      "date": "26.04.2012",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Дністер-Поліс»",
+      "policy": "ЕР/979893432",
+      "validUntil": "13.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "15.10.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "10.10.2025",
+        "article": "ч. 1 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 13 км/год",
+        "amount": 340,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 4321 АХ",
+    "brand": "ТАТРА 815",
+    "color": "Жовтий",
+    "year": 1995,
+    "type": "Самоскид",
+    "vin": "TNTZMSD17SX388575",
+    "owner": "ТОВ «Кар'єроуправління Малорічне» (ЄДРПОУ 35667788)",
+    "ownerType": "ЮР",
+    "address": "с. Малорічне, вул. Піщана, 1",
+    "registration": {
+      "date": "14.12.1996",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/860500116",
+      "validUntil": "17.04.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "23.06.2027",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "20.11.2025",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 28 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "12.08.2025",
+        "article": "ч. 1 ст. 152 КУпАП",
+        "violation": "Порушення правил зупинки, стоянки",
+        "amount": 510,
+        "status": "Сплачено"
+      },
+      {
+        "date": "25.02.2024",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 36 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 7009 ВС",
+    "brand": "Toyota Hilux",
+    "color": "Чорний",
+    "year": 2010,
+    "type": "Пікап",
+    "vin": "MR0RLECP0AN259124",
+    "owner": "ФОП Кравченко Дмитро Анатолійович (22.11.1981)",
+    "ownerType": "ФОП",
+    "address": "с. Бужківка, вул. Лісова, 12",
+    "registration": {
+      "date": "20.09.2013",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Фортуна»",
+      "policy": "ЕР/989481949",
+      "validUntil": "27.03.2027",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "20.10.2026",
+      "status": "Дійсний"
+    },
+    "fines": [
+      {
+        "date": "09.04.2025",
+        "article": "ч. 2 ст. 122 КУпАП",
+        "violation": "Перевищення швидкості на 38 км/год",
+        "amount": 510,
+        "status": "Сплачено"
+      }
+    ]
+  },
+  {
+    "plate": "ВІ 7654 СВ",
+    "brand": "Fiat Doblo",
+    "color": "Жовтий",
+    "year": 2009,
+    "type": "Вантажопасажирський",
+    "vin": "ZFABSSXF39J600534",
+    "owner": "Мельничук Сергій Іванович (05.02.1974)",
+    "ownerType": "ФІЗ",
+    "address": "с. Рясне, вул. Степова, 9",
+    "registration": {
+      "date": "16.03.2011",
+      "status": "Зареєстровано"
+    },
+    "insurance": {
+      "company": "«Оберіг»",
+      "policy": "ЕР/953313058",
+      "validUntil": "20.12.2026",
+      "status": "Дійсний"
+    },
+    "techInspection": {
+      "validUntil": "14.03.2028",
+      "status": "Дійсний"
+    },
+    "fines": []
+  }
+]

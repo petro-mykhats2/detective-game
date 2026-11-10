@@ -46,7 +46,7 @@
 .vehicle-search { padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
 .vehicle-search label { display: block; margin-bottom: 10px; color: #c39a5d; font: 9px "DM Mono", monospace; letter-spacing: .1em; }
 .vehicle-search__controls { display: flex; gap: 9px; }
-.vehicle-search__controls input { min-width: 0; flex: 1; height: 46px; padding: 0 13px; border: 1px solid #39434b; border-radius: 4px; outline: none; color: #f2f4f5; background: #0b1015; font: inherit; font-size: 13px; }
+.vehicle-search__controls input { min-width: 0; flex: 1; height: 46px; padding: 20px 13px; border: 1px solid #39434b; border-radius: 4px; outline: none; color: #f2f4f5; background: #0b1015; font: inherit; font-size: 22px; text-transform: uppercase;}
 .vehicle-search__controls input:focus { border-color: #bd965e; box-shadow: 0 0 0 3px rgba(189,150,94,.12); }
 .vehicle-search__controls button,
 .vehicle-modal__footer button {
