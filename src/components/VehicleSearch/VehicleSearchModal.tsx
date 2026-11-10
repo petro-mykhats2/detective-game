@@ -1,0 +1,165 @@
+import { useEffect, useRef, useState, type FormEvent } from "react"
+import vehicles from "../../storage/baza_danych_avto.json"
+import { useVehicleSearch } from "./VehicleSearchContext"
+import "./VehicleSearchModal.css"
+
+type Vehicle = (typeof vehicles)[number]
+
+function normalize(value: string) {
+  return value.toLocaleLowerCase("uk-UA").replace(/[\s\-_.]/g, "").trim()
+}
+
+export default function VehicleSearchModal() {
+  const { isOpen, closeVehicleSearch } = useVehicleSearch()
+  const [query, setQuery] = useState("")
+  const [submittedQuery, setSubmittedQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState("")
+  const searchTimerRef = useRef<number | null>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  const matches = submittedQuery
+    ? (vehicles as Vehicle[])
+        .filter((vehicle) => {
+          const needle = normalize(submittedQuery)
+          return [vehicle.plate, vehicle.brand, vehicle.owner].some((value) =>
+            normalize(value).includes(needle),
+          )
+        })
+        .slice(0, 12)
+    : []
+
+  useEffect(() => {
+    if (!isOpen) return
+    document.body.style.overflow = "hidden"
+    const timer = window.setTimeout(() => searchInputRef.current?.focus(), 80)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeVehicleSearch()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.clearTimeout(timer)
+      document.body.style.overflow = ""
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [isOpen, closeVehicleSearch])
+
+  useEffect(() => {
+    return () => {
+      if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
+    }
+  }, [])
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const value = query.trim()
+    if (!value) {
+      setSearchError("Введіть номерний знак, марку, модель або прізвище власника.")
+      setSubmittedQuery("")
+      return
+    }
+
+    setSearchError("")
+    setIsSearching(true)
+    setSubmittedQuery("")
+
+    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = window.setTimeout(() => {
+      setSubmittedQuery(value)
+      setIsSearching(false)
+      searchTimerRef.current = null
+    }, 2000)
+  }
+
+  function closeModal() {
+    setQuery("")
+    setSubmittedQuery("")
+    setSearchError("")
+    setIsSearching(false)
+    if (searchTimerRef.current !== null) window.clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = null
+    closeVehicleSearch()
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div
+      className="vehicle-modal"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) closeModal()
+      }}
+    >
+      <section
+        className="vehicle-modal__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vehicle-modal-title"
+      >
+        <header className="vehicle-modal__header">
+          <div>
+            <span className="vehicle-modal__eyebrow">НАІС МВС · ЗАХИЩЕНИЙ КАНАЛ</span>
+            <h2 id="vehicle-modal-title">Пошук транспортного засобу</h2>
+            <p>Введіть відомі дані, щоб отримати відповідний запис із бази.</p>
+          </div>
+          <button className="vehicle-modal__close" type="button" onClick={closeModal} aria-label="Закрити вікно">×</button>
+        </header>
+
+        <form className="vehicle-search" onSubmit={submitSearch}>
+          <label htmlFor="vehicle-query">НОМЕРНИЙ ЗНАК / МАРКА / МОДЕЛЬ / ПРІЗВИЩЕ</label>
+          <div className="vehicle-search__controls">
+            <input ref={searchInputRef} id="vehicle-query" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Напр. ВІ 3412 ВА або Renault…" autoComplete="off" />
+            <button type="submit" disabled={isSearching}>{isSearching ? "Пошук…" : "Перевірити"}</button>
+          </div>
+          {searchError && <p className="vehicle-search__error" role="alert">{searchError}</p>}
+          <span className="vehicle-search__hint">Пошук не чутливий до регістру та пробілів.</span>
+        </form>
+
+        <div className="vehicle-results" aria-live="polite">
+          {isSearching ? (
+            <div className="vehicle-searching" role="status" aria-live="polite">
+              <div className="vehicle-searching__scanner"><span /></div>
+              <strong>Виконується запит до реєстру</strong>
+              <p>Перевіряємо реєстраційні дані та історію транспортного засобу…</p>
+              <div className="vehicle-searching__track"><i /></div>
+              <span className="vehicle-searching__timer">ЗАХИЩЕНИЙ КАНАЛ · ЗАПИТ ОБРОБЛЯЄТЬСЯ</span>
+            </div>
+          ) : !submittedQuery ? (
+            <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
+          ) : matches.length ? (
+            <>
+              <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
+              {matches.map((vehicle) => (
+                <article className="vehicle-record" key={vehicle.plate}>
+                  <div className="vehicle-record__top">
+                    <div><span className="vehicle-record__eyebrow">РЕЄСТРАЦІЙНИЙ НОМЕР</span><h3>{vehicle.plate}</h3></div>
+                    <span className="vehicle-record__status"><i /> ЗАПИС ЗНАЙДЕНО</span>
+                  </div>
+                  <div className="vehicle-record__vehicle">
+                    <div className="vehicle-record__icon" aria-hidden="true">▰</div>
+                    <div><strong>{vehicle.brand}</strong><span>{vehicle.type}</span></div>
+                    <div className="vehicle-record__color"><span>КОЛІР</span><strong>{vehicle.color}</strong></div>
+                  </div>
+                  <div className="vehicle-record__grid">
+                    <div><span>ВЛАСНИК</span><strong>{vehicle.owner}</strong></div>
+                    <div><span>ТИП ВЛАСНИКА</span><strong>{vehicle.ownerType}</strong></div>
+                    <div className="vehicle-record__address"><span>АДРЕСА РЕЄСТРАЦІЇ</span><strong>{vehicle.address}</strong></div>
+                  </div>
+                  <div className="vehicle-record__info"><span>ДОВІДКА З РЕЄСТРУ</span><p>{vehicle.info}</p></div>
+                </article>
+              ))}
+            </>
+          ) : (
+            <div className="vehicle-results__empty vehicle-results__empty--not-found"><span>!</span><strong>Збігів не знайдено</strong><p>Перевірте написання номера, марки, моделі або прізвища та повторіть пошук.</p></div>
+          )}
+        </div>
+
+        <footer className="vehicle-modal__footer">
+          <span>НАВЧАЛЬНА БАЗА ДАНИХ · СПРАВА № 001</span>
+          <button type="button" onClick={closeModal}>Закрити</button>
+        </footer>
+      </section>
+    </div>
+  )
+}
