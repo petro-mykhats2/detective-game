@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import vehicles from "../../baza_danych_avto.json"
 import { useVehicleSearch } from "./VehicleSearchContext"
+import { useInvestigatorNotebook } from "../InvestigatorNotebook/InvestigatorNotebookContext"
+import {
+  getActionMessage,
+  getNotebookEntryText,
+  ownerName,
+  type VehicleAction,
+} from "./vehicleActionUtils"
 import "./VehicleSearchModal.css"
 
 type Vehicle = (typeof vehicles)[number]
@@ -11,12 +18,70 @@ function normalize(value: string) {
 
 export default function VehicleSearchModal() {
   const { isOpen, closeVehicleSearch } = useVehicleSearch()
+  const { notes, addNote } = useInvestigatorNotebook()
   const [query, setQuery] = useState("")
   const [submittedQuery, setSubmittedQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
   const [searchError, setSearchError] = useState("")
   const searchTimerRef = useRef<number | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const pendingActionKeysRef = useRef(new Set<string>())
+  const [actionMessageByPlate, setActionMessageByPlate] = useState<Record<string, string>>({})
+
+  function normalizeNotebookValue(value: string) {
+    return normalize(value)
+  }
+
+  function findExistingNotebookNote(vehicle: Vehicle) {
+    const plate = normalizeNotebookValue(vehicle.plate)
+    const name = normalizeNotebookValue(ownerName(vehicle))
+    return notes.find((note) => {
+      const structuredPlate = note.plate ? normalizeNotebookValue(note.plate) : ""
+      const structuredOwner = note.ownerName ? normalizeNotebookValue(note.ownerName) : ""
+      if (structuredPlate && structuredPlate === plate) return true
+      if (structuredOwner && structuredOwner === name) return true
+
+      const text = [note.title, note.details, note.source].filter(Boolean).join(" ")
+      const normalizedText = normalizeNotebookValue(text)
+      return normalizedText.includes(plate) || normalizedText.includes(name)
+    })
+  }
+
+  function getActionLabel(action: VehicleAction) {
+    if (action === "interrogate") return "допит"
+    if (action === "suspicion") return "клопотання про підозру"
+    return "розшук / орієнтування"
+  }
+
+  function handleVehicleAction(vehicle: Vehicle, action: VehicleAction) {
+    if (action === "wanted") {
+      setActionMessageByPlate((current) => ({
+        ...current,
+        [vehicle.plate]: getActionMessage(vehicle, action),
+      }))
+      return
+    }
+
+    if (findExistingNotebookNote(vehicle)) return
+
+    const key = `${normalize(vehicle.plate)}::${normalize(ownerName(vehicle))}`
+    if (pendingActionKeysRef.current.has(key)) return
+    pendingActionKeysRef.current.add(key)
+
+    addNote({
+      title: getNotebookEntryText(vehicle, action),
+      status: "pending",
+      source: "НАІС МВС",
+      plate: vehicle.plate,
+      ownerName: ownerName(vehicle),
+      action,
+    })
+
+    setActionMessageByPlate((current) => ({
+      ...current,
+      [vehicle.plate]: getActionMessage(vehicle, action),
+    }))
+  }
 
   const matches = submittedQuery
     ? (vehicles as Vehicle[])
@@ -162,6 +227,46 @@ export default function VehicleSearchModal() {
                       </ul>
                     </div>
                   )}
+
+                  {(() => {
+                    const existingNote = findExistingNotebookNote(vehicle)
+                    const actionMessage = actionMessageByPlate[vehicle.plate]
+                    const disabled = Boolean(existingNote)
+                    const marker = existingNote
+                      ? `Додано до блокнота: ${existingNote.action ? getActionLabel(existingNote.action) : "дію"}`
+                      : actionMessage
+
+                    return (
+                      <div className="vehicle-record__actions">
+                        <button
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => handleVehicleAction(vehicle, "interrogate")}
+                        >
+                          Викликати на допит власника
+                        </button>
+                        <button
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => handleVehicleAction(vehicle, "suspicion")}
+                        >
+                          Підготувати клопотання про підозру
+                        </button>
+                        <button
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => handleVehicleAction(vehicle, "wanted")}
+                        >
+                          Подати в розшук / орієнтування
+                        </button>
+                        {marker && (
+                          <p className={existingNote ? "vehicle-record__action-note vehicle-record__action-note--added" : "vehicle-record__action-note"}>
+                            {marker}
+                          </p>
+                        )}
+                      </div>
+                    )
+                  })()}
                 </article>
               ))}
             </>
