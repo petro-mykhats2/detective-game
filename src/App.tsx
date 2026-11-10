@@ -12,6 +12,9 @@ import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
+import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
+import VehicleSearchModal from "./components/VehicleSearch/VehicleSearchModal"
+import DetectiveMenu from "./components/DetectiveMenu/DetectiveMenu"
 import NotebookTestForm from "./components/InvestigatorNotebook/NotebookTestForm"
 
 type Screen =
@@ -194,6 +197,7 @@ export default function App() {
 
   return (
     <InvestigatorNotebookProvider>
+      <VehicleSearchProvider>
       <main className={`experience is-ready experience--${screen}`}>
       <div
         className="experience__background"
@@ -202,6 +206,10 @@ export default function App() {
       />
       <div className="experience__shade" aria-hidden="true" />
       <div className="film-grain" aria-hidden="true" />
+
+      <DetectiveMenu />
+      <InvestigatorNotebook />
+      <VehicleSearchModal />
 
       {screen === "start" && (
         <section className="intro" aria-label="Початок гри">
@@ -377,8 +385,6 @@ export default function App() {
       )}
 
       <div className="experience__utilities">
-        <InvestigatorNotebook />
-
         <button
           className={`sound-toggle ${musicEnabled ? "is-on" : "is-off"}`}
         onClick={toggleMusic}
@@ -426,6 +432,7 @@ export default function App() {
       />
       </div>
       </main>
+      </VehicleSearchProvider>
     </InvestigatorNotebookProvider>
   )
 }
