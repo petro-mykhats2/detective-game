@@ -89,6 +89,58 @@
 .vehicle-record__address { grid-column: 1 / -1; }
 .vehicle-record__info { padding: 13px; border-left: 2px solid #987749; background: rgba(0,0,0,.15); }
 .vehicle-record__info p { margin: 7px 0 0; color: #aeb7bf; font-size: 11px; line-height: 1.7; }
+
+.vehicle-record__actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.vehicle-record__actions button {
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 12px;
+  border: 1px solid rgba(190,149,91,.38);
+  border-radius: 4px;
+  color: #e5d0ad;
+  background: rgba(145,105,53,.12);
+  font: 600 10px "DM Mono", monospace;
+  letter-spacing: .025em;
+  text-align: left;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
+}
+
+.vehicle-record__actions button:hover:not(:disabled) {
+  border-color: #c9a66d;
+  background: rgba(145,105,53,.26);
+  color: #f2dfc1;
+}
+
+.vehicle-record__actions button:disabled {
+  border-color: rgba(123,137,148,.18);
+  color: #69737b;
+  background: rgba(0,0,0,.12);
+  cursor: not-allowed;
+}
+
+.vehicle-record__action-note {
+  margin: 2px 0 0;
+  padding: 8px 10px;
+  border-left: 2px solid #987749;
+  color: #aeb7bf;
+  background: rgba(0,0,0,.14);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.vehicle-record__action-note--added {
+  border-left-color: #80b79b;
+  color: #aebdb3;
+}
+
 .vehicle-modal__footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 28px; border-top: 1px solid rgba(255,255,255,.08); color: #68747e; font: 8px "DM Mono", monospace; letter-spacing: .08em; }
 .vehicle-modal__footer button { padding: 8px 13px; }
 @keyframes vehicle-modal-in { from { opacity: 0; } to { opacity: 1; } }
