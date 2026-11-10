@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   useInvestigatorNotebook,
   type InvestigationNote,
@@ -95,7 +96,7 @@ export default function InvestigatorNotebook() {
           className="investigator-notebook__backdrop"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setIsOpen(false)
+            if (event.target === event.currentTarget) closeNotebook()
           }}
         >
           <section
