@@ -84,22 +84,6 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
     }
   }, [])
 
-  useEffect(() => {
-    if (!databaseOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    const timer = window.setTimeout(() => searchInputRef.current?.focus(), 80)
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDatabaseOpen(false)
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => {
-      window.clearTimeout(timer)
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [databaseOpen])
-
   return (
     <main className="stage-four-questions" aria-label="Повідомлення напарника про відеоконтроль">
       <header className="stage-four-questions__topline">
