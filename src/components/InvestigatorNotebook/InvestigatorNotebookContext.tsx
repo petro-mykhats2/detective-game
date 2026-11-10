@@ -16,6 +16,9 @@ export type InvestigationNote = {
   details?: string
   status: NotebookStatus
   source?: string
+  plate?: string
+  ownerName?: string
+  action?: "interrogate" | "suspicion" | "wanted"
   createdAt: string
   updatedAt: string
 }
@@ -25,6 +28,9 @@ export type AddInvestigationNoteInput = {
   details?: string
   status?: NotebookStatus
   source?: string
+  plate?: string
+  ownerName?: string
+  action?: "interrogate" | "suspicion" | "wanted"
 }
 
 type InvestigatorNotebookContextValue = {
@@ -92,6 +98,9 @@ export function InvestigatorNotebookProvider({ children }: { children: ReactNode
           details: input.details?.trim() || undefined,
           status: input.status ?? "pending",
           source: input.source?.trim() || undefined,
+          plate: input.plate?.trim() || undefined,
+          ownerName: input.ownerName?.trim() || undefined,
+          action: input.action,
           createdAt: now,
           updatedAt: now,
         }
