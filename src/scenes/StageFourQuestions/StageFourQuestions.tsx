@@ -14,17 +14,12 @@ function getMusicElement() {
   return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
 }
 
-function normalize(value: string) {
-  return value.toLocaleLowerCase("uk-UA").replace(/[\s\-_.]/g, "").trim()
-}
-
 export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [audioUnavailable, setAudioUnavailable] = useState(false)
   const { openVehicleSearch } = useVehicleSearch()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const previousMusicVolumeRef = useRef<number | null>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
 
   function restoreMusicVolume() {
     const music = getMusicElement()
