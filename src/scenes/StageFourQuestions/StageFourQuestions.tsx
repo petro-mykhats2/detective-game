@@ -70,6 +70,7 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
     audio.currentTime = 0
     nextDialogueRef.current = null
     setNextDialoguePlaying(false)
+    restoreMusicVolume()
   }
 
   function openNextDialogue() {
