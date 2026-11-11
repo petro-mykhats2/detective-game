@@ -8,7 +8,9 @@ import {
 import { CASE_KEY_VEHICLES, isCaseKeyPlate } from "../../config/caseKey"
 import {
   getAssistantText,
+  getAssistantTextVariants,
   getRejectedText,
+  getRejectedTextVariants,
   getSummaryText,
   type AssistantAction,
 } from "../../config/assistantTexts"
@@ -108,9 +110,7 @@ function buildEvaluation(note: InvestigationNote): ReviewEvaluation {
   const action = note.action as AssistantAction
 
   if (isCaseKeyPlate(plate)) {
-    const variants = action === "interrogate"
-      ? getAssistantTextVariants(plate, action)
-      : getAssistantTextVariants(plate, action)
+    const variants = getAssistantTextVariants(plate, action)
     const variant = chooseVariant(variants.length)
 
     return {
@@ -140,19 +140,8 @@ function buildEvaluation(note: InvestigationNote): ReviewEvaluation {
   }
 }
 
-function getAssistantTextVariants(plate: string, action: AssistantAction) {
-  if (action === "interrogate") {
-    return [
-      getAssistantText(plate, action, 0),
-    ].filter(Boolean)
-  }
-
-  return [0, 1].map((variant) => getAssistantText(plate, action, variant)).filter(Boolean)
-}
-
 function chooseRejectedVariant(ownerType: string, action: AssistantAction) {
-  // У поточному конфігу кожен тип дії має один текстовий варіант.
-  return 0
+  return chooseVariant(getRejectedTextVariants(ownerType, action).length)
 }
 
 function groupRejectedEvaluations(evaluations: ReviewEvaluation[]): ReviewGroupMessage[] {
@@ -205,6 +194,8 @@ export default function AssistantReview({ onBack, onStage5Start }: AssistantRevi
   const { notes, updateNote } = useInvestigatorNotebook()
   const processedRef = useRef(false)
   const [reviewState, setReviewState] = useState<ReviewState | null>(() => readReviewState())
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const transitionRef = useRef(false)
 
   useEffect(() => {
     const saved = readReviewState()
@@ -261,7 +252,10 @@ export default function AssistantReview({ onBack, onStage5Start }: AssistantRevi
   }, [notes, onBack, onStage5Start, updateNote])
 
   function handleStageFiveStart() {
-    if (!reviewState?.summary.completed) return
+    if (!reviewState?.summary.completed || transitionRef.current) return
+
+    transitionRef.current = true
+    setIsTransitioning(true)
 
     const nextState = {
       ...reviewState,
@@ -373,8 +367,9 @@ export default function AssistantReview({ onBack, onStage5Start }: AssistantRevi
                 type="button"
                 className="assistant-review__next"
                 onClick={handleStageFiveStart}
+                disabled={isTransitioning}
               >
-                Перейти до 5 конверту →
+                {isTransitioning ? "Перехід…" : "Перейти до 5 конверту →"}
               </button>
             ) : (
               <button type="button" className="stage-one-secondary" onClick={onBack}>
