@@ -119,11 +119,7 @@ export default function StageFourQuestions({ onBack }: StageFourQuestionsProps) 
               {audioUnavailable && <span className="stage-four-questions__audio-note">Додайте файл assistant-stage-four.mp3 до public/audio/.</span>}
             </div>
 
-            <div className="stage-four-questions__database-cta">
-              <div>
-                <span className="stage-four-questions__database-label">ДОСТУП ДО БАЗИ НАІС МВС</span>
-                <p>Перевірте реєстраційні дані автомобіля або його власника.</p>
-              </div>
+            <div className="stage-four-questions__database-action">
               <button type="button" className="stage-four-questions__lookup-button" onClick={openVehicleSearch}>
                 <span aria-hidden="true">⌕</span> Відкрити базу транспортних засобів
               </button>
