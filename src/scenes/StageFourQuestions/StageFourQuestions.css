@@ -258,15 +258,36 @@
 
 
 /* Vehicle database access */
-.stage-four-questions__database-cta {
+.stage-four-questions__database-action {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
   margin-top: 25px;
-  padding: 20px;
-  border: 1px solid rgba(195, 154, 93, .32);
-  border-radius: 8px;
-  background: linear-gradient(115deg, rgba(195,154,93,.10), rgba(16,21,27,.15));
 }
-.stage-four-questions__database-label,
+
+.stage-four-questions__lookup-button {
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid rgba(195, 154, 93, .55);
+  border-radius: 5px;
+  color: #f0d8ae;
+  background: rgba(145, 105, 53, .16);
+  font: 600 10px "DM Mono", monospace;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+
+.stage-four-questions__lookup-button:hover {
+  border-color: #d5b47f;
+  background: rgba(145, 105, 53, .3);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .stage-four-questions__database-action {
+    width: 100%;
+  }
+
+  .stage-four-questions__lookup-button {
+    width: 100%;
+  }
+}
