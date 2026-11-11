@@ -1,10 +1,6 @@
 import { useEffect } from "react"
 import "./StageFiveEnvelope.css"
 
-type StageFiveEnvelopeProps = {
-  onBack: () => void
-}
-
 const MATERIALS = [
   {
     number: "01",
@@ -26,7 +22,7 @@ const MATERIALS = [
   },
 ]
 
-export default function StageFiveEnvelope({ onBack }: StageFiveEnvelopeProps) {
+export default function StageFiveEnvelope() {
   useEffect(() => {
     const timer = window.setTimeout(() => window.scrollTo({ top: 0, behavior: "auto" }), 0)
     return () => window.clearTimeout(timer)
@@ -93,10 +89,7 @@ export default function StageFiveEnvelope({ onBack }: StageFiveEnvelopeProps) {
         </section>
 
         <div className="stage-five-envelope__footer">
-          <button className="stage-one-secondary" type="button" onClick={onBack}>
-            ← Назад
-          </button>
-          <span><i /> ТЕСТОВИЙ РЕЖИМ · УМОВИ ПЕРЕХОДУ БУДУТЬ ДОДАНІ ПІЗНІШЕ</span>
+          <span><i /> ПЕРЕХІД ЗАФІКСОВАНО · РОЗСЛІДУВАННЯ ПРОДОВЖУЄТЬСЯ</span>
         </div>
       </div>
     </main>
