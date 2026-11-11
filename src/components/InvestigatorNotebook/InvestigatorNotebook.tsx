@@ -14,13 +14,15 @@ const STATUS_META: Record<NotebookStatus, { label: string; tone: string }> = {
   "decision-made": { label: "Є рішення", tone: "decision" },
   "cannot-complete": { label: "Неможливо виконати", tone: "blocked" },
   "awaiting-conditions": { label: "Чекає на виконання умов", tone: "conditions" },
-  pending: { label: "Чекає на виконання", tone: "pending" },
+  pending: { label: "Очікує", tone: "pending" },
+  approved: { label: "Погоджено", tone: "approved" },
 }
 
 const FILTERS: Array<{ value: "all" | NotebookStatus; label: string }> = [
   { value: "all", label: "Усі" },
   { value: "in-progress", label: "В процесі" },
   { value: "pending", label: "Очікують" },
+  { value: "approved", label: "Погоджено" },
   { value: "awaiting-conclusion", label: "Висновки" },
   { value: "completed", label: "Опрацьовано" },
   { value: "decision-made", label: "Рішення" },
