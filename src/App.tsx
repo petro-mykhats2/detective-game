@@ -12,6 +12,7 @@ import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
 import StageFourContinuation from "./scenes/StageFourContinuation/StageFourContinuation"
 import StageFiveEnvelope from "./scenes/StageFiveEnvelope/StageFiveEnvelope"
+import AssistantReview from "./scenes/AssistantReview/AssistantReview"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
@@ -34,6 +35,7 @@ type Screen =
   | "fourth-envelope"
   | "stage-four-questions"
   | "stage-four-continuation"
+  | "assistant-review"
   | "stage-five-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
@@ -60,9 +62,23 @@ const INTRO_VOICE_DELAY_MOBILE_MS = 200
 // а рядки з'являються поступово; синхронізації по таймкодах немає.
 
 const NOTE_KEY = "detective-case-notes-v1"
+const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
+
+function hasUnlockedStageFive() {
+  try {
+    const raw = localStorage.getItem(REVIEW_STORAGE_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as { stageFiveUnlocked?: boolean }
+    return parsed.stageFiveUnlocked === true
+  } catch {
+    return false
+  }
+}
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("start")
+  const [screen, setScreen] = useState<Screen>(() =>
+    hasUnlockedStageFive() ? "stage-five-envelope" : "start",
+  )
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [audioBlocked, setAudioBlocked] = useState(false)
   const [voiceStatus, setVoiceStatus] = useState<
@@ -346,7 +362,14 @@ export default function App() {
       {screen === "stage-four-questions" && (
         <StageFourQuestions
           onBack={() => setScreen("fourth-envelope")}
-          onContinue={() => setScreen("stage-four-continuation")}
+          onContinue={() => setScreen("assistant-review")}
+        />
+      )}
+
+      {screen === "assistant-review" && (
+        <AssistantReview
+          onBack={() => setScreen("stage-four-questions")}
+          onStage5Start={() => setScreen("stage-five-envelope")}
         />
       )}
 
@@ -357,9 +380,7 @@ export default function App() {
         />
       )}
 
-      {screen === "stage-five-envelope" && (
-        <StageFiveEnvelope onBack={() => setScreen("stage-four-continuation")} />
-      )}
+      {screen === "stage-five-envelope" && <StageFiveEnvelope />}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
