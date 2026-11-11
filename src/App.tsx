@@ -10,6 +10,8 @@ import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 import StageFour from "./scenes/StageFour/StageFour"
 import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
+import StageFourContinuation from "./scenes/StageFourContinuation/StageFourContinuation"
+import StageFiveEnvelope from "./scenes/StageFiveEnvelope/StageFiveEnvelope"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
@@ -31,6 +33,8 @@ type Screen =
   | "stage-four"
   | "fourth-envelope"
   | "stage-four-questions"
+  | "stage-four-continuation"
+  | "stage-five-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -340,7 +344,21 @@ export default function App() {
       )}
 
       {screen === "stage-four-questions" && (
-        <StageFourQuestions onBack={() => setScreen("fourth-envelope")} />
+        <StageFourQuestions
+          onBack={() => setScreen("fourth-envelope")}
+          onContinue={() => setScreen("stage-four-continuation")}
+        />
+      )}
+
+      {screen === "stage-four-continuation" && (
+        <StageFourContinuation
+          onBack={() => setScreen("stage-four-questions")}
+          onContinue={() => setScreen("stage-five-envelope")}
+        />
+      )}
+
+      {screen === "stage-five-envelope" && (
+        <StageFiveEnvelope onBack={() => setScreen("stage-four-continuation")} />
       )}
 
       {screen === "terminal" && (
