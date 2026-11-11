@@ -47,18 +47,12 @@ export default function StageFourQuestions({ onBack, onContinue }: StageFourQues
     restoreMusicVolume()
   }
 
-  const hasVehicleAction = notes.some((note) => {
-    if (note.action === "interrogate" || note.action === "suspicion") {
-      return Boolean(note.plate)
-    }
-
-    const text = `${note.title} ${note.details ?? ""} ${note.source ?? ""}`.toLowerCase()
-    return (
+  const hasVehicleAction = notes.some(
+    (note) =>
+      note.status === "pending" &&
       Boolean(note.plate) &&
-      (text.includes("заплановано допит") ||
-        text.includes("клопотання про підозру"))
-    )
-  })
+      (note.action === "interrogate" || note.action === "suspicion"),
+  )
 
   function playDialogue() {
     if (audioRef.current && !audioRef.current.paused && !audioRef.current.ended) return
