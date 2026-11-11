@@ -59,6 +59,15 @@ export const assistantTexts = {
 export type AssistantAction = "interrogate" | "suspicion"
 export type CaseKeyPlate = keyof typeof assistantTexts.caseKey.interrogate
 
+export function getAssistantTextVariants(plate: string, action: AssistantAction) {
+  return assistantTexts.caseKey[action][plate as CaseKeyPlate] ?? []
+}
+
+export function getRejectedTextVariants(ownerType: string, action: AssistantAction) {
+  const group = ownerType === "ЮР" ? assistantTexts.rejected.individual.legal : assistantTexts.rejected.individual.physical
+  return group[action] ?? []
+}
+
 export function getAssistantText(
   plate: string,
   action: AssistantAction,
