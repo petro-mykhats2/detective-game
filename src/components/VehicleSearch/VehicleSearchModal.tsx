@@ -234,9 +234,11 @@ export default function VehicleSearchModal() {
                     const existingNote = findExistingNotebookNote(vehicle)
                     const actionMessage = actionMessageByPlate[vehicle.plate]
                     const disabled = Boolean(existingNote)
-                    const marker = existingNote
-                      ? `Додано до блокнота: ${existingNote.action ? getActionLabel(existingNote.action) : "дію"}`
-                      : actionMessage
+                    const marker = existingNote?.status === "rejected"
+                      ? "Відхилено"
+                      : existingNote
+                        ? `Додано до блокнота: ${existingNote.action ? getActionLabel(existingNote.action) : "дію"}`
+                        : actionMessage
 
                     return (
                       <div className="vehicle-record__actions">
@@ -262,7 +264,7 @@ export default function VehicleSearchModal() {
                           Подати в розшук / орієнтування
                         </button>
                         {marker && (
-                          <p className={existingNote ? "vehicle-record__action-note vehicle-record__action-note--added" : "vehicle-record__action-note"}>
+                          <p className={existingNote?.status === "rejected" ? "vehicle-record__action-note vehicle-record__action-note--rejected" : existingNote ? "vehicle-record__action-note vehicle-record__action-note--added" : "vehicle-record__action-note"}>
                             {marker}
                           </p>
                         )}

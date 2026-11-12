@@ -10,6 +10,9 @@ import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 import StageFour from "./scenes/StageFour/StageFour"
 import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
+import StageFourContinuation from "./scenes/StageFourContinuation/StageFourContinuation"
+import StageFiveEnvelope from "./scenes/StageFiveEnvelope/StageFiveEnvelope"
+import AssistantReview from "./scenes/AssistantReview/AssistantReview"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
@@ -31,6 +34,9 @@ type Screen =
   | "stage-four"
   | "fourth-envelope"
   | "stage-four-questions"
+  | "stage-four-continuation"
+  | "assistant-review"
+  | "stage-five-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -56,9 +62,43 @@ const INTRO_VOICE_DELAY_MOBILE_MS = 200
 // а рядки з'являються поступово; синхронізації по таймкодах немає.
 
 const NOTE_KEY = "detective-case-notes-v1"
+const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
+const NOTEBOOK_STORAGE_KEY = "detective-investigation-notebook-v1"
+const STAGE_FIVE_SCROLL_STORAGE_KEY = "detective-stage-five-scroll-v1"
+
+function resetGameProgressOnReload() {
+  try {
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined
+    const isReload = navigation?.type === "reload"
+
+    if (!isReload) return
+
+    localStorage.removeItem(NOTE_KEY)
+    localStorage.removeItem(REVIEW_STORAGE_KEY)
+    localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
+    localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
+  } catch {
+    // Якщо API навігації або localStorage недоступні, старт гри не блокуємо.
+  }
+}
+
+resetGameProgressOnReload()
+
+function hasUnlockedStageFive() {
+  try {
+    const raw = localStorage.getItem(REVIEW_STORAGE_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as { stageFiveUnlocked?: boolean }
+    return parsed.stageFiveUnlocked === true
+  } catch {
+    return false
+  }
+}
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("start")
+  const [screen, setScreen] = useState<Screen>(() =>
+    hasUnlockedStageFive() ? "stage-five-envelope" : "start",
+  )
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [audioBlocked, setAudioBlocked] = useState(false)
   const [voiceStatus, setVoiceStatus] = useState<
@@ -340,8 +380,27 @@ export default function App() {
       )}
 
       {screen === "stage-four-questions" && (
-        <StageFourQuestions onBack={() => setScreen("fourth-envelope")} />
+        <StageFourQuestions
+          onBack={() => setScreen("fourth-envelope")}
+          onContinue={() => setScreen("assistant-review")}
+        />
       )}
+
+      {screen === "assistant-review" && (
+        <AssistantReview
+          onBack={() => setScreen("stage-four-questions")}
+          onStage5Start={() => setScreen("stage-five-envelope")}
+        />
+      )}
+
+      {screen === "stage-four-continuation" && (
+        <StageFourContinuation
+          onBack={() => setScreen("stage-four-questions")}
+          onContinue={() => setScreen("stage-five-envelope")}
+        />
+      )}
+
+      {screen === "stage-five-envelope" && <StageFiveEnvelope />}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">

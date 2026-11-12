@@ -178,3 +178,5 @@
   .vehicle-searching__scanner span,
   .vehicle-searching__track i { animation-duration: 2s; }
 }
+
+.vehicle-record__action-note--rejected { border-left-color: #b87970; color: #d29a93; }

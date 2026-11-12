@@ -474,3 +474,6 @@
     animation: none;
   }
 }
+
+.investigator-notebook__status--approved { color: #9dc1a8; }
+.investigator-notebook__status--approved > span { background: #80b79b; }
