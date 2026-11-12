@@ -63,6 +63,26 @@ const INTRO_VOICE_DELAY_MOBILE_MS = 200
 
 const NOTE_KEY = "detective-case-notes-v1"
 const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
+const NOTEBOOK_STORAGE_KEY = "detective-investigation-notebook-v1"
+const STAGE_FIVE_SCROLL_STORAGE_KEY = "detective-stage-five-scroll-v1"
+
+function resetGameProgressOnReload() {
+  try {
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined
+    const isReload = navigation?.type === "reload"
+
+    if (!isReload) return
+
+    localStorage.removeItem(NOTE_KEY)
+    localStorage.removeItem(REVIEW_STORAGE_KEY)
+    localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
+    localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
+  } catch {
+    // Якщо API навігації або localStorage недоступні, старт гри не блокуємо.
+  }
+}
+
+resetGameProgressOnReload()
 
 function hasUnlockedStageFive() {
   try {
