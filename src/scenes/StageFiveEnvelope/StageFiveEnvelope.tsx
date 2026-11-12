@@ -1,5 +1,7 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import "./StageFiveEnvelope.css"
+
+const SCROLL_STORAGE_KEY = "detective-stage-five-scroll-v1"
 
 const MATERIALS = [
   {
@@ -23,13 +25,41 @@ const MATERIALS = [
 ]
 
 export default function StageFiveEnvelope() {
+  const scrollRef = useRef<HTMLElement>(null)
+
   useEffect(() => {
-    const timer = window.setTimeout(() => window.scrollTo({ top: 0, behavior: "auto" }), 0)
-    return () => window.clearTimeout(timer)
+    const container = scrollRef.current
+    if (!container) return
+
+    const restoreTimer = window.setTimeout(() => {
+      try {
+        const savedScrollTop = Number(localStorage.getItem(SCROLL_STORAGE_KEY) ?? "0")
+        if (Number.isFinite(savedScrollTop)) {
+          container.scrollTop = savedScrollTop
+        }
+      } catch {
+        /* Скрол не критичний для роботи гри. */
+      }
+    }, 0)
+
+    const saveScroll = () => {
+      try {
+        localStorage.setItem(SCROLL_STORAGE_KEY, String(container.scrollTop))
+      } catch {
+        /* Збереження може бути недоступним у приватному режимі. */
+      }
+    }
+
+    container.addEventListener("scroll", saveScroll, { passive: true })
+
+    return () => {
+      window.clearTimeout(restoreTimer)
+      container.removeEventListener("scroll", saveScroll)
+    }
   }, [])
 
   return (
-    <main className="stage-five-envelope" aria-label="П'ятий конверт справи">
+    <main ref={scrollRef} className="stage-five-envelope" aria-label="П'ятий конверт справи">
       <header className="stage-five-envelope__topline">
         <span><i /> НОВИЙ ФРАГМЕНТ СПРАВИ</span>
         <span>ЕТАП 05 · КОНВЕРТ № 5</span>
