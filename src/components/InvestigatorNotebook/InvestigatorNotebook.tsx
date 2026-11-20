@@ -78,7 +78,6 @@ function ContradictionCard({ item, onRemove }: { item: WitnessContradiction; onR
       <h3>Свідок: {item.witness}</h3>
       <p><strong>Цитата:</strong> {item.quote}</p>
       <p><strong>Документ:</strong> {item.document}</p>
-      <p><strong>Чому:</strong> {item.why}</p>
       <div className="investigator-notebook__note-meta">
         <span>НЕВДАЛИХ СПРОБ: {item.failedAttempts}</span>
         <span>ПІДКАЗОК: {item.hintsUsed}</span>
