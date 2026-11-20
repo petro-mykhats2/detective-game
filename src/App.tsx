@@ -302,6 +302,7 @@ export default function App() {
     } catch {
       voiceEndedCallbackRef.current = null
       restoreMusic()
+      onEnded?.()
       return false
     }
   }
@@ -630,11 +631,9 @@ export default function App() {
           }
         }}
         onError={() => {
-          const callback = voiceEndedCallbackRef.current
           voiceEndedCallbackRef.current = null
           setVoiceStatus("unavailable")
           restoreMusic()
-          callback?.()
         }}
         preload="auto"
       />
