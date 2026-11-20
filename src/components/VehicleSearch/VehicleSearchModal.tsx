@@ -197,7 +197,18 @@ export default function VehicleSearchModal() {
           ) : matches.length ? (
             <>
               <div className="vehicle-results__toolbar">
-          <span className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
+                <span className="vehicle-results__caption">
+                  ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}
+                </span>
+                <button
+                  type="button"
+                  className="vehicle-results__close"
+                  onClick={closeModal}
+                  aria-label="Закрити базу транспортних засобів"
+                >
+                  × <span>Закрити базу</span>
+                </button>
+              </div>
               {matches.map((vehicle) => (
                 <article className="vehicle-record" key={vehicle.plate}>
                   <div className="vehicle-record__top">
