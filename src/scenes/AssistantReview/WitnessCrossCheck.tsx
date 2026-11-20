@@ -70,7 +70,7 @@ function readState(): CrossCheckState {
 }
 
 function getHintLevel(state: CrossCheckState) {
-  return Math.min(3, Math.max(state.failedAttempts + 1, state.maxHintLevel + 1))
+  return Math.min(3, Math.max(1, state.failedAttempts, state.maxHintLevel + 1))
 }
 
 export default function WitnessCrossCheck({ actionAvailable }: { actionAvailable: boolean }) {
