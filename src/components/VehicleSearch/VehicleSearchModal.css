@@ -30,7 +30,8 @@
   color: #edf0f2;
   background: #11171d;
   box-shadow: 0 25px 100px rgba(0,0,0,.55);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .vehicle-modal__header {
   position: sticky;
