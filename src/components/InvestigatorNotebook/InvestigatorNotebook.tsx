@@ -83,6 +83,7 @@ function ContradictionCard({ item, onRemove }: { item: WitnessContradiction; onR
         <span>НЕВДАЛИХ СПРОБ: {item.failedAttempts}</span>
         <span>ПІДКАЗОК: {item.hintsUsed}</span>
         <span>МАКС. РІВЕНЬ: {item.maxHintLevel}</span>
+        <time dateTime={item.createdAt}>ЗАПИСАНО {formatDate(item.createdAt)}</time>
         <time dateTime={item.updatedAt}>ОНОВЛЕНО {formatDate(item.updatedAt)}</time>
       </div>
     </article>
