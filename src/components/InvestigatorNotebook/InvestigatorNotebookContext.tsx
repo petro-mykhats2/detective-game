@@ -33,7 +33,6 @@ export type WitnessContradiction = {
   quote: string
   documentId: string
   document: string
-  why: string
   failedAttempts: number
   hintsUsed: number
   maxHintLevel: number
