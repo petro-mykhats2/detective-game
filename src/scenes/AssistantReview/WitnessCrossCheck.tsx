@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useInvestigatorNotebook } from "../../components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { useAudioManager } from "../../audio/AudioManagerContext"
 import { WITNESS_CROSS_CHECK_CONFIG as config } from "../../config/witnessCrossCheck"
@@ -101,11 +101,11 @@ function saveState(state: CrossCheckState) {
 function getAutomaticHintLevel(failedAttempts: number, hintsUsed: number) {
   return Math.min(3, failedAttempts + hintsUsed)
 }
-
+\nfunction poolText(pool: "A" | "B", id: string) {\n  const item = (pool === "A" ? config.failureAudioA : config.failureAudioB).find((entry) => entry.id === id)\n  return item?.text ?? config.neutralResponse\n}\n
 export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
   const { upsertContradiction } = useInvestigatorNotebook()
   const { playVoice, stopVoice } = useAudioManager()
-  const [state, setState] = useState<CrossCheckState>(readState)
+  const [state, setState] = useState<CrossCheckState>(() => ({ ...readState(), isOpen: true }))
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const successCallbackRef = useRef(false)
 
