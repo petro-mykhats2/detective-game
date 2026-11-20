@@ -32,6 +32,7 @@ export default function StageFourQuestions({
   const { notes } = useInvestigatorNotebook()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const previousMusicVolumeRef = useRef<number | null>(null)
+  const autoOpenedVehicleSearchRef = useRef(false)
 
   function restoreMusicVolume() {
     const music = getMusicElement()
@@ -101,6 +102,8 @@ export default function StageFourQuestions({
     if (!autoOpenVehicleSearch) return
 
     const timer = window.setTimeout(() => {
+      if (autoOpenedVehicleSearchRef.current) return
+      autoOpenedVehicleSearchRef.current = true
       stopDialogue()
       openVehicleSearch()
       onVehicleSearchAutoOpened?.()
@@ -110,7 +113,7 @@ export default function StageFourQuestions({
   }, [autoOpenVehicleSearch, onVehicleSearchAutoOpened])
 
   useEffect(() => {
-    if (autoOpenVehicleSearch) return
+    if (autoOpenVehicleSearch || autoOpenedVehicleSearchRef.current) return
 
     const delay = window.matchMedia("(pointer: coarse)").matches
       ? MOBILE_AUDIO_DELAY_MS
