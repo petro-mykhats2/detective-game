@@ -29,17 +29,10 @@ export const WITNESS_CROSS_CHECK_CONFIG = {
     3: "Порівняйте тривалість розмови зі слів Кравченка з даними білінгу.",
   },
   introText: "Колего, поки ви працювали з машинами, я ще раз прочитав допити з четвертого конверта. Мені здається, що в одному з них слова свідка не зовсім сходяться з документами. Давайте розберемося.",
-  neutralResponse: "Не впевнений, що це те, що ми шукаємо. Давайте подивимося уважніше, колего.",
-  documentMismatch: "Документ ви обрали слушно, але ця фраза з ним не конфліктує.",
   successText: "Справді, Кравченко не міг за 6 секунд розпитати про номер майстра, дочекатися відповіді й попрощатися. Він щось не договорює. Попрошу дозвіл на його білінг, може, побачимо щось цікаве.",
   audio: {
     intro: "/audio/cross-check/intro.mp3",
     success: "/audio/cross-check/success.mp3",
-  },
-  audioHints: {
-    1: "/audio/cross-check/hint-1.mp3",
-    2: "/audio/cross-check/hint-2.mp3",
-    3: "/audio/cross-check/hint-3.mp3",
   },
   failureAudioA: [
     { id: "/audio/cross-check/fail-a-1.mp3", text: "Хм... Я перечитав допит. Здається, ми поки що йдемо не туди. Спробуйте ще раз." },
@@ -55,6 +48,11 @@ export const WITNESS_CROSS_CHECK_CONFIG = {
     { id: "/audio/cross-check/fail-b-3.mp3", text: "Документ той, колего, але порівнювати з ним треба інше місце допиту." },
     { id: "/audio/cross-check/fail-b-4.mp3", text: "Папір правильний, а ось цитата не та. Спробуйте іншу." },
   ],
+  audioHints: {
+    1: "/audio/cross-check/hint-1.mp3",
+    2: "/audio/cross-check/hint-2.mp3",
+    3: "/audio/cross-check/hint-3.mp3",
+  },
   ducking: {
     durationMs: 800,
     targetVolume: 0.22,
