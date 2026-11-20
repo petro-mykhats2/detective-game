@@ -282,10 +282,12 @@ export default function App() {
     if (musicRef.current && musicEnabled) fadeMusicTo(MUSIC_VOLUME_NORMAL, durationMs)
   }
 
-  async function playSharedVoice({ src, onStart, onEnded }: {
+  async function playSharedVoice({ src, onStart, onEnded, duckDurationMs = MUSIC_DUCK_DURATION_MS, duckTargetVolume = MUSIC_VOLUME_DURING_VOICE }: {
     src: string
     onStart?: () => void
     onEnded?: () => void
+    duckDurationMs?: number
+    duckTargetVolume?: number
   }) {
     const voice = voiceRef.current
     if (!voice) return false
@@ -295,7 +297,7 @@ export default function App() {
     voice.currentTime = 0
     voice.src = src
     voice.volume = VOICE_VOLUME
-    duckMusic()
+    duckMusic(duckDurationMs, duckTargetVolume)
 
     try {
       await voice.play()
