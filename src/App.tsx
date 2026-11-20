@@ -77,7 +77,9 @@ function resetGameProgressOnReload() {
 
     const crossCheckState = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
     const reviewState = localStorage.getItem(REVIEW_STORAGE_KEY)
-    const canResumeCrossCheck = Boolean(crossCheckState && reviewState && JSON.parse(reviewState)?.stageFiveUnlocked !== true)
+    const parsedCrossCheck = crossCheckState ? JSON.parse(crossCheckState) : null
+    const parsedReview = reviewState ? JSON.parse(reviewState) : null
+    const canResumeCrossCheck = Boolean(parsedCrossCheck && parsedReview && parsedReview.stageFiveUnlocked !== true)
 
     localStorage.removeItem(NOTE_KEY)
     localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
@@ -110,7 +112,9 @@ function shouldResumeWitnessCrossCheck() {
   try {
     const crossCheck = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
     const review = localStorage.getItem(REVIEW_STORAGE_KEY)
-    return Boolean(crossCheck && review && JSON.parse(review)?.stageFiveUnlocked !== true)
+    const parsedCrossCheck = crossCheck ? JSON.parse(crossCheck) : null
+    const parsedReview = review ? JSON.parse(review) : null
+    return Boolean(parsedCrossCheck && parsedReview && parsedReview.stageFiveUnlocked !== true)
   } catch {
     return false
   }
