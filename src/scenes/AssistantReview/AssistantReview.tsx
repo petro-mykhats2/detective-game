@@ -14,6 +14,7 @@ import {
   getSummaryText,
   type AssistantAction,
 } from "../../config/assistantTexts"
+import WitnessCrossCheck from "./WitnessCrossCheck"
 import "./AssistantReview.css"
 
 const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
@@ -354,6 +355,8 @@ export default function AssistantReview({ onBack, onStage5Start }: AssistantRevi
             </div>
           </section>
         )}
+
+        <WitnessCrossCheck actionAvailable={notes.some((note) => note.action === "interrogate" || note.action === "suspicion")} />
 
         <section className={`assistant-review__summary ${reviewState.summary.completed ? "is-complete" : "is-incomplete"}`}>
           <span className="assistant-review__summary-label">
