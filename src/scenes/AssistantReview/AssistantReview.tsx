@@ -191,7 +191,7 @@ function getReviewStatusLabel(status: ReviewEvaluation["status"]) {
   return status === "approved" ? "погоджено" : "відхилено"
 }
 
-export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantReviewProps) {
+export default function AssistantReview({ onBack, onOpenCrossCheck, onOpenStageFive }: AssistantReviewProps) {
   const { notes, updateNote } = useInvestigatorNotebook()
   const processedRef = useRef(false)
   const [reviewState, setReviewState] = useState<ReviewState | null>(() => readReviewState())
