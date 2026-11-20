@@ -54,6 +54,7 @@ type Vehicle = (typeof vehicles)[number]
 type AssistantReviewProps = {
   onBack: () => void
   onOpenCrossCheck: () => void
+  onOpenStageFive: () => void
 }
 
 function readReviewState(): ReviewState | null {
@@ -343,9 +344,7 @@ export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantR
               <button
                 type="button"
                 className="assistant-review__next"
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent("detective:open-stage-five"))
-                }}
+                onClick={onOpenStageFive}
               >
                 Перейти до 5 конверту →
               </button>
