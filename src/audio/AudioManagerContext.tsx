@@ -4,6 +4,8 @@ export type VoicePlaybackOptions = {
   src: string
   onStart?: () => void
   onEnded?: () => void
+  duckDurationMs?: number
+  duckTargetVolume?: number
 }
 
 export type AudioManagerValue = {
