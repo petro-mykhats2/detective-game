@@ -34,7 +34,8 @@
   color: #edf0f2;
   background: #11171d;
   box-shadow: 0 25px 100px rgba(0,0,0,.55);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .vehicle-modal__header {
   flex: 0 0 auto;
@@ -72,15 +73,14 @@
 .vehicle-search__hint { display: block; margin-top: 9px; color: #78848e; font-size: 10px; }
 .vehicle-search__error { margin: 9px 0 0; color: #e6a09a; font-size: 11px; }
 .vehicle-results {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex: 0 0 auto;
+  min-height: auto;
+  overflow: visible;
   padding: 8px 28px 26px;
 }
 .vehicle-results__toolbar {
   position: sticky;
-  top: -9px;
+  top: 0;
   z-index: 2;
   display: flex;
   align-items: center;
