@@ -127,7 +127,7 @@ export default function WitnessCrossCheck({ actionAvailable }: { actionAvailable
     const feedback = success
       ? config.success
       : autoHint
-        ? config.hints[3]
+        ? ""
         : !isCorrectQuote && isCorrectDocument
           ? config.documentMismatch
           : "Пара не підтверджує суперечність. Спробуйте зіставити іншу цитату й документ."
@@ -180,7 +180,6 @@ export default function WitnessCrossCheck({ actionAvailable }: { actionAvailable
   }
 
   const hintAvailable = state.maxHintLevel < 3
-  const selectedQuote = config.quotes.find((item) => item.id === state.selectedQuoteId)
 
   return (
     <section className="witness-cross-check" aria-label="Окреме доручення від помічника">
@@ -265,7 +264,6 @@ export default function WitnessCrossCheck({ actionAvailable }: { actionAvailable
           {state.step === "success" && (
             <div className="witness-cross-check__success">
               <p>{config.successFooter}</p>
-              <span>Зверніться до ведучого за наступним матеріалом.</span>
             </div>
           )}
 
