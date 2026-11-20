@@ -101,6 +101,11 @@ function saveState(state: CrossCheckState) {
 function getAutomaticHintLevel(failedAttempts: number, hintsUsed: number) {
   return Math.min(3, failedAttempts + hintsUsed)
 }
+
+function poolText(pool: "A" | "B", id: string) {
+  const item = (pool === "A" ? config.failureAudioA : config.failureAudioB).find((entry) => entry.id === id)
+  return item?.text ?? config.neutralResponse
+}
 \nfunction poolText(pool: "A" | "B", id: string) {\n  const item = (pool === "A" ? config.failureAudioA : config.failureAudioB).find((entry) => entry.id === id)\n  return item?.text ?? config.neutralResponse\n}\n
 export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
   const { upsertContradiction } = useInvestigatorNotebook()
@@ -197,7 +202,7 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
     const nextState = {
       selectedWitness: witness,
       step: "suspect-feedback" as const,
-      feedback: config.neutralResponse,
+      feedback: poolText("A", pool.id),
       failedAttempts,
       currentHint: hintLevel,
       maxHintLevel: Math.max(state.maxHintLevel, hintLevel),
@@ -265,11 +270,6 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
     const hintLevel = autoHint ? 3 : getAutomaticHintLevel(failedAttempts, state.hintsUsed)
     const nextHintsUsed = autoHint ? Math.max(state.hintsUsed, 1) : state.hintsUsed
     const pool = chooseNextAudio(!isCorrectQuote && isCorrectDocument ? "B" : "A")
-    const feedback = isCorrectQuote && !isCorrectDocument
-      ? ""
-      : isCorrectDocument
-        ? config.documentMismatch
-        : config.neutralResponse
 
     const recordId = upsertContradiction({
       witness: caseKey.witness,
@@ -285,24 +285,25 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
 
     patch({
       step: "evidence",
-      feedback,
+      feedback: poolText(!isCorrectQuote && isCorrectDocument ? "B" : "A", pool.id),
       failedAttempts,
       hintsUsed: nextHintsUsed,
       maxHintLevel: Math.max(state.maxHintLevel, hintLevel),
       currentHint: hintLevel,
       savedRecordId: recordId,
       feedbackAudio: pool.id,
-      failureOrderA: pool.order,
-      failureIndexA: pool.index,
       ...( !isCorrectQuote && isCorrectDocument ? {
         failureOrderB: pool.order,
         failureIndexB: pool.index,
-      } : {}),
+      } : {
+        failureOrderA: pool.order,
+        failureIndexA: pool.index,
+      }),
     })
 
     void playFeedbackAudio(pool.id, async () => {
-      if (autoHint) {
-        await playFeedbackAudio(config.audioHints[3])
+      if (hintLevel > 0) {
+        await playFeedbackAudio(config.audioHints[hintLevel as 1 | 2 | 3])
       }
     })
   }
