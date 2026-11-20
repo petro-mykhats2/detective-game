@@ -55,7 +55,6 @@ type Vehicle = (typeof vehicles)[number]
 type AssistantReviewProps = {
   onBack: () => void
   onOpenCrossCheck: () => void
-  onStage5Start: () => void
 }
 
 function readReviewState(): ReviewState | null {
@@ -196,16 +195,9 @@ export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantR
   const { notes, updateNote } = useInvestigatorNotebook()
   const processedRef = useRef(false)
   const [reviewState, setReviewState] = useState<ReviewState | null>(() => readReviewState())
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const transitionRef = useRef(false)
 
   useEffect(() => {
     const saved = readReviewState()
-
-    if (saved?.stageFiveUnlocked) {
-      onStage5Start()
-      return
-    }
 
     if (processedRef.current) return
 
