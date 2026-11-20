@@ -9,6 +9,7 @@ export type NotebookStatus =
   | "cannot-complete"
   | "awaiting-conditions"
   | "pending"
+  | "approved"
 
 export type InvestigationNote = {
   id: string
