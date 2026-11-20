@@ -497,7 +497,6 @@ export default function App() {
         <AssistantReview
           onBack={returnToVehicleDatabase}
           onOpenCrossCheck={() => setScreen("witness-cross-check")}
-          onStage5Start={() => setScreen("stage-five-envelope")}
         />
       )}
 
@@ -522,7 +521,10 @@ export default function App() {
       {screen === "stage-four-continuation" && (
         <StageFourContinuation
           onBack={() => setScreen("stage-four-questions")}
-          onContinue={() => setScreen("stage-five-envelope")}
+          onContinue={() => {
+            if (hasUnlockedStageFive()) setScreen("stage-five-envelope")
+            else setScreen("assistant-review")
+          }}
         />
       )}
 
