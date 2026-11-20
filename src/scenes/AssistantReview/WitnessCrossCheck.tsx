@@ -157,6 +157,8 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
 
     void playVoice({
       src: config.audio.intro,
+      duckDurationMs: config.ducking.durationMs,
+      duckTargetVolume: config.ducking.targetVolume,
       onStart: () => setIsAudioPlaying(true),
       onEnded: () => {
         setIsAudioPlaying(false)
@@ -188,6 +190,8 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
 
     const started = await playVoice({
       src,
+      duckDurationMs: config.ducking.durationMs,
+      duckTargetVolume: config.ducking.targetVolume,
       onStart: () => setIsAudioPlaying(true),
       onEnded: () => {
         setIsAudioPlaying(false)
