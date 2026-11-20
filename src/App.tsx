@@ -13,12 +13,14 @@ import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
 import StageFourContinuation from "./scenes/StageFourContinuation/StageFourContinuation"
 import StageFiveEnvelope from "./scenes/StageFiveEnvelope/StageFiveEnvelope"
 import AssistantReview from "./scenes/AssistantReview/AssistantReview"
+import WitnessCrossCheckScreen from "./scenes/AssistantReview/WitnessCrossCheck"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
 import VehicleSearchModal from "./components/VehicleSearch/VehicleSearchModal"
 import DetectiveMenu from "./components/DetectiveMenu/DetectiveMenu"
 import NotebookTestForm from "./components/InvestigatorNotebook/NotebookTestForm"
+import { AudioManagerProvider, type AudioManagerValue } from "./audio/AudioManagerContext"
 
 type Screen =
   | "start"
@@ -36,6 +38,7 @@ type Screen =
   | "stage-four-questions"
   | "stage-four-continuation"
   | "assistant-review"
+  | "witness-cross-check"
   | "stage-five-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
@@ -49,7 +52,8 @@ const INTRO_VOICE_FILE = "/audio/intro-01.mp3.mp3"
 // Щоб вона звучала голосніше під голосом, збільшуй це значення (наприклад, 0.22).
 // const MUSIC_VOLUME_NORMAL = 0.38;
 const MUSIC_VOLUME_NORMAL = 0.98
-const MUSIC_VOLUME_DURING_VOICE = 0.13
+const MUSIC_VOLUME_DURING_VOICE = 0.22
+const MUSIC_DUCK_DURATION_MS = 800
 const VOICE_VOLUME = 1
 
 // ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ВСТУПНОГО ГОЛОСУ (мс), окремо для пристроїв.
@@ -145,6 +149,8 @@ export default function App() {
   const musicRef = useRef<HTMLAudioElement>(null)
   const voiceRef = useRef<HTMLAudioElement>(null)
   const voiceDelayRef = useRef<number | null>(null)
+  const voiceEndedCallbackRef = useRef<(() => void) | null>(null)
+  const musicFadeFrameRef = useRef<number | null>(null)
 
   useEffect(() => {
     const image = new Image()
@@ -233,6 +239,73 @@ export default function App() {
     setVoiceStatus("finished")
     if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
   }
+\n  function fadeMusicTo(targetVolume: number, durationMs = MUSIC_DUCK_DURATION_MS) {
+    const music = musicRef.current
+    if (!music) return
+
+    if (musicFadeFrameRef.current !== null) {
+      window.cancelAnimationFrame(musicFadeFrameRef.current)
+    }
+
+    const startVolume = music.volume
+    const startTime = performance.now()
+
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - startTime) / durationMs)
+      music.volume = startVolume + (targetVolume - startVolume) * progress
+      if (progress < 1) {
+        musicFadeFrameRef.current = window.requestAnimationFrame(step)
+      } else {
+        musicFadeFrameRef.current = null
+      }
+    }
+
+    musicFadeFrameRef.current = window.requestAnimationFrame(step)
+  }
+
+  function duckMusic(durationMs = MUSIC_DUCK_DURATION_MS, targetVolume = MUSIC_VOLUME_DURING_VOICE) {
+    if (musicEnabled && musicRef.current) fadeMusicTo(targetVolume, durationMs)
+  }
+
+  function restoreMusic(durationMs = MUSIC_DUCK_DURATION_MS) {
+    if (musicRef.current && musicEnabled) fadeMusicTo(MUSIC_VOLUME_NORMAL, durationMs)
+  }
+
+  async function playSharedVoice({ src, onStart, onEnded }: {
+    src: string
+    onStart?: () => void
+    onEnded?: () => void
+  }) {
+    const voice = voiceRef.current
+    if (!voice) return false
+
+    voiceEndedCallbackRef.current = onEnded ?? null
+    voice.pause()
+    voice.currentTime = 0
+    voice.src = src
+    voice.volume = VOICE_VOLUME
+    duckMusic()
+
+    try {
+      await voice.play()
+      onStart?.()
+      return true
+    } catch {
+      voiceEndedCallbackRef.current = null
+      restoreMusic()
+      return false
+    }
+  }
+
+  function stopSharedVoice() {
+    if (voiceRef.current) {
+      voiceRef.current.pause()
+      voiceRef.current.currentTime = 0
+    }
+    voiceEndedCallbackRef.current = null
+    restoreMusic()
+  }
+
 
   function continueToMaterials() {
     if (voiceDelayRef.current !== null)
@@ -268,6 +341,7 @@ export default function App() {
 
   return (
     <InvestigatorNotebookProvider>
+      <AudioManagerProvider value={{ playVoice: playSharedVoice, stopVoice: stopSharedVoice, isVoicePlaying: () => Boolean(voiceRef.current && !voiceRef.current.paused), duckMusic, restoreMusic } satisfies AudioManagerValue}>
       <VehicleSearchProvider>
       <main className={`experience is-ready experience--${screen}`}>
       <div
@@ -422,7 +496,26 @@ export default function App() {
       {screen === "assistant-review" && (
         <AssistantReview
           onBack={returnToVehicleDatabase}
+          onOpenCrossCheck={() => setScreen("witness-cross-check")}
           onStage5Start={() => setScreen("stage-five-envelope")}
+        />
+      )}
+
+      {screen === "witness-cross-check" && (
+        <WitnessCrossCheckScreen
+          onBack={() => setScreen("assistant-review")}
+          onSuccess={() => {
+            try {
+              const raw = localStorage.getItem(REVIEW_STORAGE_KEY)
+              const review = raw ? JSON.parse(raw) : null
+              if (review) {
+                localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify({ ...review, stageFiveUnlocked: true }))
+              }
+            } catch {
+              // Перехід до наступного етапу не блокуємо через недоступне сховище.
+            }
+            setScreen("stage-five-envelope")
+          }}
         />
       )}
 
@@ -515,16 +608,29 @@ export default function App() {
       <audio
         ref={voiceRef}
         src={INTRO_VOICE_FILE}
-        onEnded={handleVoiceEnded}
+        onEnded={() => {
+          const callback = voiceEndedCallbackRef.current
+          voiceEndedCallbackRef.current = null
+          if (callback) {
+            restoreMusic()
+            callback()
+          } else {
+            handleVoiceEnded()
+          }
+        }}
         onError={() => {
+          const callback = voiceEndedCallbackRef.current
+          voiceEndedCallbackRef.current = null
           setVoiceStatus("unavailable")
-          if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+          restoreMusic()
+          callback?.()
         }}
         preload="auto"
       />
       </div>
       </main>
       </VehicleSearchProvider>
+      </AudioManagerProvider>
     </InvestigatorNotebookProvider>
   )
 }
