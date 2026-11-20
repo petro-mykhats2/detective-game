@@ -54,6 +54,7 @@ type Vehicle = (typeof vehicles)[number]
 
 type AssistantReviewProps = {
   onBack: () => void
+  onOpenCrossCheck: () => void
   onStage5Start: () => void
 }
 
@@ -191,7 +192,7 @@ function getReviewStatusLabel(status: ReviewEvaluation["status"]) {
   return status === "approved" ? "погоджено" : "відхилено"
 }
 
-export default function AssistantReview({ onBack, onStage5Start }: AssistantReviewProps) {
+export default function AssistantReview({ onBack, onOpenCrossCheck, onStage5Start }: AssistantReviewProps) {
   const { notes, updateNote } = useInvestigatorNotebook()
   const processedRef = useRef(false)
   const [reviewState, setReviewState] = useState<ReviewState | null>(() => readReviewState())
@@ -369,10 +370,9 @@ export default function AssistantReview({ onBack, onStage5Start }: AssistantRevi
               <button
                 type="button"
                 className="assistant-review__next"
-                onClick={handleStageFiveStart}
-                disabled={isTransitioning}
+                onClick={onOpenCrossCheck}
               >
-                {isTransitioning ? "Перехід…" : "Перейти до 5 конверту →"}
+                Перейти до перехресної перевірки показань →
               </button>
             ) : (
               <button type="button" className="stage-one-secondary" onClick={onBack}>
