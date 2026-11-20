@@ -124,6 +124,14 @@ function shouldResumeWitnessCrossCheck() {
   }
 }
 
+function hasReviewState() {
+  try {
+    return Boolean(localStorage.getItem(REVIEW_STORAGE_KEY))
+  } catch {
+    return false
+  }
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>(() =>
     hasUnlockedStageFive() ? "stage-five-envelope" : shouldResumeWitnessCrossCheck() ? "witness-cross-check" : hasReviewState() ? "assistant-review" : "start",
