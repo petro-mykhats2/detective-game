@@ -118,7 +118,7 @@ function shouldResumeWitnessCrossCheck() {
     const review = localStorage.getItem(REVIEW_STORAGE_KEY)
     const parsedCrossCheck = crossCheck ? JSON.parse(crossCheck) : null
     const parsedReview = review ? JSON.parse(review) : null
-    return Boolean(parsedCrossCheck && parsedReview && parsedReview.stageFiveUnlocked !== true)
+    return Boolean(parsedCrossCheck?.isOpen === true && parsedReview && parsedReview.stageFiveUnlocked !== true)
   } catch {
     return false
   }
@@ -126,7 +126,7 @@ function shouldResumeWitnessCrossCheck() {
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>(() =>
-    hasUnlockedStageFive() ? "stage-five-envelope" : shouldResumeWitnessCrossCheck() ? "assistant-review" : "start",
+    hasUnlockedStageFive() ? "stage-five-envelope" : shouldResumeWitnessCrossCheck() ? "witness-cross-check" : hasReviewState() ? "assistant-review" : "start",
   )
   const [openVehicleSearchOnStageFourQuestions, setOpenVehicleSearchOnStageFourQuestions] = useState(false)
 
