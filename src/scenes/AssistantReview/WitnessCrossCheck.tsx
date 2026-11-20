@@ -257,9 +257,10 @@ export default function WitnessCrossCheck({ actionAvailable }: { actionAvailable
                 disabled={!state.selectedQuoteId || !state.selectedDocumentId || state.why.trim().length < 15}
                 onClick={submitEvidence}>Перевірити пару</button>
               {state.feedback && <p className="witness-cross-check__feedback">{state.feedback}</p>}
-              {state.currentHint > 0 && <p className="witness-cross-check__hint">ПІДКАЗКА {state.currentHint}: {config.hints[state.currentHint as 1 | 2 | 3]}</p>}
             </div>
           )}
+
+          {state.currentHint > 0 && state.step !== "success" && <p className="witness-cross-check__hint">ПІДКАЗКА {state.currentHint}: {config.hints[state.currentHint as 1 | 2 | 3]}</p>}
 
           {state.step === "success" && (
             <div className="witness-cross-check__success">
