@@ -80,7 +80,7 @@
 }
 .vehicle-results__toolbar {
   position: sticky;
-  top: 0;
+  top: -9px;
   z-index: 2;
   display: flex;
   align-items: center;
@@ -219,7 +219,7 @@
   .vehicle-modal__panel {
     margin: 0;
     height: calc(100vh - 20px);
-    max-height: calc(100vh - 20px);
+    max-height: calc(100vh - 70px);
     overflow-y: auto;
     overflow-x: hidden;
   }
