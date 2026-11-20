@@ -210,27 +210,118 @@
 @keyframes vehicle-scan-pulse { to { opacity: .35; transform: scale(.7); } }
 @keyframes vehicle-search-progress { from { width: 0; } to { width: 100%; } }
 @media (max-width: 600px) {
-  .vehicle-modal { padding: 10px; }
-  .vehicle-modal__panel { margin: 0; }
-  .vehicle-modal__header, .vehicle-search { padding: 19px 17px; }
-  .vehicle-results { padding: 16px 14px 20px; }
+  .vehicle-modal {
+    padding: 10px;
+  }
+
+  .vehicle-modal__panel {
+    margin: 0;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .vehicle-modal__header {
+    padding: 14px 15px 12px;
+  }
+
+  .vehicle-modal__header h2 {
+    margin: 6px 0 4px;
+    font-size: 20px;
+  }
+
+  .vehicle-modal__header p {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .vehicle-modal__header .vehicle-modal__close {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    font-size: 22px;
+  }
+
+  .vehicle-search {
+    padding: 12px 15px 10px;
+  }
+
+  .vehicle-search label {
+    margin-bottom: 7px;
+  }
+
+  .vehicle-search__controls {
+    flex-direction: column;
+  }
+
+  .vehicle-search__controls input {
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .vehicle-search__controls button {
+    min-height: 40px;
+    padding: 9px 14px;
+  }
+
+  .vehicle-search__hint {
+    margin-top: 6px;
+    font-size: 9px;
+  }
+
+  /*
+   * On mobile the modal itself becomes the scroll container.
+   * This lets the header and search area move away when the user
+   * scrolls through the records instead of consuming the viewport.
+   */
+  .vehicle-results {
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    padding: 12px 14px 20px;
+  }
+
   .vehicle-results__toolbar {
-    margin: -16px -14px 14px;
-    padding: 10px 14px;
+    top: 0;
+    margin: -12px -14px 12px;
+    padding: 8px 14px;
+    min-height: 40px;
   }
+
+  .vehicle-results__caption {
+    margin-bottom: 0;
+    font-size: 8px;
+  }
+
   .vehicle-results__close {
-    min-height: 36px;
+    min-height: 32px;
+    padding: 6px 9px;
   }
+
   .vehicle-results__close > span {
     display: none;
   }
-  .vehicle-search__controls { flex-direction: column; }
-  .vehicle-search__controls button { min-height: 44px; }
-  .vehicle-record { padding: 14px; }
-  .vehicle-record__top h3 { font-size: 19px; }
-  .vehicle-record__grid { grid-template-columns: 1fr; gap: 12px; }
-  .vehicle-record__address { grid-column: auto; }
-  .vehicle-modal__footer { padding: 12px 17px; }
+
+  .vehicle-record {
+    padding: 14px;
+  }
+
+  .vehicle-record__top h3 {
+    font-size: 19px;
+  }
+
+  .vehicle-record__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vehicle-record__address {
+    grid-column: auto;
+  }
+
+  .vehicle-modal__footer {
+    padding: 12px 15px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .vehicle-modal { animation: none; }
