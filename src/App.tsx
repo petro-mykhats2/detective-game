@@ -247,7 +247,8 @@ export default function App() {
     setVoiceStatus("finished")
     if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
   }
-\n  function fadeMusicTo(targetVolume: number, durationMs = MUSIC_DUCK_DURATION_MS) {
+
+  function fadeMusicTo(targetVolume: number, durationMs = MUSIC_DUCK_DURATION_MS) {
     const music = musicRef.current
     if (!music) return
 
