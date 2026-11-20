@@ -65,6 +65,8 @@ const NOTE_KEY = "detective-case-notes-v1"
 const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
 const NOTEBOOK_STORAGE_KEY = "detective-investigation-notebook-v1"
 const STAGE_FIVE_SCROLL_STORAGE_KEY = "detective-stage-five-scroll-v1"
+const WITNESS_CROSS_CHECK_STORAGE_KEY = "detective-witness-cross-check-state-v1"
+const WITNESS_CONTRADICTIONS_STORAGE_KEY = "detective-witness-contradictions-v1"
 
 function resetGameProgressOnReload() {
   try {
@@ -73,10 +75,19 @@ function resetGameProgressOnReload() {
 
     if (!isReload) return
 
+    const crossCheckState = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+    const reviewState = localStorage.getItem(REVIEW_STORAGE_KEY)
+    const canResumeCrossCheck = Boolean(crossCheckState && reviewState && JSON.parse(reviewState)?.stageFiveUnlocked !== true)
+
     localStorage.removeItem(NOTE_KEY)
-    localStorage.removeItem(REVIEW_STORAGE_KEY)
-    localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
     localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
+
+    if (!canResumeCrossCheck) {
+      localStorage.removeItem(REVIEW_STORAGE_KEY)
+      localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
+      localStorage.removeItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+      localStorage.removeItem(WITNESS_CONTRADICTIONS_STORAGE_KEY)
+    }
   } catch {
     // Якщо API навігації або localStorage недоступні, старт гри не блокуємо.
   }
@@ -95,9 +106,19 @@ function hasUnlockedStageFive() {
   }
 }
 
+function shouldResumeWitnessCrossCheck() {
+  try {
+    const crossCheck = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+    const review = localStorage.getItem(REVIEW_STORAGE_KEY)
+    return Boolean(crossCheck && review && JSON.parse(review)?.stageFiveUnlocked !== true)
+  } catch {
+    return false
+  }
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>(() =>
-    hasUnlockedStageFive() ? "stage-five-envelope" : "start",
+    hasUnlockedStageFive() ? "stage-five-envelope" : shouldResumeWitnessCrossCheck() ? "assistant-review" : "start",
   )
   const [openVehicleSearchOnStageFourQuestions, setOpenVehicleSearchOnStageFourQuestions] = useState(false)
 
