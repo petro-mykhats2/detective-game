@@ -15,7 +15,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: auto;
+  overflow: hidden;
   padding: max(24px, 5vh) 18px max(24px, env(safe-area-inset-bottom));
   background: rgba(3, 6, 9, .86);
   backdrop-filter: blur(9px);
@@ -23,7 +23,8 @@
 }
 .vehicle-modal__panel {
   width: min(760px, 100%);
-  max-height: min(860px, calc(100vh - 48px));
+  height: min(860px, calc(100vh - 48px));
+  max-height: calc(100vh - 48px);
   margin: auto 0;
   display: flex;
   flex-direction: column;
@@ -75,7 +76,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 28px 26px;
+  padding: 8px 28px 26px;
 }
 .vehicle-results__toolbar {
   position: sticky;
@@ -85,8 +86,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: -20px -28px 16px;
-  padding: 12px 28px;
+  margin: -8px -28px 10px;
+  padding: 8px 28px;
   border-bottom: 1px solid rgba(255,255,255,.08);
   background: rgba(17,23,29,.97);
   backdrop-filter: blur(8px);
@@ -97,13 +98,14 @@
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
-  min-height: 34px;
-  padding: 7px 11px;
-  border: 1px solid rgba(195,154,93,.5);
+  min-height: 36px;
+  min-width: 116px;
+  padding: 7px 12px;
+  border: 1px solid rgba(195,154,93,.85);
   border-radius: 4px;
-  color: #e8d1ab;
-  background: rgba(145,105,53,.16);
-  font: 600 9px "DM Mono", monospace;
+  color: #f0d7ad;
+  background: rgba(145,105,53,.28);
+  font: 700 10px "DM Mono", monospace;
   letter-spacing: .04em;
   cursor: pointer;
 }
@@ -216,6 +218,7 @@
 
   .vehicle-modal__panel {
     margin: 0;
+    height: calc(100vh - 20px);
     max-height: calc(100vh - 20px);
     overflow-y: auto;
     overflow-x: hidden;
@@ -243,7 +246,7 @@
   }
 
   .vehicle-search {
-    padding: 12px 15px 10px;
+    padding: 10px 15px 8px;
   }
 
   .vehicle-search label {
@@ -278,14 +281,14 @@
     flex: 0 0 auto;
     min-height: auto;
     overflow: visible;
-    padding: 12px 14px 20px;
+    padding: 8px 14px 20px;
   }
 
   .vehicle-results__toolbar {
     top: 0;
-    margin: -12px -14px 12px;
-    padding: 8px 14px;
-    min-height: 40px;
+    margin: -8px -14px 10px;
+    padding: 7px 14px;
+    min-height: 38px;
   }
 
   .vehicle-results__caption {
@@ -294,12 +297,14 @@
   }
 
   .vehicle-results__close {
-    min-height: 32px;
-    padding: 6px 9px;
+    min-height: 34px;
+    min-width: 104px;
+    padding: 7px 10px;
+    font-size: 9px;
   }
 
   .vehicle-results__close > span {
-    display: none;
+    display: inline;
   }
 
   .vehicle-record {
