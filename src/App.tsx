@@ -511,6 +511,7 @@ export default function App() {
         <AssistantReview
           onBack={returnToVehicleDatabase}
           onOpenCrossCheck={() => setScreen("witness-cross-check")}
+          onOpenStageFive={() => setScreen("stage-five-envelope")}
         />
       )}
 
