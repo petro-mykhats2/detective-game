@@ -219,7 +219,11 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
     }
 
     patch(nextState)
-    void playFeedbackAudio(pool.id)
+    void playFeedbackAudio(pool.id, async () => {
+      if (hintLevel > 0) {
+        await playFeedbackAudio(config.audioHints[hintLevel as 1 | 2 | 3])
+      }
+    })
   }
 
   async function requestHint() {
