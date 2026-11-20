@@ -14,7 +14,6 @@ import {
   getSummaryText,
   type AssistantAction,
 } from "../../config/assistantTexts"
-import WitnessCrossCheck from "./WitnessCrossCheck"
 import "./AssistantReview.css"
 
 const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
@@ -244,22 +243,6 @@ export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantR
     saveReviewState(nextState)
     setReviewState(nextState)
   }, [notes, onBack, updateNote])
-
-  function handleStageFiveStart() {
-    if (!reviewState?.summary.completed || transitionRef.current) return
-
-    transitionRef.current = true
-    setIsTransitioning(true)
-
-    const nextState = {
-      ...reviewState,
-      stageFiveUnlocked: true,
-    }
-    saveReviewState(nextState)
-    setReviewState(nextState)
-    onStage5Start()
-  }
-
   if (!reviewState) {
     return (
       <main className="assistant-review assistant-review--loading" aria-label="Помічник">
@@ -349,8 +332,6 @@ export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantR
           </section>
         )}
 
-        <WitnessCrossCheck actionAvailable={notes.some((note) => note.action === "interrogate" || note.action === "suspicion")} />
-
         <section className={`assistant-review__summary ${reviewState.summary.completed ? "is-complete" : "is-incomplete"}`}>
           <span className="assistant-review__summary-label">
             {reviewState.summary.completed ? "ЕТАП ОПРАЦЮВАНО" : "РОЗСЛІДУВАННЯ ТРИВАЄ"}
@@ -358,7 +339,17 @@ export default function AssistantReview({ onBack, onOpenCrossCheck }: AssistantR
           <p>{reviewState.summary.text}</p>
 
           <div className="assistant-review__actions">
-            {reviewState.summary.completed ? (
+            {reviewState.stageFiveUnlocked ? (
+              <button
+                type="button"
+                className="assistant-review__next"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("detective:open-stage-five"))
+                }}
+              >
+                Перейти до 5 конверту →
+              </button>
+            ) : reviewState.summary.completed ? (
               <button
                 type="button"
                 className="assistant-review__next"
