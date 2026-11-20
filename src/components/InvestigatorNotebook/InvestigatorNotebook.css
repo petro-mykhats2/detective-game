@@ -477,3 +477,35 @@
 
 .investigator-notebook__status--approved { color: #9dc1a8; }
 .investigator-notebook__status--approved > span { background: #80b79b; }
+
+
+.investigator-notebook__contradictions-section {
+  position: relative;
+  z-index: 1;
+  padding: 24px 32px 30px 76px;
+  border-top: 1px solid rgba(61, 62, 57, .28);
+  color: #2d3030;
+}
+.investigator-notebook__contradictions-heading { margin: 0 16px 12px; }
+.investigator-notebook__contradictions-heading span {
+  color: #81765f;
+  font: 8px "DM Mono", monospace;
+  letter-spacing: .1em;
+}
+.investigator-notebook__contradictions-heading h3 {
+  margin: 5px 0 0;
+  color: #202525;
+  font: 700 15px Manrope, sans-serif;
+}
+.investigator-notebook__contradictions-empty {
+  margin: 0 16px;
+  color: #6c716e;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.investigator-notebook__contradiction p { margin: 5px 0 0; }
+@media (max-width: 700px) {
+  .investigator-notebook__contradictions-section { padding: 20px 15px 25px 49px; }
+  .investigator-notebook__contradictions-heading { margin-left: 8px; }
+  .investigator-notebook__contradictions-empty { margin-left: 8px; }
+}
