@@ -79,23 +79,16 @@ function resetGameProgressOnReload() {
 
     if (!isReload) return
 
-    const crossCheckState = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
-    const reviewState = localStorage.getItem(REVIEW_STORAGE_KEY)
-    const parsedCrossCheck = crossCheckState ? JSON.parse(crossCheckState) : null
-    const parsedReview = reviewState ? JSON.parse(reviewState) : null
-    const canResumeCrossCheck = Boolean(parsedCrossCheck && parsedReview && parsedReview.stageFiveUnlocked !== true)
-
-    if (parsedReview?.stageFiveUnlocked === true) return
-
+    // Тимчасовий режим тестування: після звичайного перезавантаження
+    // завжди повертаємо гру на головний екран і очищаємо прогрес проходження.
+    // Коли буде готова фінальна система збереження етапів, цей блок замінимо
+    // на відновлення останнього підтвердженого етапу.
     localStorage.removeItem(NOTE_KEY)
+    localStorage.removeItem(REVIEW_STORAGE_KEY)
+    localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
     localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
-
-    if (!canResumeCrossCheck) {
-      localStorage.removeItem(REVIEW_STORAGE_KEY)
-      localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
-      localStorage.removeItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
-      localStorage.removeItem(WITNESS_CONTRADICTIONS_STORAGE_KEY)
-    }
+    localStorage.removeItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+    localStorage.removeItem(WITNESS_CONTRADICTIONS_STORAGE_KEY)
   } catch {
     // Якщо API навігації або localStorage недоступні, старт гри не блокуємо.
   }
@@ -395,6 +388,12 @@ export default function App() {
             </button>
             <button className="briefing-test-button" onClick={() => setScreen("stage-four")}>
               ТЕСТ · ВІДКРИТИ ЕТАП 04
+            </button>
+            <button className="briefing-test-button" onClick={() => setScreen("witness-cross-check")}>
+              ТЕСТ · ПЕРЕХРЕСНА ПЕРЕВІРКА ПОКАЗАНЬ
+            </button>
+            <button className="briefing-test-button" onClick={() => setScreen("stage-five-envelope")}>
+              ТЕСТ · ВІДКРИТИ 5 КОНВЕРТ
             </button>
             <NotebookTestForm />
           </div>
