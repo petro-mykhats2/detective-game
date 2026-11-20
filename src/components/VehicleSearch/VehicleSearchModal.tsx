@@ -196,7 +196,8 @@ export default function VehicleSearchModal() {
             <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
           ) : matches.length ? (
             <>
-              <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
+              <div className="vehicle-results__toolbar">
+          <span className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
               {matches.map((vehicle) => (
                 <article className="vehicle-record" key={vehicle.plate}>
                   <div className="vehicle-record__top">
@@ -281,7 +282,6 @@ export default function VehicleSearchModal() {
 
         <footer className="vehicle-modal__footer">
           <span>НАВЧАЛЬНА БАЗА ДАНИХ · СПРАВА № 001</span>
-          <button type="button" onClick={closeModal}>Закрити</button>
         </footer>
       </section>
     </div>
