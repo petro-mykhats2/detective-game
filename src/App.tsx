@@ -99,6 +99,12 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>(() =>
     hasUnlockedStageFive() ? "stage-five-envelope" : "start",
   )
+  const [openVehicleSearchOnStageFourQuestions, setOpenVehicleSearchOnStageFourQuestions] = useState(false)
+
+  function returnToVehicleDatabase() {
+    setOpenVehicleSearchOnStageFourQuestions(true)
+    setScreen("stage-four-questions")
+  }
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [audioBlocked, setAudioBlocked] = useState(false)
   const [voiceStatus, setVoiceStatus] = useState<
@@ -383,12 +389,14 @@ export default function App() {
         <StageFourQuestions
           onBack={() => setScreen("fourth-envelope")}
           onContinue={() => setScreen("assistant-review")}
+          autoOpenVehicleSearch={openVehicleSearchOnStageFourQuestions}
+          onVehicleSearchAutoOpened={() => setOpenVehicleSearchOnStageFourQuestions(false)}
         />
       )}
 
       {screen === "assistant-review" && (
         <AssistantReview
-          onBack={() => setScreen("stage-four-questions")}
+          onBack={returnToVehicleDatabase}
           onStage5Start={() => setScreen("stage-five-envelope")}
         />
       )}
