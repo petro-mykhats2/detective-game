@@ -119,7 +119,14 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
   }, [state])
 
   useEffect(() => {
-    if (state.isSolved || state.step === "success" || state.introPlayed) return
+    if (state.isSolved || state.step === "success") return
+
+    if (state.introPlayed) {
+      if (state.step === "intro") {
+        setState((current) => ({ ...current, step: "suspect", feedbackAudio: "" }))
+      }
+      return
+    }
 
     patch({
       introPlayed: true,
