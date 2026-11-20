@@ -6,6 +6,8 @@ import "./StageFourQuestions.css"
 type StageFourQuestionsProps = {
   onBack: () => void
   onContinue: () => void
+  autoOpenVehicleSearch?: boolean
+  onVehicleSearchAutoOpened?: () => void
 }
 
 const ANDRII_AUDIO = "/audio/assistant-stage-four.mp3"
@@ -18,7 +20,12 @@ function getMusicElement() {
   return document.querySelector('audio[src="/investigation-theme.mp3"]') as HTMLAudioElement | null
 }
 
-export default function StageFourQuestions({ onBack, onContinue }: StageFourQuestionsProps) {
+export default function StageFourQuestions({
+  onBack,
+  onContinue,
+  autoOpenVehicleSearch = false,
+  onVehicleSearchAutoOpened,
+}: StageFourQuestionsProps) {
   const [playingDialogue, setPlayingDialogue] = useState(false)
   const [audioUnavailable, setAudioUnavailable] = useState(false)
   const { openVehicleSearch } = useVehicleSearch()
@@ -91,6 +98,20 @@ export default function StageFourQuestions({ onBack, onContinue }: StageFourQues
   }
 
   useEffect(() => {
+    if (!autoOpenVehicleSearch) return
+
+    const timer = window.setTimeout(() => {
+      stopDialogue()
+      openVehicleSearch()
+      onVehicleSearchAutoOpened?.()
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [autoOpenVehicleSearch, onVehicleSearchAutoOpened])
+
+  useEffect(() => {
+    if (autoOpenVehicleSearch) return
+
     const delay = window.matchMedia("(pointer: coarse)").matches
       ? MOBILE_AUDIO_DELAY_MS
       : DESKTOP_AUDIO_DELAY_MS
@@ -100,7 +121,7 @@ export default function StageFourQuestions({ onBack, onContinue }: StageFourQues
       window.clearTimeout(timer)
       stopDialogue()
     }
-  }, [])
+  }, [autoOpenVehicleSearch])
 
   function handleContinue() {
     stopDialogue()
