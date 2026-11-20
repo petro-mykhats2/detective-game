@@ -1,0 +1,153 @@
+.witness-cross-check {
+  margin-top: 22px;
+  border: 1px solid rgba(75,65,48,.82);
+  border-radius: 10px;
+  background: rgba(16,21,27,.94);
+  box-shadow: 0 22px 80px rgba(0,0,0,.24);
+  color: #edf0f2;
+}
+.witness-cross-check__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.witness-cross-check__heading > div > span,
+.witness-cross-check__assistant > div > span,
+.witness-cross-check__evidence label > span {
+  color: #c39a5d;
+  font: 9px "DM Mono", monospace;
+  letter-spacing: .11em;
+}
+.witness-cross-check__heading h2 {
+  margin: 7px 0 0;
+  color: #f2f3f4;
+  font: 600 21px "DM Mono", monospace;
+}
+.witness-cross-check__panel { padding: 22px 24px 18px; }
+.witness-cross-check__assistant {
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr);
+  gap: 14px;
+  align-items: start;
+}
+.witness-cross-check__assistant img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border: 1px solid #9a7948;
+  border-radius: 7px;
+}
+.witness-cross-check__assistant p {
+  margin: 8px 0 0;
+  color: #cfd5da;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.witness-cross-check__actions,
+.witness-cross-check__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.witness-cross-check__primary,
+.witness-cross-check__secondary,
+.witness-cross-check__reopen {
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 1px solid rgba(195,154,93,.55);
+  border-radius: 5px;
+  background: rgba(145,105,53,.16);
+  color: #f3d8aa;
+  font: 600 10px "DM Mono", monospace;
+  cursor: pointer;
+}
+.witness-cross-check__secondary,
+.witness-cross-check__reopen {
+  border-color: rgba(180,190,198,.25);
+  background: rgba(255,255,255,.035);
+  color: #c4ccd2;
+}
+.witness-cross-check button:disabled { opacity: .42; cursor: not-allowed; }
+.witness-cross-check__options {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+  margin-top: 20px;
+}
+.witness-cross-check__options button {
+  min-height: 44px;
+  padding: 11px 13px;
+  border: 1px solid rgba(123,137,148,.23);
+  border-radius: 5px;
+  background: #171f26;
+  color: #e5e9ec;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+.witness-cross-check__options button:hover {
+  border-color: rgba(195,154,93,.55);
+  background: #202a32;
+}
+.witness-cross-check__evidence {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+.witness-cross-check__evidence label { display: grid; gap: 7px; }
+.witness-cross-check__evidence select,
+.witness-cross-check__evidence textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(123,137,148,.3);
+  border-radius: 5px;
+  background: #10171d;
+  color: #edf0f2;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.witness-cross-check__evidence select { min-height: 44px; }
+.witness-cross-check__evidence textarea { resize: vertical; }
+.witness-cross-check__feedback,
+.witness-cross-check__hint {
+  margin: 2px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid rgba(195,154,93,.65);
+  background: rgba(0,0,0,.16);
+  color: #cfd5da;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.witness-cross-check__success { margin: 18px 0 0 56px; }
+.witness-cross-check__success p { margin: 0 0 12px; color: #cfd5da; font-size: 13px; line-height: 1.8; }
+.witness-cross-check__success span { color: #e6c28c; font: 10px "DM Mono", monospace; }
+.witness-cross-check__footer { justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.08); }
+.witness-cross-check__footer button {
+  border: 0;
+  background: transparent;
+  color: #d9b982;
+  font: 10px "DM Mono", monospace;
+  cursor: pointer;
+}
+.witness-cross-check__footer small,
+.witness-cross-check__footer > span { color: #8e9aa3; font: 9px "DM Mono", monospace; }
+.witness-cross-check__footer .witness-cross-check__close { color: #87929a; }
+.witness-cross-check__reopen { min-height: 36px; }
+@media (max-width: 650px) {
+  .witness-cross-check__heading { align-items: flex-start; flex-direction: column; padding: 18px 15px; }
+  .witness-cross-check__heading h2 { font-size: 18px; }
+  .witness-cross-check__panel { padding: 17px 15px 15px; }
+  .witness-cross-check__assistant { grid-template-columns: 34px minmax(0,1fr); gap: 10px; }
+  .witness-cross-check__assistant img { width: 34px; height: 34px; }
+  .witness-cross-check__options { grid-template-columns: 1fr; }
+  .witness-cross-check__success { margin-left: 0; }
+  .witness-cross-check__footer { align-items: flex-start; flex-direction: column; }
+  .witness-cross-check__footer button { padding: 4px 0; }
+}
