@@ -85,6 +85,8 @@ function resetGameProgressOnReload() {
     const parsedReview = reviewState ? JSON.parse(reviewState) : null
     const canResumeCrossCheck = Boolean(parsedCrossCheck && parsedReview && parsedReview.stageFiveUnlocked !== true)
 
+    if (parsedReview?.stageFiveUnlocked === true) return
+
     localStorage.removeItem(NOTE_KEY)
     localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
 
