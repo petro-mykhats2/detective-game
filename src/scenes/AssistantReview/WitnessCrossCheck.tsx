@@ -106,7 +106,7 @@ function poolText(pool: "A" | "B", id: string) {
   const item = (pool === "A" ? config.failureAudioA : config.failureAudioB).find((entry) => entry.id === id)
   return item?.text ?? config.neutralResponse
 }
-\nfunction poolText(pool: "A" | "B", id: string) {\n  const item = (pool === "A" ? config.failureAudioA : config.failureAudioB).find((entry) => entry.id === id)\n  return item?.text ?? config.neutralResponse\n}\n
+
 export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
   const { upsertContradiction } = useInvestigatorNotebook()
   const { playVoice, stopVoice } = useAudioManager()
