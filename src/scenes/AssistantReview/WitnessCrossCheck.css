@@ -1,153 +1,395 @@
 .witness-cross-check {
-  margin-top: 22px;
-  border: 1px solid rgba(75,65,48,.82);
-  border-radius: 10px;
-  background: rgba(16,21,27,.94);
-  box-shadow: 0 22px 80px rgba(0,0,0,.24);
-  color: #edf0f2;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+  background: rgba(10, 12, 13, 0.76);
+  animation: witness-cross-check-fade-in 420ms ease both;
 }
+
+.witness-cross-check__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.07), transparent 48%),
+    rgba(7, 9, 10, 0.55);
+  pointer-events: none;
+}
+
+.witness-cross-check__window {
+  position: relative;
+  width: min(820px, 100%);
+  max-height: min(860px, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(213, 198, 165, 0.25);
+  background: rgba(22, 25, 25, 0.97);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+  animation: witness-cross-check-rise-in 500ms 80ms ease both;
+}
+
+.witness-cross-check__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(213, 198, 165, 0.14);
+  color: rgba(213, 198, 165, 0.62);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.witness-cross-check__topline i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.witness-cross-check__content {
+  overflow-y: auto;
+  padding: 28px clamp(20px, 5vw, 48px) 22px;
+}
+
 .witness-cross-check__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.witness-cross-check__heading > div > span {
+  color: rgba(213, 198, 165, 0.55);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.witness-cross-check__heading h1 {
+  margin: 7px 0 0;
+  color: #eee9dc;
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.05;
+  font-weight: 500;
+}
+
+.witness-cross-check__heading > button {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(213, 198, 165, 0.22);
+  background: transparent;
+  color: rgba(238, 233, 220, 0.68);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.witness-cross-check__heading > button:hover {
+  color: #eee9dc;
+  border-color: rgba(213, 198, 165, 0.5);
+}
+
+.witness-cross-check__dialogue,
+.witness-cross-check__feedback-screen,
+.witness-cross-check__success {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: start;
+  padding: 22px;
+  border: 1px solid rgba(213, 198, 165, 0.16);
+  background: rgba(255, 255, 255, 0.025);
+  animation: witness-cross-check-reveal 420ms ease both;
+}
+
+.witness-cross-check__dialogue img,
+.witness-cross-check__feedback-screen img,
+.witness-cross-check__success img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.witness-cross-check__dialogue p,
+.witness-cross-check__feedback-screen p,
+.witness-cross-check__success p {
+  margin: 0;
+  color: rgba(238, 233, 220, 0.86);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.witness-cross-check__step {
+  animation: witness-cross-check-reveal 420ms ease both;
+}
+
+.witness-cross-check__step-label {
+  color: rgba(213, 198, 165, 0.55);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.witness-cross-check__step h2 {
+  max-width: 720px;
+  margin: 8px 0 22px;
+  color: #eee9dc;
+  font-size: clamp(18px, 3vw, 25px);
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.witness-cross-check__options {
+  display: grid;
+  gap: 8px;
+}
+
+.witness-cross-check__options button {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid rgba(213, 198, 165, 0.16);
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(238, 233, 220, 0.8);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.witness-cross-check__options button:hover:not(:disabled) {
+  border-color: rgba(213, 198, 165, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(2px);
+}
+
+.witness-cross-check__options button:disabled,
+.witness-cross-check__primary:disabled,
+.witness-cross-check__footer button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.witness-cross-check__evidence {
+  display: grid;
+  gap: 18px;
+  max-width: 720px;
+}
+
+.witness-cross-check__evidence label {
+  display: grid;
+  gap: 7px;
+}
+
+.witness-cross-check__evidence label > span {
+  color: rgba(213, 198, 165, 0.55);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.witness-cross-check__evidence select {
+  min-height: 46px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(213, 198, 165, 0.18);
+  background: #191c1c;
+  color: #eee9dc;
+  font: inherit;
+}
+
+.witness-cross-check__primary {
+  justify-self: start;
+  margin-top: 3px;
+  padding: 12px 18px;
+  border: 1px solid rgba(213, 198, 165, 0.42);
+  background: rgba(213, 198, 165, 0.08);
+  color: #eee9dc;
+  font: inherit;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.witness-cross-check__primary:hover:not(:disabled) {
+  background: rgba(213, 198, 165, 0.15);
+  border-color: rgba(213, 198, 165, 0.7);
+}
+
+.witness-cross-check__feedback-text {
+  margin: 18px 0 0;
+  color: rgba(238, 233, 220, 0.72);
+  line-height: 1.6;
+  animation: witness-cross-check-reveal 320ms ease both;
+}
+
+.witness-cross-check__hint {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-left: 2px solid rgba(213, 198, 165, 0.5);
+  background: rgba(213, 198, 165, 0.045);
+  animation: witness-cross-check-reveal 320ms ease both;
+}
+
+.witness-cross-check__hint span {
+  display: block;
+  color: rgba(213, 198, 165, 0.62);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.witness-cross-check__hint p {
+  margin: 7px 0 0;
+  color: rgba(238, 233, 220, 0.78);
+  line-height: 1.55;
+}
+
+.witness-cross-check__success {
+  border-color: rgba(213, 198, 165, 0.28);
+}
+
+.witness-cross-check__success .witness-cross-check__primary {
+  grid-column: 2;
+}
+
+.witness-cross-check__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 24px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  margin-top: 28px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(213, 198, 165, 0.1);
 }
-.witness-cross-check__heading > div > span,
-.witness-cross-check__assistant > div > span,
-.witness-cross-check__evidence label > span {
-  color: #c39a5d;
-  font: 9px "DM Mono", monospace;
-  letter-spacing: .11em;
-}
-.witness-cross-check__heading h2 {
-  margin: 7px 0 0;
-  color: #f2f3f4;
-  font: 600 21px "DM Mono", monospace;
-}
-.witness-cross-check__panel { padding: 22px 24px 18px; }
-.witness-cross-check__assistant {
-  display: grid;
-  grid-template-columns: 42px minmax(0,1fr);
-  gap: 14px;
-  align-items: start;
-}
-.witness-cross-check__assistant img {
-  width: 42px;
-  height: 42px;
-  object-fit: cover;
-  border: 1px solid #9a7948;
-  border-radius: 7px;
-}
-.witness-cross-check__assistant p {
-  margin: 8px 0 0;
-  color: #cfd5da;
-  font-size: 13px;
-  line-height: 1.8;
-}
-.witness-cross-check__actions,
-.witness-cross-check__footer {
+
+.witness-cross-check__footer > div {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-.witness-cross-check__primary,
-.witness-cross-check__secondary,
-.witness-cross-check__reopen {
-  min-height: 42px;
-  padding: 10px 15px;
-  border: 1px solid rgba(195,154,93,.55);
-  border-radius: 5px;
-  background: rgba(145,105,53,.16);
-  color: #f3d8aa;
-  font: 600 10px "DM Mono", monospace;
-  cursor: pointer;
-}
-.witness-cross-check__secondary,
-.witness-cross-check__reopen {
-  border-color: rgba(180,190,198,.25);
-  background: rgba(255,255,255,.035);
-  color: #c4ccd2;
-}
-.witness-cross-check button:disabled { opacity: .42; cursor: not-allowed; }
-.witness-cross-check__options {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 8px;
-  margin-top: 20px;
-}
-.witness-cross-check__options button {
-  min-height: 44px;
-  padding: 11px 13px;
-  border: 1px solid rgba(123,137,148,.23);
-  border-radius: 5px;
-  background: #171f26;
-  color: #e5e9ec;
-  text-align: left;
-  font-size: 12px;
-  cursor: pointer;
-}
-.witness-cross-check__options button:hover {
-  border-color: rgba(195,154,93,.55);
-  background: #202a32;
-}
-.witness-cross-check__evidence {
-  display: grid;
   gap: 14px;
-  margin-top: 20px;
+  flex-wrap: wrap;
 }
-.witness-cross-check__evidence label { display: grid; gap: 7px; }
-.witness-cross-check__evidence select,
-.witness-cross-check__evidence textarea {
-  width: 100%;
-  min-width: 0;
-  padding: 12px;
-  border: 1px solid rgba(123,137,148,.3);
-  border-radius: 5px;
-  background: #10171d;
-  color: #edf0f2;
-  font: inherit;
-  font-size: 12px;
-  line-height: 1.6;
-}
-.witness-cross-check__evidence select { min-height: 44px; }
-.witness-cross-check__evidence textarea { resize: vertical; }
-.witness-cross-check__feedback,
-.witness-cross-check__hint {
-  margin: 2px 0 0;
-  padding: 12px 14px;
-  border-left: 2px solid rgba(195,154,93,.65);
-  background: rgba(0,0,0,.16);
-  color: #cfd5da;
-  font-size: 12px;
-  line-height: 1.7;
-}
-.witness-cross-check__success { margin: 18px 0 0 56px; }
-.witness-cross-check__success p { margin: 0 0 12px; color: #cfd5da; font-size: 13px; line-height: 1.8; }
-.witness-cross-check__success span { color: #e6c28c; font: 10px "DM Mono", monospace; }
-.witness-cross-check__footer { justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.08); }
+
 .witness-cross-check__footer button {
   border: 0;
   background: transparent;
-  color: #d9b982;
-  font: 10px "DM Mono", monospace;
+  color: rgba(213, 198, 165, 0.72);
+  font: inherit;
+  font-size: 11px;
   cursor: pointer;
 }
-.witness-cross-check__footer small,
-.witness-cross-check__footer > span { color: #8e9aa3; font: 9px "DM Mono", monospace; }
-.witness-cross-check__footer .witness-cross-check__close { color: #87929a; }
-.witness-cross-check__reopen { min-height: 36px; }
-@media (max-width: 650px) {
-  .witness-cross-check__heading { align-items: flex-start; flex-direction: column; padding: 18px 15px; }
-  .witness-cross-check__heading h2 { font-size: 18px; }
-  .witness-cross-check__panel { padding: 17px 15px 15px; }
-  .witness-cross-check__assistant { grid-template-columns: 34px minmax(0,1fr); gap: 10px; }
-  .witness-cross-check__assistant img { width: 34px; height: 34px; }
-  .witness-cross-check__options { grid-template-columns: 1fr; }
-  .witness-cross-check__success { margin-left: 0; }
-  .witness-cross-check__footer { align-items: flex-start; flex-direction: column; }
-  .witness-cross-check__footer button { padding: 4px 0; }
+
+.witness-cross-check__footer button:hover:not(:disabled) {
+  color: #eee9dc;
+}
+
+.witness-cross-check__footer small {
+  color: rgba(238, 233, 220, 0.38);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.witness-cross-check__close-link {
+  margin-left: auto;
+}
+
+@keyframes witness-cross-check-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes witness-cross-check-rise-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes witness-cross-check-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 620px) {
+  .witness-cross-check {
+    padding: 0;
+  }
+
+  .witness-cross-check__window {
+    width: 100%;
+    min-height: 100dvh;
+    max-height: none;
+    border: 0;
+  }
+
+  .witness-cross-check__topline {
+    padding: max(10px, env(safe-area-inset-top)) 13px 9px;
+  }
+
+  .witness-cross-check__content {
+    padding: 22px 16px max(18px, env(safe-area-inset-bottom));
+  }
+
+  .witness-cross-check__heading {
+    margin-bottom: 22px;
+  }
+
+  .witness-cross-check__heading h1 {
+    font-size: 27px;
+  }
+
+  .witness-cross-check__dialogue,
+  .witness-cross-check__feedback-screen,
+  .witness-cross-check__success {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 17px;
+  }
+
+  .witness-cross-check__dialogue img,
+  .witness-cross-check__feedback-screen img,
+  .witness-cross-check__success img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .witness-cross-check__dialogue p,
+  .witness-cross-check__feedback-screen p,
+  .witness-cross-check__success p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .witness-cross-check__success .witness-cross-check__primary {
+    grid-column: auto;
+  }
+
+  .witness-cross-check__footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .witness-cross-check__close-link {
+    margin-left: 0;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 621px) {
+  .witness-cross-check {
+    padding: 14px;
+  }
+
+  .witness-cross-check__window {
+    max-height: calc(100dvh - 28px);
+  }
+
+  .witness-cross-check__content {
+    padding-top: 20px;
+    padding-bottom: 16px;
+  }
+
+  .witness-cross-check__heading {
+    margin-bottom: 18px;
+  }
 }
