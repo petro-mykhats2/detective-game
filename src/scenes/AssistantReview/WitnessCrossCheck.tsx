@@ -162,16 +162,10 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
       onStart: () => setIsAudioPlaying(true),
       onEnded: () => {
         setIsAudioPlaying(false)
-        setState((current) =>
-          current.step === "intro" ? { ...current, step: "suspect", feedbackAudio: "" } : current,
-        )
       },
     }).then((started) => {
       if (!started) {
         setIsAudioPlaying(false)
-        setState((current) =>
-          current.step === "intro" ? { ...current, step: "suspect", feedbackAudio: "" } : current,
-        )
       }
     })
 
@@ -349,6 +343,17 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
     onBack()
   }
 
+  function continueToStepTwo() {
+    stopVoice()
+    setIsAudioPlaying(false)
+    patch({
+      step: "suspect",
+      feedback: "",
+      feedbackAudio: "",
+      currentHint: 0,
+    })
+  }
+
   return (
     <main className="witness-cross-check" aria-label="Перехресна перевірка показань">
       <div className="witness-cross-check__backdrop" aria-hidden="true" />
@@ -370,7 +375,16 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
           {state.step === "intro" && (
             <section className="witness-cross-check__dialogue witness-cross-check__dialogue--intro">
               <img src="/assistant-mark.png" alt="" aria-hidden="true" />
-              <p>{config.introText}</p>
+              <div className="witness-cross-check__intro-body">
+                <p>{config.introText}</p>
+                <button
+                  type="button"
+                  className="witness-cross-check__primary"
+                  onClick={continueToStepTwo}
+                >
+                  Перейти до кроку 2 →
+                </button>
+              </div>
             </section>
           )}
 
