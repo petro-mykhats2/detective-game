@@ -246,8 +246,18 @@ function EvidencePicker({
   }, [isOpen])
 
   useEffect(() => {
-    if (activeIndex >= visibleOptions.length) setActiveIndex(Math.max(0, visibleOptions.length - 1))
-  }, [activeIndex, visibleOptions.length])
+    if (activeIndex >= visibleOptions.length) {
+      setActiveIndex(Math.max(0, visibleOptions.length - 1))
+      return
+    }
+    if (!isOpen) return
+    const activeOption = visibleOptions[activeIndex]
+    if (activeOption) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(id + "-option-" + activeOption.id)?.scrollIntoView({ block: "nearest" })
+      })
+    }
+  }, [activeIndex, id, isOpen, visibleOptions])
 
   const activeOption = visibleOptions[activeIndex]
   const panel = isOpen ? createPortal(
