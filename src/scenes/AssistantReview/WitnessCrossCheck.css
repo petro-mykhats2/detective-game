@@ -127,6 +127,14 @@
   line-height: 1.75;
 }
 
+.witness-cross-check__intro-body {
+  min-width: 0;
+}
+
+.witness-cross-check__intro-body .witness-cross-check__primary {
+  margin-top: 18px;
+}
+
 .witness-cross-check__step {
   animation: witness-cross-check-reveal 420ms ease both;
 }
