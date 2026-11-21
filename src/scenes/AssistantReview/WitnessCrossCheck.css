@@ -288,6 +288,8 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  height: min(60vh, 520px);
   max-height: min(60vh, 520px);
   overflow: hidden;
   border: 1px solid rgba(213, 198, 165, 0.32);
