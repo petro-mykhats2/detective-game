@@ -196,7 +196,19 @@ export default function VehicleSearchModal() {
             <div className="vehicle-results__empty"><span>⌕</span><strong>Очікується запит</strong><p>Результати з'являться після введення даних і натискання «Перевірити».</p></div>
           ) : matches.length ? (
             <>
-              <div className="vehicle-results__caption">ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}</div>
+              <div className="vehicle-results__toolbar">
+                <span className="vehicle-results__caption">
+                  ЗНАЙДЕНО ЗАПИСІВ: {matches.length}{matches.length === 12 ? "+" : ""}
+                </span>
+                <button
+                  type="button"
+                  className="vehicle-results__close"
+                  onClick={closeModal}
+                  aria-label="Закрити базу транспортних засобів"
+                >
+                  × <span>Закрити базу</span>
+                </button>
+              </div>
               {matches.map((vehicle) => (
                 <article className="vehicle-record" key={vehicle.plate}>
                   <div className="vehicle-record__top">
@@ -234,9 +246,11 @@ export default function VehicleSearchModal() {
                     const existingNote = findExistingNotebookNote(vehicle)
                     const actionMessage = actionMessageByPlate[vehicle.plate]
                     const disabled = Boolean(existingNote)
-                    const marker = existingNote
-                      ? `Додано до блокнота: ${existingNote.action ? getActionLabel(existingNote.action) : "дію"}`
-                      : actionMessage
+                    const marker = existingNote?.status === "rejected"
+                      ? "Відхилено"
+                      : existingNote
+                        ? `Додано до блокнота: ${existingNote.action ? getActionLabel(existingNote.action) : "дію"}`
+                        : actionMessage
 
                     return (
                       <div className="vehicle-record__actions">
@@ -262,7 +276,7 @@ export default function VehicleSearchModal() {
                           Подати в розшук / орієнтування
                         </button>
                         {marker && (
-                          <p className={existingNote ? "vehicle-record__action-note vehicle-record__action-note--added" : "vehicle-record__action-note"}>
+                          <p className={existingNote?.status === "rejected" ? "vehicle-record__action-note vehicle-record__action-note--rejected" : existingNote ? "vehicle-record__action-note vehicle-record__action-note--added" : "vehicle-record__action-note"}>
                             {marker}
                           </p>
                         )}
@@ -279,7 +293,6 @@ export default function VehicleSearchModal() {
 
         <footer className="vehicle-modal__footer">
           <span>НАВЧАЛЬНА БАЗА ДАНИХ · СПРАВА № 001</span>
-          <button type="button" onClick={closeModal}>Закрити</button>
         </footer>
       </section>
     </div>
