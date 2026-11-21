@@ -377,11 +377,12 @@ function EvidencePicker({
 
   return (
     <div className={"witness-picker" + (isOpen ? " is-open" : "") + (disabled ? " is-disabled" : "")}>
-      <span className="witness-picker__label">{label}</span>
+      <span className="witness-picker__label" id={id + "-label"}>{label}</span>
       <button
         ref={triggerRef}
         type="button"
         role="combobox"
+        aria-labelledby={id + "-label"}
         className="witness-picker__trigger"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
