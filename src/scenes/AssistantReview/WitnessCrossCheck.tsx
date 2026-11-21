@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import { createPortal } from "react-dom"
 import { useInvestigatorNotebook } from "../../components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { useAudioManager } from "../../audio/AudioManagerContext"
@@ -204,7 +204,7 @@ function EvidencePicker({
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) return
 
     const html = document.documentElement
@@ -221,13 +221,29 @@ function EvidencePicker({
         setPanelStyle({})
         return
       }
+
       const rect = triggerRef.current?.getBoundingClientRect()
       if (!rect) return
+
+      const viewportPadding = 16
+      const spaceBelow = Math.max(120, window.innerHeight - rect.bottom - viewportPadding)
+      const spaceAbove = Math.max(120, rect.top - viewportPadding)
+      const openAbove = spaceBelow < 300 && spaceAbove > spaceBelow
+      const availableHeight = Math.min(520, openAbove ? spaceAbove : spaceBelow)
+      const panelWidth = Math.min(rect.width, window.innerWidth - viewportPadding * 2)
+      const panelLeft = Math.max(
+        viewportPadding,
+        Math.min(rect.left, window.innerWidth - panelWidth - viewportPadding),
+      )
+
       setPanelStyle({
         position: "fixed",
-        top: (rect.bottom + 8) + "px",
-        left: rect.left + "px",
-        width: rect.width + "px",
+        top: openAbove
+          ? Math.max(viewportPadding, rect.top - availableHeight - 8) + "px"
+          : rect.bottom + 8 + "px",
+        left: panelLeft + "px",
+        width: panelWidth + "px",
+        maxHeight: availableHeight + "px",
       })
     }
 
