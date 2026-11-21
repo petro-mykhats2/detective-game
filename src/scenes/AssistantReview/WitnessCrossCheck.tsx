@@ -13,6 +13,7 @@ type CrossCheckState = {
   introPlayed: boolean
   witnessOrder: string[]
   quoteOrder: string[]
+  documentOrder: string[]
   selectedWitness: string
   selectedQuoteId: string
   selectedDocumentId: string
@@ -46,13 +47,24 @@ function shuffle<T>(values: readonly T[]) {
   return result
 }
 
+function moveCorrectItemFromFirst(order: string[], correctId: string) {
+  if (order[0] !== correctId) return order
+  const swapIndex = order.findIndex((id, index) => index > 0 && id !== correctId)
+  if (swapIndex === -1) return order
+
+  const result = [...order]
+  ;[result[0], result[swapIndex]] = [result[swapIndex], result[0]]
+  return result
+}
+
 function createInitialState(): CrossCheckState {
   return {
     isOpen: true,
     step: "intro",
     introPlayed: false,
     witnessOrder: shuffle(config.witnesses),
-    quoteOrder: shuffle(config.quotes.map((quote) => quote.id)),
+    quoteOrder: moveCorrectItemFromFirst(shuffle(config.quotes.map((quote) => quote.id)), caseKey.correctQuoteId),
+    documentOrder: moveCorrectItemFromFirst(shuffle(config.documents.map((document) => document.id)), caseKey.correctDocumentId),
     selectedWitness: "",
     selectedQuoteId: "",
     selectedDocumentId: "",
@@ -83,7 +95,12 @@ function readState(): CrossCheckState {
       ...saved,
       isOpen: true,
       witnessOrder: Array.isArray(saved.witnessOrder) ? saved.witnessOrder : fallback.witnessOrder,
-      quoteOrder: Array.isArray(saved.quoteOrder) ? saved.quoteOrder : fallback.quoteOrder,
+      quoteOrder: Array.isArray(saved.quoteOrder)
+        ? moveCorrectItemFromFirst(saved.quoteOrder, caseKey.correctQuoteId)
+        : fallback.quoteOrder,
+      documentOrder: Array.isArray(saved.documentOrder)
+        ? moveCorrectItemFromFirst(saved.documentOrder, caseKey.correctDocumentId)
+        : fallback.documentOrder,
       failureOrderA: Array.isArray(saved.failureOrderA) ? saved.failureOrderA : fallback.failureOrderA,
       failureOrderB: Array.isArray(saved.failureOrderB) ? saved.failureOrderB : fallback.failureOrderB,
     }
@@ -446,9 +463,10 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
                     onChange={(event) => patch({ selectedDocumentId: event.target.value, feedback: "" })}
                   >
                     <option value="">Оберіть документ</option>
-                    {config.documents.map((document) => (
-                      <option key={document.id} value={document.id}>{document.title}</option>
-                    ))}
+                    {state.documentOrder.map((id) => {
+                      const document = config.documents.find((item) => item.id === id)
+                      return document ? <option key={document.id} value={document.id}>{document.title}</option> : null
+                    })}
                   </select>
                 </label>
 
