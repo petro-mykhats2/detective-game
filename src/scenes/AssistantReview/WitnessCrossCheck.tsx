@@ -57,7 +57,7 @@ function EvidencePicker({ id, label, placeholder, value, options, disabled = fal
   useEffect(() => {
     if (!isOpen) return
 
-    function handlePointerDown(event: MouseEvent) {
+    function handlePointerDown(event: Event) {
       if (rootRef.current && !rootRef.current.contains(event.target as Node)) setIsOpen(false)
     }
     function handleKeyDown(event: KeyboardEvent) {
