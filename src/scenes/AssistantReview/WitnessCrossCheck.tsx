@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import { useInvestigatorNotebook } from "../../components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { useAudioManager } from "../../audio/AudioManagerContext"
 import { WITNESS_CROSS_CHECK_CONFIG as config } from "../../config/witnessCrossCheck"
@@ -74,7 +74,7 @@ function EvidencePicker({ id, label, placeholder, value, options, disabled = fal
     }
   }, [isOpen])
 
-  function handleTriggerKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
     if (disabled) return
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault()
