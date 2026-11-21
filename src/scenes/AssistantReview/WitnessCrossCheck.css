@@ -533,6 +533,11 @@
   from { opacity: 0.8; transform: translateY(100%); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes witness-picker-fullscreen-in {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
 .witness-cross-check__primary {
   justify-self: start;
   margin-top: 3px;
@@ -643,19 +648,19 @@
 
 @media (max-width: 720px) {
   .witness-picker__panel {
-    top: auto !important;
+    top: 0 !important;
     right: 0 !important;
-    bottom: 0;
+    bottom: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: auto;
-    max-height: 85dvh;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-radius: 22px 22px 0 0;
-    animation: witness-picker-sheet-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    border: 0;
+    border-radius: 0;
+    animation: witness-picker-fullscreen-in 220ms ease both;
   }
 
   .witness-picker__handle {
