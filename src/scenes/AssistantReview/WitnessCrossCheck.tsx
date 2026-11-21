@@ -235,8 +235,6 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
   }
 
   function chooseWitness(witness: string) {
-    if (isAudioPlaying) return
-
     if (witness === caseKey.witness) {
       patch({
         selectedWitness: witness,
@@ -382,7 +380,7 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
               <h2>Хто з допитаних, на вашу думку, говорить неправду або щось замовчує?</h2>
               <div className="witness-cross-check__options">
                 {state.witnessOrder.map((witness) => (
-                  <button key={witness} type="button" disabled={isAudioPlaying} onClick={() => chooseWitness(witness)}>
+                  <button key={witness} type="button" onClick={() => chooseWitness(witness)}>
                     {witness}
                   </button>
                 ))}
