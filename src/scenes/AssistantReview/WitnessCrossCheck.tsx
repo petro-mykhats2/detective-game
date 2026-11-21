@@ -471,18 +471,30 @@ function readState(): CrossCheckState {
     if (!raw) return createInitialState()
     const saved = JSON.parse(raw) as Partial<CrossCheckState>
     const fallback = createInitialState()
+    const currentWitnesses = new Set(config.witnesses)
+    const currentDocumentIds = new Set(config.documents.map((document) => document.id))
+    const savedWitnessOrder = Array.isArray(saved.witnessOrder)
+      ? [...new Set(saved.witnessOrder.filter((witness) => currentWitnesses.has(witness)))]
+      : []
+    const savedDocumentOrder = Array.isArray(saved.documentOrder)
+      ? [...new Set(saved.documentOrder.filter((id) => currentDocumentIds.has(id)))]
+      : []
 
     return {
       ...fallback,
       ...saved,
       isOpen: true,
-      witnessOrder: Array.isArray(saved.witnessOrder) ? saved.witnessOrder : fallback.witnessOrder,
+      witnessOrder: [
+        ...savedWitnessOrder,
+        ...fallback.witnessOrder.filter((witness) => !savedWitnessOrder.includes(witness)),
+      ],
       quoteOrder: Array.isArray(saved.quoteOrder)
         ? moveCorrectItemFromFirst(saved.quoteOrder, caseKey.correctQuoteId)
         : fallback.quoteOrder,
-      documentOrder: Array.isArray(saved.documentOrder)
-        ? moveCorrectItemFromFirst(saved.documentOrder, caseKey.correctDocumentId)
-        : fallback.documentOrder,
+      documentOrder: [
+        ...savedDocumentOrder,
+        ...fallback.documentOrder.filter((id) => !savedDocumentOrder.includes(id)),
+      ],
       failureOrderA: Array.isArray(saved.failureOrderA) ? saved.failureOrderA : fallback.failureOrderA,
       failureOrderB: Array.isArray(saved.failureOrderB) ? saved.failureOrderB : fallback.failureOrderB,
     }
