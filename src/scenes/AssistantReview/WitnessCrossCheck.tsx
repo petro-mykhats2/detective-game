@@ -126,11 +126,37 @@ function EvidencePicker({
     }
   }
 
+  function getDesktopPanelStyle(): CSSProperties {
+    const rect = triggerRef.current?.getBoundingClientRect()
+    if (!rect) return {}
+
+    const viewportPadding = 16
+    const desiredHeight = Math.min(520, window.innerHeight * 0.6)
+    const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - viewportPadding - 8)
+    const spaceAbove = Math.max(0, rect.top - viewportPadding - 8)
+    const openAbove = spaceBelow < Math.min(desiredHeight, 300) && spaceAbove > spaceBelow
+    const availableHeight = Math.max(0, Math.min(desiredHeight, openAbove ? spaceAbove : spaceBelow))
+    const panelWidth = Math.min(rect.width, window.innerWidth - viewportPadding * 2)
+    const panelLeft = Math.max(viewportPadding, Math.min(rect.left, window.innerWidth - panelWidth - viewportPadding))
+
+    return {
+      position: "fixed",
+      top: (openAbove ? rect.top - availableHeight - 8 : rect.bottom + 8) + "px",
+      left: panelLeft + "px",
+      width: panelWidth + "px",
+      height: availableHeight + "px",
+      maxHeight: availableHeight + "px",
+    }
+  }
+
   function openPicker() {
     if (disabled) return
     hasNavigatedRef.current = false
     const selectedIndex = visibleOptions.findIndex((option) => option.id === value)
     setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0)
+    if (!window.matchMedia("(max-width: 720px)").matches) {
+      setPanelStyle(getDesktopPanelStyle())
+    }
     setIsOpen(true)
   }
 
@@ -221,30 +247,7 @@ function EvidencePicker({
         setPanelStyle({})
         return
       }
-
-      const rect = triggerRef.current?.getBoundingClientRect()
-      if (!rect) return
-
-      const viewportPadding = 16
-      const spaceBelow = Math.max(120, window.innerHeight - rect.bottom - viewportPadding)
-      const spaceAbove = Math.max(120, rect.top - viewportPadding)
-      const openAbove = spaceBelow < 300 && spaceAbove > spaceBelow
-      const availableHeight = Math.min(520, openAbove ? spaceAbove : spaceBelow)
-      const panelWidth = Math.min(rect.width, window.innerWidth - viewportPadding * 2)
-      const panelLeft = Math.max(
-        viewportPadding,
-        Math.min(rect.left, window.innerWidth - panelWidth - viewportPadding),
-      )
-
-      setPanelStyle({
-        position: "fixed",
-        top: openAbove
-          ? Math.max(viewportPadding, rect.top - availableHeight - 8) + "px"
-          : rect.bottom + 8 + "px",
-        left: panelLeft + "px",
-        width: panelWidth + "px",
-        maxHeight: availableHeight + "px",
-      })
+      setPanelStyle(getDesktopPanelStyle())
     }
 
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
