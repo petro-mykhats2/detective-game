@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react"
+import { createPortal } from "react-dom"
 import { useInvestigatorNotebook } from "../../components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { useAudioManager } from "../../audio/AudioManagerContext"
 import { WITNESS_CROSS_CHECK_CONFIG as config } from "../../config/witnessCrossCheck"
@@ -36,7 +37,12 @@ type Props = {
   onSuccess: () => void
 }
 
-type EvidenceOption = { id: string; label: string }
+type EvidenceOption = {
+  id: string
+  label: string
+  kind?: string
+  date?: string
+}
 
 type EvidencePickerProps = {
   id: string
@@ -45,70 +51,323 @@ type EvidencePickerProps = {
   value: string
   options: EvidenceOption[]
   disabled?: boolean
+  variant: "quote" | "document"
   onChange: (value: string) => void
 }
 
-function EvidencePicker({ id, label, placeholder, value, options, disabled = false, onChange }: EvidencePickerProps) {
+function getUkrainianDocumentCount(count: number) {
+  const mod10 = count % 10
+  const mod100 = count % 100
+  const word = mod10 === 1 && mod100 !== 11
+    ? "документ"
+    : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+      ? "документи"
+      : "документів"
+  return count + " " + word
+}
+
+function EvidencePicker({
+  id,
+  label,
+  placeholder,
+  value,
+  options,
+  disabled = false,
+  variant,
+  onChange,
+}: EvidencePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const rootRef = useRef<HTMLDivElement>(null)
+  const [search, setSearch] = useState("")
+  const [activeKind, setActiveKind] = useState("Усі")
+  const [panelStyle, setPanelStyle] = useState<CSSProperties>({})
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
   const selected = options.find((option) => option.id === value)
+  const isDocument = variant === "document"
 
-  useEffect(() => {
-    if (!isOpen) return
+  const kinds = useMemo(
+    () => ["Усі", ...Array.from(new Set(options.map((option) => option.kind).filter((kind): kind is string => Boolean(kind))))],
+    [options],
+  )
 
-    function handlePointerDown(event: Event) {
-      if (rootRef.current && !rootRef.current.contains(event.target as Node)) setIsOpen(false)
-    }
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setIsOpen(false)
-    }
+  const visibleOptions = useMemo(() => {
+    const normalizedSearch = search.trim().toLocaleLowerCase("uk-UA")
+    return options.filter((option) => {
+      const matchesKind = !isDocument || activeKind === "Усі" || option.kind === activeKind
+      const matchesSearch = !isDocument || !normalizedSearch ||
+        (option.label + " " + (option.kind || "")).toLocaleLowerCase("uk-UA").includes(normalizedSearch)
+      return matchesKind && matchesSearch
+    })
+  }, [activeKind, isDocument, options, search])
 
-    document.addEventListener("mousedown", handlePointerDown)
-    document.addEventListener("touchstart", handlePointerDown)
-    document.addEventListener("keydown", handleKeyDown)
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown)
-      document.removeEventListener("touchstart", handlePointerDown)
-      document.removeEventListener("keydown", handleKeyDown)
+  function closePicker(restoreFocus = true) {
+    setIsOpen(false)
+    if (restoreFocus) triggerRef.current?.focus()
+  }
+
+  function chooseOption(option: EvidenceOption) {
+    onChange(option.id)
+    closePicker(true)
+  }
+
+  function moveActive(nextIndex: number) {
+    if (!visibleOptions.length) return
+    const boundedIndex = Math.max(0, Math.min(visibleOptions.length - 1, nextIndex))
+    setActiveIndex(boundedIndex)
+    const activeOption = visibleOptions[boundedIndex]
+    if (activeOption) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(id + "-option-" + activeOption.id)?.scrollIntoView({ block: "nearest" })
+      })
     }
-  }, [isOpen])
+  }
+
+  function openPicker() {
+    if (disabled) return
+    const selectedIndex = visibleOptions.findIndex((option) => option.id === value)
+    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0)
+    setIsOpen(true)
+  }
 
   function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
     if (disabled) return
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault()
       if (!isOpen) {
-        setIsOpen(true)
-        setActiveIndex(Math.max(0, options.findIndex((option) => option.id === value)))
+        openPicker()
       } else {
-        setActiveIndex((current) => (current + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length)
+        moveActive(activeIndex + (event.key === "ArrowDown" ? 1 : -1))
       }
+      return
+    }
+    if (event.key === "Home" || event.key === "End") {
+      if (!isOpen) return
+      event.preventDefault()
+      moveActive(event.key === "Home" ? 0 : visibleOptions.length - 1)
+      return
     }
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
-      if (!isOpen) setIsOpen(true)
-      else if (options[activeIndex]) {
-        onChange(options[activeIndex].id)
-        setIsOpen(false)
+      if (!isOpen) openPicker()
+      else if (visibleOptions[activeIndex]) chooseOption(visibleOptions[activeIndex])
+    }
+    if (event.key === "Escape" && isOpen) {
+      event.preventDefault()
+      closePicker(true)
+    }
+  }
+
+  function handlePanelKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closePicker(true)
+      return
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault()
+      moveActive(activeIndex + (event.key === "ArrowDown" ? 1 : -1))
+      return
+    }
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault()
+      moveActive(event.key === "Home" ? 0 : visibleOptions.length - 1)
+      return
+    }
+    if (event.key === "Enter" && !(event.target instanceof HTMLInputElement) && !(event.target instanceof HTMLButtonElement)) {
+      event.preventDefault()
+      if (visibleOptions[activeIndex]) chooseOption(visibleOptions[activeIndex])
+      return
+    }
+    if (event.key === "Tab" && window.matchMedia("(max-width: 720px)").matches) {
+      const focusable = panelRef.current?.querySelectorAll<HTMLElement>('[data-picker-focusable="true"]')
+      if (!focusable?.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
       }
     }
   }
 
-  return (
-    <div className={`witness-picker${isOpen ? " is-open" : ""}`} ref={rootRef}>
-      <span className="witness-picker__label">{label}</span>
+  useEffect(() => {
+    if (!isOpen) return
+
+    const html = document.documentElement
+    const body = document.body
+    const previousHtmlOverflow = html.style.overflow
+    const previousBodyOverflow = body.style.overflow
+    const scrollPosition = window.scrollY
+
+    html.style.overflow = "hidden"
+    body.style.overflow = "hidden"
+
+    const updatePanelPosition = () => {
+      if (window.matchMedia("(max-width: 720px)").matches) {
+        setPanelStyle({})
+        return
+      }
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (!rect) return
+      setPanelStyle({
+        position: "fixed",
+        top: (rect.bottom + 8) + "px",
+        left: rect.left + "px",
+        width: rect.width + "px",
+      })
+    }
+
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closePicker(true)
+    }
+
+    updatePanelPosition()
+    window.addEventListener("resize", updatePanelPosition)
+    window.addEventListener("scroll", updatePanelPosition, true)
+    document.addEventListener("keydown", handleGlobalKeyDown)
+
+    if (window.matchMedia("(max-width: 720px)").matches) {
+      window.requestAnimationFrame(() => closeRef.current?.focus())
+    }
+
+    return () => {
+      window.removeEventListener("resize", updatePanelPosition)
+      window.removeEventListener("scroll", updatePanelPosition, true)
+      document.removeEventListener("keydown", handleGlobalKeyDown)
+      html.style.overflow = previousHtmlOverflow
+      body.style.overflow = previousBodyOverflow
+      window.scrollTo(0, scrollPosition)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (activeIndex >= visibleOptions.length) setActiveIndex(Math.max(0, visibleOptions.length - 1))
+  }, [activeIndex, visibleOptions.length])
+
+  const activeOption = visibleOptions[activeIndex]
+  const panel = isOpen ? createPortal(
+    <>
       <button
         type="button"
+        className="witness-picker__scrim"
+        aria-label="Закрити список"
+        onClick={() => closePicker(true)}
+      />
+      <div
+        ref={panelRef}
+        className={"witness-picker__panel" + (isDocument ? " witness-picker__panel--documents" : " witness-picker__panel--quotes")}
+        style={panelStyle}
+        onKeyDown={handlePanelKeyDown}
+      >
+        <div className="witness-picker__handle" aria-hidden="true" />
+        <div className="witness-picker__panel-heading">
+          <div>
+            <span>МАТЕРІАЛИ СПРАВИ</span>
+            <strong>{label}</strong>
+          </div>
+          <button
+            ref={closeRef}
+            type="button"
+            data-picker-focusable="true"
+            className="witness-picker__close"
+            onClick={() => closePicker(true)}
+          >
+            Закрити
+          </button>
+        </div>
+
+        {isDocument && (
+          <div className="witness-picker__tools">
+            <input
+              type="search"
+              className="witness-picker__search"
+              value={search}
+              placeholder="Пошук за назвою або типом…"
+              aria-label="Пошук документів"
+              data-picker-focusable="true"
+              onChange={(event) => {
+                setSearch(event.target.value)
+                setActiveIndex(0)
+              }}
+            />
+            <div className="witness-picker__filters" aria-label="Фільтр за типом документа">
+              {kinds.map((kind) => (
+                <button
+                  key={kind}
+                  type="button"
+                  data-picker-focusable="true"
+                  aria-pressed={activeKind === kind}
+                  className={"witness-picker__filter" + (activeKind === kind ? " is-active" : "")}
+                  onClick={() => {
+                    setActiveKind(kind)
+                    setActiveIndex(0)
+                  }}
+                >
+                  {kind}
+                </button>
+              ))}
+            </div>
+            <span className="witness-picker__count">{getUkrainianDocumentCount(visibleOptions.length)}</span>
+          </div>
+        )}
+
+        <div
+          className="witness-picker__options"
+          id={id + "-listbox"}
+          role="listbox"
+          aria-label={label}
+          aria-activedescendant={activeOption ? id + "-option-" + activeOption.id : undefined}
+        >
+          {visibleOptions.length ? visibleOptions.map((option, index) => (
+            <div
+              key={option.id}
+              id={id + "-option-" + option.id}
+              role="option"
+              aria-selected={value === option.id}
+              aria-label={option.label}
+              className={"witness-picker__option" + (value === option.id ? " is-selected" : "") + (activeIndex === index ? " is-active" : "") + (isDocument ? " witness-picker__option--document" : " witness-picker__option--quote")}
+              onMouseEnter={() => setActiveIndex(index)}
+              onClick={() => chooseOption(option)}
+            >
+              {isDocument && (
+                <div className="witness-picker__option-meta">
+                  {option.kind && <span className="witness-picker__kind">{option.kind}</span>}
+                  {option.date && <time>{option.date}</time>}
+                </div>
+              )}
+              <span className="witness-picker__option-text">
+                {isDocument ? option.label : option.label.replace(/^[«"“]+|[»"”]+$/g, "")}
+              </span>
+              {value === option.id && <span className="witness-picker__check" aria-hidden="true">✓</span>}
+            </div>
+          )) : (
+            <p className="witness-picker__empty">Нічого не знайдено</p>
+          )}
+        </div>
+      </div>
+    </>,
+    document.body,
+  ) : null
+
+  return (
+    <div className={"witness-picker" + (isOpen ? " is-open" : "") + (disabled ? " is-disabled" : "")}>
+      <span className="witness-picker__label">{label}</span>
+      <button
+        ref={triggerRef}
+        type="button"
+        role="combobox"
         className="witness-picker__trigger"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-controls={`${id}-listbox`}
+        aria-controls={id + "-listbox"}
+        aria-activedescendant={isOpen && activeOption ? id + "-option-" + activeOption.id : undefined}
         disabled={disabled}
-        onClick={() => {
-          setActiveIndex(Math.max(0, options.findIndex((option) => option.id === value)))
-          setIsOpen((current) => !current)
-        }}
+        onClick={() => isOpen ? closePicker(false) : openPicker()}
         onKeyDown={handleTriggerKeyDown}
       >
         <span className={selected ? "witness-picker__value" : "witness-picker__placeholder"}>
@@ -116,38 +375,7 @@ function EvidencePicker({ id, label, placeholder, value, options, disabled = fal
         </span>
         <span className="witness-picker__chevron" aria-hidden="true">⌄</span>
       </button>
-
-      {isOpen && (
-        <>
-          <button type="button" className="witness-picker__scrim" aria-label="Закрити список" onClick={() => setIsOpen(false)} />
-          <div className="witness-picker__panel" id={`${id}-listbox`} role="listbox" aria-label={label}>
-            <div className="witness-picker__panel-heading">
-              <span>ОБЕРІТЬ ВАРІАНТ</span>
-              <button type="button" aria-label="Закрити список" onClick={() => setIsOpen(false)}>×</button>
-            </div>
-            <div className="witness-picker__options">
-              {options.map((option, index) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  role="option"
-                  aria-selected={value === option.id}
-                  className={`witness-picker__option${value === option.id ? " is-selected" : ""}${activeIndex === index ? " is-active" : ""}`}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onClick={() => {
-                    onChange(option.id)
-                    setIsOpen(false)
-                  }}
-                >
-                  <span className="witness-picker__option-index">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="witness-picker__option-text">{option.label}</span>
-                  {value === option.id && <span className="witness-picker__check" aria-hidden="true">✓</span>}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+      {panel}
     </div>
   )
 }
@@ -562,6 +790,7 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
                   placeholder="Оберіть цитату зі свідчень"
                   value={state.selectedQuoteId}
                   disabled={isAudioPlaying}
+                  variant="quote"
                   options={state.quoteOrder.flatMap((id) => {
                     const quote = config.quotes.find((item) => item.id === id)
                     return quote ? [{ id: quote.id, label: quote.text }] : []
@@ -575,9 +804,10 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
                   placeholder="Оберіть документ зі справи"
                   value={state.selectedDocumentId}
                   disabled={isAudioPlaying}
+                  variant="document"
                   options={state.documentOrder.flatMap((id) => {
                     const document = config.documents.find((item) => item.id === id)
-                    return document ? [{ id: document.id, label: document.title }] : []
+                    return document ? [{ id: document.id, label: document.title, kind: document.kind, date: document.date }] : []
                   })}
                   onChange={(selectedDocumentId) => patch({ selectedDocumentId, feedback: "" })}
                 />
