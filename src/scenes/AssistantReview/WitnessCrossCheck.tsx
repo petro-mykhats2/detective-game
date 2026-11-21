@@ -84,6 +84,7 @@ function EvidencePicker({
   const triggerRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
+  const hasNavigatedRef = useRef(false)
   const selected = options.find((option) => option.id === value)
   const isDocument = variant === "document"
 
@@ -114,6 +115,7 @@ function EvidencePicker({
 
   function moveActive(nextIndex: number) {
     if (!visibleOptions.length) return
+    hasNavigatedRef.current = true
     const boundedIndex = Math.max(0, Math.min(visibleOptions.length - 1, nextIndex))
     setActiveIndex(boundedIndex)
     const activeOption = visibleOptions[boundedIndex]
@@ -126,6 +128,7 @@ function EvidencePicker({
 
   function openPicker() {
     if (disabled) return
+    hasNavigatedRef.current = false
     const selectedIndex = visibleOptions.findIndex((option) => option.id === value)
     setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0)
     setIsOpen(true)
@@ -175,10 +178,16 @@ function EvidencePicker({
       moveActive(event.key === "Home" ? 0 : visibleOptions.length - 1)
       return
     }
-    if (event.key === "Enter" && !(event.target instanceof HTMLInputElement) && !(event.target instanceof HTMLButtonElement)) {
-      event.preventDefault()
-      if (visibleOptions[activeIndex]) chooseOption(visibleOptions[activeIndex])
-      return
+    if (event.key === "Enter") {
+      const target = event.target
+      const isSearch = target instanceof HTMLInputElement
+      const isFilter = target instanceof HTMLButtonElement && target.classList.contains("witness-picker__filter")
+      const isClose = target === closeRef.current
+      if (!isSearch && !isFilter && (!isClose || hasNavigatedRef.current)) {
+        event.preventDefault()
+        if (visibleOptions[activeIndex]) chooseOption(visibleOptions[activeIndex])
+        return
+      }
     }
     if (event.key === "Tab" && window.matchMedia("(max-width: 720px)").matches) {
       const focusable = panelRef.current?.querySelectorAll<HTMLElement>('[data-picker-focusable="true"]')
@@ -303,6 +312,7 @@ function EvidencePicker({
               onChange={(event) => {
                 setSearch(event.target.value)
                 setActiveIndex(0)
+                hasNavigatedRef.current = false
               }}
             />
             <div className="witness-picker__filters" aria-label="Фільтр за типом документа">
@@ -316,6 +326,7 @@ function EvidencePicker({
                   onClick={() => {
                     setActiveKind(kind)
                     setActiveIndex(0)
+                    hasNavigatedRef.current = false
                   }}
                 >
                   {kind}
