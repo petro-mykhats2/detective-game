@@ -471,8 +471,8 @@ function readState(): CrossCheckState {
     if (!raw) return createInitialState()
     const saved = JSON.parse(raw) as Partial<CrossCheckState>
     const fallback = createInitialState()
-    const currentWitnesses = new Set(config.witnesses)
-    const currentDocumentIds = new Set(config.documents.map((document) => document.id))
+    const currentWitnesses = new Set<string>(config.witnesses)
+    const currentDocumentIds = new Set<string>(config.documents.map((document) => document.id))
     const savedWitnessOrder = Array.isArray(saved.witnessOrder)
       ? [...new Set(saved.witnessOrder.filter((witness) => currentWitnesses.has(witness)))]
       : []
