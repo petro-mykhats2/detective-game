@@ -36,6 +36,122 @@ type Props = {
   onSuccess: () => void
 }
 
+type EvidenceOption = { id: string; label: string }
+
+type EvidencePickerProps = {
+  id: string
+  label: string
+  placeholder: string
+  value: string
+  options: EvidenceOption[]
+  disabled?: boolean
+  onChange: (value: string) => void
+}
+
+function EvidencePicker({ id, label, placeholder, value, options, disabled = false, onChange }: EvidencePickerProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const selected = options.find((option) => option.id === value)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    function handlePointerDown(event: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) setIsOpen(false)
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsOpen(false)
+    }
+
+    document.addEventListener("mousedown", handlePointerDown)
+    document.addEventListener("touchstart", handlePointerDown)
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown)
+      document.removeEventListener("touchstart", handlePointerDown)
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [isOpen])
+
+  function handleTriggerKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    if (disabled) return
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault()
+      if (!isOpen) {
+        setIsOpen(true)
+        setActiveIndex(Math.max(0, options.findIndex((option) => option.id === value)))
+      } else {
+        setActiveIndex((current) => (current + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length)
+      }
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      if (!isOpen) setIsOpen(true)
+      else if (options[activeIndex]) {
+        onChange(options[activeIndex].id)
+        setIsOpen(false)
+      }
+    }
+  }
+
+  return (
+    <div className={`witness-picker${isOpen ? " is-open" : ""}`} ref={rootRef}>
+      <span className="witness-picker__label">{label}</span>
+      <button
+        type="button"
+        className="witness-picker__trigger"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={`${id}-listbox`}
+        disabled={disabled}
+        onClick={() => {
+          setActiveIndex(Math.max(0, options.findIndex((option) => option.id === value)))
+          setIsOpen((current) => !current)
+        }}
+        onKeyDown={handleTriggerKeyDown}
+      >
+        <span className={selected ? "witness-picker__value" : "witness-picker__placeholder"}>
+          {selected?.label ?? placeholder}
+        </span>
+        <span className="witness-picker__chevron" aria-hidden="true">⌄</span>
+      </button>
+
+      {isOpen && (
+        <>
+          <button type="button" className="witness-picker__scrim" aria-label="Закрити список" onClick={() => setIsOpen(false)} />
+          <div className="witness-picker__panel" id={`${id}-listbox`} role="listbox" aria-label={label}>
+            <div className="witness-picker__panel-heading">
+              <span>ОБЕРІТЬ ВАРІАНТ</span>
+              <button type="button" aria-label="Закрити список" onClick={() => setIsOpen(false)}>×</button>
+            </div>
+            <div className="witness-picker__options">
+              {options.map((option, index) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="option"
+                  aria-selected={value === option.id}
+                  className={`witness-picker__option${value === option.id ? " is-selected" : ""}${activeIndex === index ? " is-active" : ""}`}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => {
+                    onChange(option.id)
+                    setIsOpen(false)
+                  }}
+                >
+                  <span className="witness-picker__option-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="witness-picker__option-text">{option.label}</span>
+                  {value === option.id && <span className="witness-picker__check" aria-hidden="true">✓</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 const STORAGE_KEY = "detective-witness-cross-check-state-v1"
 
 function shuffle<T>(values: readonly T[]) {
@@ -440,35 +556,31 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
               <h2>Оберіть цитату зі свідчень і документ, який її спростовує.</h2>
 
               <div className="witness-cross-check__evidence">
-                <label>
-                  <span>ЦИТАТА ЗІ СВІДЧЕНЬ</span>
-                  <select
-                    value={state.selectedQuoteId}
-                    disabled={isAudioPlaying}
-                    onChange={(event) => patch({ selectedQuoteId: event.target.value, feedback: "" })}
-                  >
-                    <option value="">Оберіть цитату</option>
-                    {state.quoteOrder.map((id) => {
-                      const quote = config.quotes.find((item) => item.id === id)
-                      return quote ? <option key={quote.id} value={quote.id}>{quote.text}</option> : null
-                    })}
-                  </select>
-                </label>
+                <EvidencePicker
+                  id="witness-quote"
+                  label="ЦИТАТА ЗІ СВІДЧЕНЬ"
+                  placeholder="Оберіть цитату зі свідчень"
+                  value={state.selectedQuoteId}
+                  disabled={isAudioPlaying}
+                  options={state.quoteOrder.flatMap((id) => {
+                    const quote = config.quotes.find((item) => item.id === id)
+                    return quote ? [{ id: quote.id, label: quote.text }] : []
+                  })}
+                  onChange={(selectedQuoteId) => patch({ selectedQuoteId, feedback: "" })}
+                />
 
-                <label>
-                  <span>ДОКУМЕНТ</span>
-                  <select
-                    value={state.selectedDocumentId}
-                    disabled={isAudioPlaying}
-                    onChange={(event) => patch({ selectedDocumentId: event.target.value, feedback: "" })}
-                  >
-                    <option value="">Оберіть документ</option>
-                    {state.documentOrder.map((id) => {
-                      const document = config.documents.find((item) => item.id === id)
-                      return document ? <option key={document.id} value={document.id}>{document.title}</option> : null
-                    })}
-                  </select>
-                </label>
+                <EvidencePicker
+                  id="witness-document"
+                  label="ДОКУМЕНТ"
+                  placeholder="Оберіть документ зі справи"
+                  value={state.selectedDocumentId}
+                  disabled={isAudioPlaying}
+                  options={state.documentOrder.flatMap((id) => {
+                    const document = config.documents.find((item) => item.id === id)
+                    return document ? [{ id: document.id, label: document.title }] : []
+                  })}
+                  onChange={(selectedDocumentId) => patch({ selectedDocumentId, feedback: "" })}
+                />
 
                 <button
                   type="button"
