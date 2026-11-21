@@ -409,12 +409,16 @@
 
 .witness-picker__options {
   min-height: 0;
-  flex: 1 1 auto;
+  height: 0;
+  flex: 1 1 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
   padding: 8px;
   scrollbar-width: thin;
   scrollbar-color: rgba(213, 198, 165, 0.3) transparent;
+  scrollbar-gutter: stable;
   -webkit-overflow-scrolling: touch;
 }
 
