@@ -818,11 +818,53 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
 
           {state.step === "suspect-feedback" && (
             <section className="witness-cross-check__feedback-screen">
-              <img src="/assistant-mark.png" alt="" aria-hidden="true" />
-              <p>{state.feedback}</p>
+              <div className="witness-cross-check__feedback-main">
+                <img src="/assistant-mark.png" alt="" aria-hidden="true" />
+                <div className="witness-cross-check__feedback-copy">
+                  <span className="witness-cross-check__feedback-label">АНДРІЙ · АНАЛІЗУЄ</span>
+                  <p>{state.feedback}</p>
+                </div>
+              </div>
+
+              <div className="witness-cross-check__hint-area">
+                <div className="witness-cross-check__hint-header">
+                  <div>
+                    <span className="witness-cross-check__hint-kicker">ПІДКАЗКИ</span>
+                    <strong>Розкрито {state.maxHintLevel} з 3 рівнів</strong>
+                  </div>
+                  {state.maxHintLevel < 3 ? (
+                    <button
+                      type="button"
+                      className="witness-cross-check__hint-action"
+                      disabled={isAudioPlaying}
+                      onClick={() => void requestHint()}
+                    >
+                      <span>+</span> Попросити підказку
+                    </button>
+                  ) : (
+                    <span className="witness-cross-check__hint-complete">Усі рівні відкрито</span>
+                  )}
+                </div>
+
+                <div className="witness-cross-check__hint-list">
+                  {Array.from({ length: state.maxHintLevel }, (_, index) => index + 1).map((level) => (
+                    <article
+                      key={level}
+                      className={"witness-cross-check__hint-card" + (level === state.currentHint ? " is-current" : "")}
+                    >
+                      <span className="witness-cross-check__hint-number">{level}</span>
+                      <div>
+                        <span>ПІДКАЗКА {level}</span>
+                        <p>{config.hints[level as 1 | 2 | 3]}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
               <button
                 type="button"
-                className="witness-cross-check__primary"
+                className="witness-cross-check__primary witness-cross-check__retry"
                 disabled={isAudioPlaying}
                 onClick={() => patch({ step: "suspect", selectedWitness: "", currentHint: 0, feedback: "" })}
               >
@@ -879,13 +921,6 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
             </section>
           )}
 
-          {state.currentHint > 0 && state.step !== "success" && (
-            <div className="witness-cross-check__hint">
-              <span>ПІДКАЗКА {state.currentHint}</span>
-              <p>{config.hints[state.currentHint as 1 | 2 | 3]}</p>
-            </div>
-          )}
-
           {state.step === "success" && (
             <section className="witness-cross-check__success">
               <img src="/assistant-mark.png" alt="" aria-hidden="true" />
@@ -909,13 +944,6 @@ export default function WitnessCrossCheck({ onBack, onSuccess }: Props) {
           {state.step !== "success" && (
             <footer className="witness-cross-check__footer">
               <div>
-                {state.maxHintLevel < 3 ? (
-                  <button type="button" onClick={() => void requestHint()} disabled={isAudioPlaying}>
-                    Попросити підказку
-                  </button>
-                ) : (
-                  <span>Усі рівні підказок використано.</span>
-                )}
                 <small>Невдалих спроб: {state.failedAttempts} · Підказок: {state.hintsUsed}</small>
               </div>
               <button type="button" className="witness-cross-check__close-link" onClick={closeWindow} disabled={isAudioPlaying}>
