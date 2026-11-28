@@ -10,12 +10,17 @@ import MaterialsGuide from "./scenes/MaterialsGuide/MaterialsGuide"
 import StageFour from "./scenes/StageFour/StageFour"
 import FourthEnvelope from "./scenes/FourthEnvelope/FourthEnvelope"
 import StageFourQuestions from "./scenes/StageFourQuestions/StageFourQuestions"
+import StageFourContinuation from "./scenes/StageFourContinuation/StageFourContinuation"
+import StageFiveEnvelope from "./scenes/StageFiveEnvelope/StageFiveEnvelope"
+import AssistantReview from "./scenes/AssistantReview/AssistantReview"
+import WitnessCrossCheckScreen from "./scenes/AssistantReview/WitnessCrossCheck"
 import InvestigatorNotebook from "./components/InvestigatorNotebook/InvestigatorNotebook"
 import { InvestigatorNotebookProvider } from "./components/InvestigatorNotebook/InvestigatorNotebookContext"
 import { VehicleSearchProvider } from "./components/VehicleSearch/VehicleSearchContext"
 import VehicleSearchModal from "./components/VehicleSearch/VehicleSearchModal"
 import DetectiveMenu from "./components/DetectiveMenu/DetectiveMenu"
 import NotebookTestForm from "./components/InvestigatorNotebook/NotebookTestForm"
+import { AudioManagerProvider, type AudioManagerValue } from "./audio/AudioManagerContext"
 
 type Screen =
   | "start"
@@ -31,6 +36,10 @@ type Screen =
   | "stage-four"
   | "fourth-envelope"
   | "stage-four-questions"
+  | "stage-four-continuation"
+  | "assistant-review"
+  | "witness-cross-check"
+  | "stage-five-envelope"
 
 const BACKGROUND_IMAGE = "/background.jpeg"
 const MUSIC_FILE = "/investigation-theme.mp3"
@@ -43,7 +52,8 @@ const INTRO_VOICE_FILE = "/audio/intro-01.mp3.mp3"
 // Щоб вона звучала голосніше під голосом, збільшуй це значення (наприклад, 0.22).
 // const MUSIC_VOLUME_NORMAL = 0.38;
 const MUSIC_VOLUME_NORMAL = 0.98
-const MUSIC_VOLUME_DURING_VOICE = 0.13
+const MUSIC_VOLUME_DURING_VOICE = 0.22
+const MUSIC_DUCK_DURATION_MS = 800
 const VOICE_VOLUME = 1
 
 // ПАУЗА ПЕРЕД АВТОВІДТВОРЕННЯМ ВСТУПНОГО ГОЛОСУ (мс), окремо для пристроїв.
@@ -56,9 +66,77 @@ const INTRO_VOICE_DELAY_MOBILE_MS = 200
 // а рядки з'являються поступово; синхронізації по таймкодах немає.
 
 const NOTE_KEY = "detective-case-notes-v1"
+const REVIEW_STORAGE_KEY = "detective-assistant-review-v1"
+const NOTEBOOK_STORAGE_KEY = "detective-investigation-notebook-v1"
+const STAGE_FIVE_SCROLL_STORAGE_KEY = "detective-stage-five-scroll-v1"
+const WITNESS_CROSS_CHECK_STORAGE_KEY = "detective-witness-cross-check-state-v1"
+const WITNESS_CONTRADICTIONS_STORAGE_KEY = "detective-witness-contradictions-v1"
+
+function resetGameProgressOnReload() {
+  try {
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined
+    const isReload = navigation?.type === "reload"
+
+    if (!isReload) return
+
+    // Тимчасовий режим тестування: після звичайного перезавантаження
+    // завжди повертаємо гру на головний екран і очищаємо прогрес проходження.
+    // Коли буде готова фінальна система збереження етапів, цей блок замінимо
+    // на відновлення останнього підтвердженого етапу.
+    localStorage.removeItem(NOTE_KEY)
+    localStorage.removeItem(REVIEW_STORAGE_KEY)
+    localStorage.removeItem(NOTEBOOK_STORAGE_KEY)
+    localStorage.removeItem(STAGE_FIVE_SCROLL_STORAGE_KEY)
+    localStorage.removeItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+    localStorage.removeItem(WITNESS_CONTRADICTIONS_STORAGE_KEY)
+  } catch {
+    // Якщо API навігації або localStorage недоступні, старт гри не блокуємо.
+  }
+}
+
+resetGameProgressOnReload()
+
+function hasUnlockedStageFive() {
+  try {
+    const raw = localStorage.getItem(REVIEW_STORAGE_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as { stageFiveUnlocked?: boolean }
+    return parsed.stageFiveUnlocked === true
+  } catch {
+    return false
+  }
+}
+
+function shouldResumeWitnessCrossCheck() {
+  try {
+    const crossCheck = localStorage.getItem(WITNESS_CROSS_CHECK_STORAGE_KEY)
+    const review = localStorage.getItem(REVIEW_STORAGE_KEY)
+    const parsedCrossCheck = crossCheck ? JSON.parse(crossCheck) : null
+    const parsedReview = review ? JSON.parse(review) : null
+    return Boolean(parsedCrossCheck?.isOpen === true && parsedReview && parsedReview.stageFiveUnlocked !== true)
+  } catch {
+    return false
+  }
+}
+
+function hasReviewState() {
+  try {
+    return Boolean(localStorage.getItem(REVIEW_STORAGE_KEY))
+  } catch {
+    return false
+  }
+}
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("start")
+  const [screen, setScreen] = useState<Screen>(() =>
+    hasUnlockedStageFive() ? "stage-five-envelope" : shouldResumeWitnessCrossCheck() ? "witness-cross-check" : hasReviewState() ? "assistant-review" : "start",
+  )
+  const [openVehicleSearchOnStageFourQuestions, setOpenVehicleSearchOnStageFourQuestions] = useState(false)
+
+  function returnToVehicleDatabase() {
+    setOpenVehicleSearchOnStageFourQuestions(true)
+    setScreen("stage-four-questions")
+  }
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [audioBlocked, setAudioBlocked] = useState(false)
   const [voiceStatus, setVoiceStatus] = useState<
@@ -74,6 +152,8 @@ export default function App() {
   const musicRef = useRef<HTMLAudioElement>(null)
   const voiceRef = useRef<HTMLAudioElement>(null)
   const voiceDelayRef = useRef<number | null>(null)
+  const voiceEndedCallbackRef = useRef<(() => void) | null>(null)
+  const musicFadeFrameRef = useRef<number | null>(null)
 
   useEffect(() => {
     const image = new Image()
@@ -163,6 +243,77 @@ export default function App() {
     if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
   }
 
+  function fadeMusicTo(targetVolume: number, durationMs = MUSIC_DUCK_DURATION_MS) {
+    const music = musicRef.current
+    if (!music) return
+
+    if (musicFadeFrameRef.current !== null) {
+      window.cancelAnimationFrame(musicFadeFrameRef.current)
+    }
+
+    const startVolume = music.volume
+    const startTime = performance.now()
+
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - startTime) / durationMs)
+      music.volume = startVolume + (targetVolume - startVolume) * progress
+      if (progress < 1) {
+        musicFadeFrameRef.current = window.requestAnimationFrame(step)
+      } else {
+        musicFadeFrameRef.current = null
+      }
+    }
+
+    musicFadeFrameRef.current = window.requestAnimationFrame(step)
+  }
+
+  function duckMusic(durationMs = MUSIC_DUCK_DURATION_MS, targetVolume = MUSIC_VOLUME_DURING_VOICE) {
+    if (musicEnabled && musicRef.current) fadeMusicTo(targetVolume, durationMs)
+  }
+
+  function restoreMusic(durationMs = MUSIC_DUCK_DURATION_MS) {
+    if (musicRef.current && musicEnabled) fadeMusicTo(MUSIC_VOLUME_NORMAL, durationMs)
+  }
+
+  async function playSharedVoice({ src, onStart, onEnded, duckDurationMs = MUSIC_DUCK_DURATION_MS, duckTargetVolume = MUSIC_VOLUME_DURING_VOICE }: {
+    src: string
+    onStart?: () => void
+    onEnded?: () => void
+    duckDurationMs?: number
+    duckTargetVolume?: number
+  }) {
+    const voice = voiceRef.current
+    if (!voice) return false
+
+    voiceEndedCallbackRef.current = onEnded ?? null
+    voice.pause()
+    voice.currentTime = 0
+    voice.src = src
+    voice.volume = VOICE_VOLUME
+    duckMusic(duckDurationMs, duckTargetVolume)
+
+    try {
+      await voice.play()
+      onStart?.()
+      return true
+    } catch {
+      voiceEndedCallbackRef.current = null
+      restoreMusic()
+      onEnded?.()
+      return false
+    }
+  }
+
+  function stopSharedVoice() {
+    if (voiceRef.current) {
+      voiceRef.current.pause()
+      voiceRef.current.currentTime = 0
+    }
+    voiceEndedCallbackRef.current = null
+    restoreMusic()
+  }
+
+
   function continueToMaterials() {
     if (voiceDelayRef.current !== null)
       window.clearTimeout(voiceDelayRef.current)
@@ -197,6 +348,7 @@ export default function App() {
 
   return (
     <InvestigatorNotebookProvider>
+      <AudioManagerProvider value={{ playVoice: playSharedVoice, stopVoice: stopSharedVoice, isVoicePlaying: () => Boolean(voiceRef.current && !voiceRef.current.paused), duckMusic, restoreMusic } satisfies AudioManagerValue}>
       <VehicleSearchProvider>
       <main className={`experience is-ready experience--${screen}`}>
       <div
@@ -236,6 +388,12 @@ export default function App() {
             </button>
             <button className="briefing-test-button" onClick={() => setScreen("stage-four")}>
               ТЕСТ · ВІДКРИТИ ЕТАП 04
+            </button>
+            <button className="briefing-test-button" onClick={() => setScreen("witness-cross-check")}>
+              ТЕСТ · ПЕРЕХРЕСНА ПЕРЕВІРКА ПОКАЗАНЬ
+            </button>
+            <button className="briefing-test-button" onClick={() => setScreen("stage-five-envelope")}>
+              ТЕСТ · ВІДКРИТИ 5 КОНВЕРТ
             </button>
             <NotebookTestForm />
           </div>
@@ -340,8 +498,51 @@ export default function App() {
       )}
 
       {screen === "stage-four-questions" && (
-        <StageFourQuestions onBack={() => setScreen("fourth-envelope")} />
+        <StageFourQuestions
+          onBack={() => setScreen("fourth-envelope")}
+          onContinue={() => setScreen("assistant-review")}
+          autoOpenVehicleSearch={openVehicleSearchOnStageFourQuestions}
+          onVehicleSearchAutoOpened={() => setOpenVehicleSearchOnStageFourQuestions(false)}
+        />
       )}
+
+      {screen === "assistant-review" && (
+        <AssistantReview
+          onBack={returnToVehicleDatabase}
+          onOpenCrossCheck={() => setScreen("witness-cross-check")}
+          onOpenStageFive={() => setScreen("stage-five-envelope")}
+        />
+      )}
+
+      {screen === "witness-cross-check" && (
+        <WitnessCrossCheckScreen
+          onBack={() => setScreen("assistant-review")}
+          onSuccess={() => {
+            try {
+              const raw = localStorage.getItem(REVIEW_STORAGE_KEY)
+              const review = raw ? JSON.parse(raw) : null
+              if (review) {
+                localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify({ ...review, stageFiveUnlocked: true }))
+              }
+            } catch {
+              // Перехід до наступного етапу не блокуємо через недоступне сховище.
+            }
+            setScreen("stage-five-envelope")
+          }}
+        />
+      )}
+
+      {screen === "stage-four-continuation" && (
+        <StageFourContinuation
+          onBack={() => setScreen("stage-four-questions")}
+          onContinue={() => {
+            if (hasUnlockedStageFive()) setScreen("stage-five-envelope")
+            else setScreen("assistant-review")
+          }}
+        />
+      )}
+
+      {screen === "stage-five-envelope" && <StageFiveEnvelope />}
 
       {screen === "terminal" && (
         <section className="terminal-screen" aria-label="Робочий термінал">
@@ -423,16 +624,27 @@ export default function App() {
       <audio
         ref={voiceRef}
         src={INTRO_VOICE_FILE}
-        onEnded={handleVoiceEnded}
+        onEnded={() => {
+          const callback = voiceEndedCallbackRef.current
+          voiceEndedCallbackRef.current = null
+          if (callback) {
+            restoreMusic()
+            callback()
+          } else {
+            handleVoiceEnded()
+          }
+        }}
         onError={() => {
+          voiceEndedCallbackRef.current = null
           setVoiceStatus("unavailable")
-          if (musicRef.current) musicRef.current.volume = MUSIC_VOLUME_NORMAL
+          restoreMusic()
         }}
         preload="auto"
       />
       </div>
       </main>
       </VehicleSearchProvider>
+      </AudioManagerProvider>
     </InvestigatorNotebookProvider>
   )
 }

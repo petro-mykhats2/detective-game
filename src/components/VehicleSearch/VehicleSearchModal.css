@@ -15,7 +15,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: auto;
+  overflow: hidden;
   padding: max(24px, 5vh) 18px max(24px, env(safe-area-inset-bottom));
   background: rgba(3, 6, 9, .86);
   backdrop-filter: blur(9px);
@@ -23,16 +23,22 @@
 }
 .vehicle-modal__panel {
   width: min(760px, 100%);
-  max-height: none;
+  height: min(860px, calc(100vh - 48px));
+  max-height: calc(100vh - 48px);
   margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   border: 1px solid rgba(171, 135, 82, .5);
   border-radius: 9px;
   color: #edf0f2;
   background: #11171d;
   box-shadow: 0 25px 100px rgba(0,0,0,.55);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .vehicle-modal__header {
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -43,7 +49,9 @@
 .vehicle-modal__header h2 { margin: 10px 0 7px; color: #fff; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; }
 .vehicle-modal__header p { margin: 0; color: #9ea8b1; font-size: 12px; line-height: 1.6; }
 .vehicle-modal__close { flex: 0 0 36px; width: 36px; height: 36px; border: 1px solid rgba(255,255,255,.15); border-radius: 50%; color: #c8cdd2; background: transparent; font-size: 25px; cursor: pointer; }
-.vehicle-search { padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.vehicle-search {
+  flex: 0 0 auto;
+  padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
 .vehicle-search label { display: block; margin-bottom: 10px; color: #c39a5d; font: 9px "DM Mono", monospace; letter-spacing: .1em; }
 .vehicle-search__controls { display: flex; gap: 9px; }
 .vehicle-search__controls input { min-width: 0; flex: 1; height: 46px; padding: 20px 13px; border: 1px solid #39434b; border-radius: 4px; outline: none; color: #f2f4f5; background: #0b1015; font: inherit; font-size: 22px; text-transform: uppercase;}
@@ -64,7 +72,50 @@
 .vehicle-modal__footer button:hover { background: rgba(145,105,53,.38); border-color: #d5b47f; transform: translateY(-1px); }
 .vehicle-search__hint { display: block; margin-top: 9px; color: #78848e; font-size: 10px; }
 .vehicle-search__error { margin: 9px 0 0; color: #e6a09a; font-size: 11px; }
-.vehicle-results { padding: 20px 28px 26px; }
+.vehicle-results {
+  flex: 0 0 auto;
+  min-height: auto;
+  overflow: visible;
+  padding: 8px 28px 26px;
+}
+.vehicle-results__toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -8px -28px 10px;
+  padding: 8px 28px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(17,23,29,.97);
+  backdrop-filter: blur(8px);
+}
+.vehicle-results__caption { margin: 0; }
+.vehicle-results__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 36px;
+  min-width: 116px;
+  padding: 7px 12px;
+  border: 1px solid rgba(195,154,93,.85);
+  border-radius: 4px;
+  color: #f0d7ad;
+  background: rgba(145,105,53,.28);
+  font: 700 10px "DM Mono", monospace;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+.vehicle-results__close:hover {
+  border-color: #d5b47f;
+  background: rgba(145,105,53,.32);
+}
+.vehicle-results__close > span {
+  font-size: 9px;
+}
 .vehicle-results__caption { margin-bottom: 13px; color: #9ca7b0; font: 9px "DM Mono", monospace; letter-spacing: .1em; }
 .vehicle-results__empty { display: grid; justify-items: center; padding: 35px 15px; text-align: center; color: #9ca7b0; }
 .vehicle-results__empty > span { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: 13px; border: 1px solid rgba(195,154,93,.45); border-radius: 50%; color: #d2ad77; font-size: 24px; }
@@ -141,7 +192,9 @@
   color: #aebdb3;
 }
 
-.vehicle-modal__footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 28px; border-top: 1px solid rgba(255,255,255,.08); color: #68747e; font: 8px "DM Mono", monospace; letter-spacing: .08em; }
+.vehicle-modal__footer {
+  flex: 0 0 auto;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 28px; border-top: 1px solid rgba(255,255,255,.08); color: #68747e; font: 8px "DM Mono", monospace; letter-spacing: .08em; }
 .vehicle-modal__footer button { padding: 8px 13px; }
 @keyframes vehicle-modal-in { from { opacity: 0; } to { opacity: 1; } }
 .vehicle-search__controls button:disabled { opacity: .55; cursor: wait; transform: none; }
@@ -159,17 +212,121 @@
 @keyframes vehicle-scan-pulse { to { opacity: .35; transform: scale(.7); } }
 @keyframes vehicle-search-progress { from { width: 0; } to { width: 100%; } }
 @media (max-width: 600px) {
-  .vehicle-modal { padding: 10px; }
-  .vehicle-modal__panel { margin: 0; }
-  .vehicle-modal__header, .vehicle-search { padding: 19px 17px; }
-  .vehicle-results { padding: 16px 14px 20px; }
-  .vehicle-search__controls { flex-direction: column; }
-  .vehicle-search__controls button { min-height: 44px; }
-  .vehicle-record { padding: 14px; }
-  .vehicle-record__top h3 { font-size: 19px; }
-  .vehicle-record__grid { grid-template-columns: 1fr; gap: 12px; }
-  .vehicle-record__address { grid-column: auto; }
-  .vehicle-modal__footer { padding: 12px 17px; }
+  .vehicle-modal {
+    padding: 10px;
+  }
+
+  .vehicle-modal__panel {
+    margin: 0;
+    height: calc(100vh - 20px);
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .vehicle-modal__header {
+    padding: 14px 15px 12px;
+  }
+
+  .vehicle-modal__header h2 {
+    margin: 6px 0 4px;
+    font-size: 20px;
+  }
+
+  .vehicle-modal__header p {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .vehicle-modal__header .vehicle-modal__close {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    font-size: 22px;
+  }
+
+  .vehicle-search {
+    padding: 10px 15px 8px;
+  }
+
+  .vehicle-search label {
+    margin-bottom: 7px;
+  }
+
+  .vehicle-search__controls {
+    flex-direction: column;
+  }
+
+  .vehicle-search__controls input {
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .vehicle-search__controls button {
+    min-height: 40px;
+    padding: 9px 14px;
+  }
+
+  .vehicle-search__hint {
+    margin-top: 6px;
+    font-size: 9px;
+  }
+
+  /*
+   * On mobile the modal itself becomes the scroll container.
+   * This lets the header and search area move away when the user
+   * scrolls through the records instead of consuming the viewport.
+   */
+  .vehicle-results {
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    padding: 8px 14px 20px;
+  }
+
+  .vehicle-results__toolbar {
+    top: 0;
+    margin: -8px -14px 10px;
+    padding: 7px 14px;
+    min-height: 38px;
+  }
+
+  .vehicle-results__caption {
+    margin-bottom: 0;
+    font-size: 8px;
+  }
+
+  .vehicle-results__close {
+    min-height: 34px;
+    min-width: 104px;
+    padding: 7px 10px;
+    font-size: 9px;
+  }
+
+  .vehicle-results__close > span {
+    display: inline;
+  }
+
+  .vehicle-record {
+    padding: 14px;
+  }
+
+  .vehicle-record__top h3 {
+    font-size: 19px;
+  }
+
+  .vehicle-record__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vehicle-record__address {
+    grid-column: auto;
+  }
+
+  .vehicle-modal__footer {
+    padding: 12px 15px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .vehicle-modal { animation: none; }
@@ -178,3 +335,5 @@
   .vehicle-searching__scanner span,
   .vehicle-searching__track i { animation-duration: 2s; }
 }
+
+.vehicle-record__action-note--rejected { border-left-color: #b87970; color: #d29a93; }
